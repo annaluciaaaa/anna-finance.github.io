@@ -106,30 +106,29 @@ function mock(t){
   return data;
 }
 
-// Fetch intraday (1d/1w) via Render API
-async function fetchIntraday(t, range){
-  try{
-    const ctrl=new AbortController();
-    setTimeout(()=>ctrl.abort(),15000);
-    const r=await fetch("https://hilarious-salmiakki-9ef197.netlify.app/stock/"+encodeURIComponent(t)+"?range="+range,{signal:ctrl.signal});
-    if(!r.ok) return null;
-    const j=await r.json();
-    if(!j.data||j.data.length<2) return null;
-    return j.data;
-  }catch(e){return null;}
-}
+// Direct Yahoo Finance via allorigins proxy - no server needed
+var API="https://hilarious-salmiakki-9ef197.netlify.app";
 
-// Fetch via Render API - real Yahoo Finance data
 async function fetchStock(t){
   try{
-    const ctrl=new AbortController();
-    setTimeout(()=>ctrl.abort(),15000);
-    const r=await fetch("https://hilarious-salmiakki-9ef197.netlify.app/stock/"+encodeURIComponent(t)+"?range=5y",{signal:ctrl.signal});
-    if(!r.ok) return null;
-    const j=await r.json();
-    if(!j.data||j.data.length<10) return null;
+    var url=API+"/stock/"+encodeURIComponent(t)+"?range=5y";
+    var r=await fetch(url);
+    if(!r.ok){ console.log("fetchStock bad response:",r.status,t); return null; }
+    var j=await r.json();
+    if(!j.data||j.data.length<10){ console.log("fetchStock no data:",t); return null; }
+    console.log("fetchStock OK:",t,j.data.length,"points");
     return j.data;
-  }catch(e){return null;}
+  }catch(e){ console.log("fetchStock error:",t,e.message); return null; }
+}
+
+async function fetchIntraday(t, range){
+  try{
+    var r=await fetch(API+"/stock/"+encodeURIComponent(t)+"?range="+range);
+    if(!r.ok) return null;
+    var j=await r.json();
+    if(!j.data||j.data.length<2) return null;
+    return j.data;
+  }catch(e){ return null; }
 }
 function processStock(raw){
   const closes=raw.map(d=>d.c);
@@ -614,7 +613,7 @@ window.addEventListener("resize",drawCurrent);
       renderSidebar();
     }
     // Update live status
-    updateLiveStatus("Live - updated "+new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}),"#10b981");
+    updateLiveStatus("Live - "+new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}),"#10b981");
   }, 5*60*1000);
 })();
 
