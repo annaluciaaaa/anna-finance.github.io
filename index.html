@@ -128,51 +128,21 @@ function mock(t){
 }
 
 // ── API ───────────────────────────────────────────────────────
-const API="https://hilarious-salmiakki-9ef197.netlify.app";
+const REPO="https://raw.githubusercontent.com/annaluciaaaa/anna-finance.github.io/main/data";
 
-async function parseYahoo(j){
-  if(!j.chart||!j.chart.result||!j.chart.result[0])throw new Error("no result");
-  const res=j.chart.result[0];
-  const ts=res.timestamp,closes=res.indicators.quote[0].close,vols=res.indicators.quote[0].volume||[];
-  const data=ts.map((t,i)=>({date:new Date(t*1000).toISOString().slice(0,10),c:closes[i],v:vols[i]||0})).filter(d=>d.c!=null&&isFinite(d.c));
-  if(data.length<10)throw new Error("too few");
-  return data;
-}
+function tickerKey(t){return t.replace("^","_").replace(/-/g,"_");}
 
 async function fetchStock(t){
-  // Primary backend
+  // Primary: GitHub data files (updated every 2h by GitHub Action)
   try{
-    const r=await fetch(API+"/stock/"+encodeURIComponent(t)+"?range=5y",{signal:AbortSignal.timeout(8000)});
-    if(r.ok){const j=await r.json();if(j.data&&j.data.length>=10){console.log("Primary OK:",t);return j.data;}}
-  }catch(e){console.log("Primary failed:",t,e.message);}
-  // Fallback: Yahoo Finance via allorigins
-  try{
-    const yUrl="https://query1.finance.yahoo.com/v8/finance/chart/"+encodeURIComponent(t)+"?range=5y&interval=1d";
-    const r=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(yUrl),{signal:AbortSignal.timeout(12000)});
-    if(r.ok){const data=await parseYahoo(await r.json());console.log("Yahoo OK:",t,data.length);return data;}
-  }catch(e){console.log("Yahoo failed:",t,e.message);}
+    const r=await fetch(REPO+"/"+tickerKey(t)+".json",{signal:AbortSignal.timeout(8000)});
+    if(r.ok){const j=await r.json();if(j.data&&j.data.length>=10){console.log("GitHub data OK:",t);return j.data;}}
+  }catch(e){console.log("GitHub data failed:",t,e.message);}
   return null;
 }
 
 async function fetchIntraday(t,range){
-  try{
-    const r=await fetch(API+"/stock/"+encodeURIComponent(t)+"?range="+range,{signal:AbortSignal.timeout(6000)});
-    if(r.ok){const j=await r.json();if(j.data&&j.data.length>=2)return j.data;}
-  }catch(e){}
-  try{
-    const interval=range==="1d"?"5m":"1h";
-    const yUrl="https://query1.finance.yahoo.com/v8/finance/chart/"+encodeURIComponent(t)+"?range="+range+"&interval="+interval;
-    const r=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(yUrl),{signal:AbortSignal.timeout(8000)});
-    if(r.ok){
-      const j=await r.json();
-      if(j.chart&&j.chart.result&&j.chart.result[0]){
-        const res=j.chart.result[0];
-        const ts=res.timestamp,closes=res.indicators.quote[0].close;
-        const data=ts.map((t,i)=>({date:new Date(t*1000).toISOString().slice(0,16),c:closes[i]})).filter(d=>d.c!=null&&isFinite(d.c));
-        if(data.length>=2)return data;
-      }
-    }
-  }catch(e){}
+  // Intraday not available from static files — return null to use daily data
   return null;
 }
 
