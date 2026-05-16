@@ -461,11 +461,66 @@ function renderOverview(){
 }
 
 // ── FEAR & GREED ──────────────────────────────────────────────
+function fgiGaugeSVG(score, rating){
+  const cx=115,cy=108,R=90,ri=60;
+  const ZONES=[[0,25,"#d62b2b"],[25,45,"#e07020"],[45,55,"#e8b800"],[55,75,"#4db56a"],[75,100,"#2d8c4e"]];
+  const ZONE_LABELS=["Extreme\nFear","Fear","Neutral","Greed","Extreme\nGreed"];
+  const COL={"extreme fear":"#d62b2b","fear":"#e07020","neutral":"#e8b800","greed":"#4db56a","extreme greed":"#2d8c4e"}[rating.toLowerCase()]||"#64748b";
+  function a(s){return Math.PI*(1-s/100);}
+  function op(s){return[cx+R*Math.cos(a(s)),cy-R*Math.sin(a(s))];}
+  function ip(s){return[cx+ri*Math.cos(a(s)),cy-ri*Math.sin(a(s))];}
+  function arc(s1,s2,fill){
+    const[ox1,oy1]=op(s1),[ox2,oy2]=op(s2),[ix2,iy2]=ip(s2),[ix1,iy1]=ip(s1);
+    const lg=(s2-s1)*1.8>180?1:0;
+    return `<path d="M${ox1.toFixed(1)} ${oy1.toFixed(1)} A${R} ${R} 0 ${lg} 1 ${ox2.toFixed(1)} ${oy2.toFixed(1)} L${ix2.toFixed(1)} ${iy2.toFixed(1)} A${ri} ${ri} 0 ${lg} 0 ${ix1.toFixed(1)} ${iy1.toFixed(1)} Z" fill="${fill}"/>`;
+  }
+  // Zone boundary ticks
+  const ticks=[0,25,45,55,75,100].map(s=>{
+    const ang=a(s);
+    return `<line x1="${(cx+(R+1)*Math.cos(ang)).toFixed(1)}" y1="${(cy-(R+1)*Math.sin(ang)).toFixed(1)}" x2="${(cx+(ri-1)*Math.cos(ang)).toFixed(1)}" y2="${(cy-(ri-1)*Math.sin(ang)).toFixed(1)}" stroke="#fff" stroke-width="2.5"/>`;
+  }).join("");
+  // Zone labels inside arc
+  const midR=(R+ri)/2;
+  const zoneText=ZONES.map(([s1,s2,c],i)=>{
+    const mid=(s1+s2)/2,ang=a(mid);
+    const lx=(cx+midR*Math.cos(ang)).toFixed(1),ly=(cy-midR*Math.sin(ang)).toFixed(1);
+    const rot=(90-ang*180/Math.PI).toFixed(1);
+    const parts=ZONE_LABELS[i].split("\n");
+    if(s2-s1<15) return "";
+    return parts.length>1
+      ?`<text text-anchor="middle" fill="white" font-size="6.5" font-weight="700" font-family="monospace" transform="rotate(${rot},${lx},${ly})"><tspan x="${lx}" dy="-4">${parts[0]}</tspan><tspan x="${lx}" dy="9">${parts[1]}</tspan></text>`
+      :`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="7" font-weight="700" font-family="monospace" transform="rotate(${rot},${lx},${ly})">${parts[0]}</text>`;
+  }).join("");
+  // Score scale ticks on outside
+  const scaleTicks=[0,25,50,75,100].map(s=>{
+    const ang=a(s);
+    const lx=(cx+(R+14)*Math.cos(ang)).toFixed(1),ly=(cy-(R+14)*Math.sin(ang)).toFixed(1);
+    return `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="#94a3b8" font-size="8" font-family="monospace">${s}</text>`;
+  }).join("");
+  // Needle
+  const cs=Math.min(99,Math.max(1,score)),ang=a(cs);
+  const nx=(cx+(R-8)*Math.cos(ang)).toFixed(1),ny=(cy-(R-8)*Math.sin(ang)).toFixed(1);
+  // Base triangle for needle (wider at center)
+  const baseAngle=ang+Math.PI/2;
+  const bx1=(cx+7*Math.cos(baseAngle)).toFixed(1),by1=(cy-7*Math.sin(baseAngle)).toFixed(1);
+  const bx2=(cx-7*Math.cos(baseAngle)).toFixed(1),by2=(cy+7*Math.sin(baseAngle)).toFixed(1);
+  return `<svg viewBox="0 0 230 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px;display:block">
+    ${ZONES.map(([s1,s2,c])=>arc(s1,s2,c)).join("")}
+    ${ticks}
+    ${zoneText}
+    ${scaleTicks}
+    <polygon points="${nx},${ny} ${bx1},${by1} ${bx2},${by2}" fill="#1e2a4a" opacity="0.9"/>
+    <circle cx="${cx}" cy="${cy}" r="9" fill="#1e2a4a"/>
+    <circle cx="${cx}" cy="${cy}" r="5" fill="white"/>
+    <text x="${cx}" y="${cy-26}" text-anchor="middle" font-size="38" font-weight="800" fill="${COL}" font-family="Syne,sans-serif">${Math.round(score)}</text>
+    <text x="${cx}" y="${cy-11}" text-anchor="middle" font-size="9.5" fill="${COL}" font-weight="700" font-family="monospace" letter-spacing="1">${rating.toUpperCase()}</text>
+  </svg>`;
+}
+
 function renderFGI(){
   const el=document.getElementById("fgi-widget");if(!el)return;
   const f=S.fgi,score=f.score||null,rating=f.rating||"";
-  const colors={"extreme fear":"#ef4444","fear":"#f97316","neutral":"#f59e0b","greed":"#10b981","extreme greed":"#6366f1"};
-  const col=colors[rating.toLowerCase()]||"#64748b";
+  const COL={"extreme fear":"#d62b2b","fear":"#e07020","neutral":"#e8b800","greed":"#4db56a","extreme greed":"#2d8c4e"}[rating.toLowerCase()]||"#64748b";
   if(!score){
     el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid #e2e8f8;border-radius:12px;padding:10px 14px">
       <div style="font-size:9px;color:#94a3b8;font-weight:700;letter-spacing:0.1em">⬡ FEAR & GREED INDEX</div>
@@ -473,22 +528,26 @@ function renderFGI(){
     </div>`;
     return;
   }
-  const pct=Math.round(score),needle=Math.min(Math.max(pct,2),98);
-  el.innerHTML=`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:12px;padding:12px 14px;box-shadow:0 2px 8px rgba(99,102,241,0.06)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <div style="font-size:9px;color:#94a3b8;font-weight:700;letter-spacing:0.1em">⬡ FEAR & GREED INDEX</div>
-      <button onclick="loadFGI()" style="background:#f8f9ff;border:1px solid #e2e8f8;border-radius:6px;padding:3px 8px;font-size:9px;color:#64748b;cursor:pointer">Refresh</button>
+  const hist=[{l:"Previous close",v:f.prev},{l:"1 week ago",v:f.week},{l:"1 month ago",v:f.month}].filter(h=>h.v!=null);
+  const histColors=v=>v<25?"#d62b2b":v<45?"#e07020":v<55?"#e8b800":v<75?"#4db56a":"#2d8c4e";
+  const histRating=v=>v<25?"Extreme Fear":v<45?"Fear":v<55?"Neutral":v<75?"Greed":"Extreme Greed";
+  el.innerHTML=`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;padding:16px 18px;box-shadow:0 2px 8px rgba(99,102,241,0.06)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:10px;color:#6366f1;font-weight:700;letter-spacing:0.1em">⬡ FEAR & GREED INDEX</div>
+      <button onclick="loadFGI()" style="background:#f8f9ff;border:1px solid #e2e8f8;border-radius:6px;padding:3px 8px;font-size:9px;color:#64748b;cursor:pointer">${S.fgiLoading?"Loading...":"Refresh"}</button>
     </div>
-    <div style="display:flex;align-items:center;gap:16px">
-      <div style="width:56px;height:56px;border-radius:50%;border:3px solid ${col};display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 16px ${col}30">
-        <span style="font-size:20px;font-weight:800;color:${col}">${pct}</span>
-      </div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:700;color:${col};text-transform:capitalize;margin-bottom:4px">${rating}</div>
-        <div style="position:relative"><div class="fgi-bar"></div><div class="fgi-needle" style="left:${needle}%"></div></div>
-        <div style="display:flex;justify-content:space-between;font-size:8px;color:#94a3b8;margin-top:2px"><span>Extreme Fear</span><span>Neutral</span><span>Extreme Greed</span></div>
-        ${f.prev!=null?`<div style="font-size:9px;color:#94a3b8;margin-top:5px">Prev: <b style="color:#475569">${Math.round(f.prev)}</b>${f.week!=null?` · 1W: <b style="color:#475569">${Math.round(f.week)}</b>`:""}${f.month!=null?` · 1M: <b style="color:#475569">${Math.round(f.month)}</b>`:""}</div>`:""}
-      </div>
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <div style="flex:0 0 auto;margin:0 auto">${fgiGaugeSVG(score,rating)}</div>
+      ${hist.length?`<div style="flex:1;min-width:130px">
+        <div style="font-size:9px;color:#94a3b8;font-weight:700;letter-spacing:0.08em;margin-bottom:10px;text-transform:uppercase">Historical</div>
+        ${hist.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f1f5f9">
+          <span style="font-size:11px;color:#64748b">${h.l}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:10px;color:${histColors(h.v)};font-weight:700">${histRating(h.v)}</span>
+            <span style="font-size:13px;font-weight:800;color:#1e2a4a">${Math.round(h.v)}</span>
+          </div>
+        </div>`).join("")}
+      </div>`:""}
     </div>
   </div>`;
 }
