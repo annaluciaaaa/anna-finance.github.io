@@ -1,0 +1,15 @@
+{
+  "name": "anna-finance-api",
+  "version": "1.0.0",
+  "description": "Stock data proxy for anna-finance.com",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
