@@ -128,21 +128,21 @@ function mock(t){
 }
 
 // ── API ───────────────────────────────────────────────────────
-const REPO="https://raw.githubusercontent.com/annaluciaaaa/anna-finance.github.io/main/data";
-
-function tickerKey(t){return t.replace("^","_").replace(/-/g,"_");}
+const API="https://fulfilling-expression-production-3d1c.up.railway.app";
 
 async function fetchStock(t){
-  // Primary: GitHub data files (updated every 2h by GitHub Action)
   try{
-    const r=await fetch(REPO+"/"+tickerKey(t)+".json",{signal:AbortSignal.timeout(8000)});
-    if(r.ok){const j=await r.json();if(j.data&&j.data.length>=10){console.log("GitHub data OK:",t);return j.data;}}
-  }catch(e){console.log("GitHub data failed:",t,e.message);}
+    const r=await fetch(API+"/stock/"+encodeURIComponent(t)+"?range=5y",{signal:AbortSignal.timeout(10000)});
+    if(r.ok){const j=await r.json();if(j.data&&j.data.length>=10){console.log("Railway OK:",t);return j.data;}}
+  }catch(e){console.log("Railway failed:",t,e.message);}
   return null;
 }
 
 async function fetchIntraday(t,range){
-  // Intraday not available from static files — return null to use daily data
+  try{
+    const r=await fetch(API+"/stock/"+encodeURIComponent(t)+"?range="+range,{signal:AbortSignal.timeout(8000)});
+    if(r.ok){const j=await r.json();if(j.data&&j.data.length>=2)return j.data;}
+  }catch(e){}
   return null;
 }
 
