@@ -224,7 +224,7 @@ function drawChart(canvasId,datasets,opts){
     if(lbls[i]){
       ctx.font="bold 9px monospace";ctx.fillStyle="#475569";ctx.textAlign="center";
       const cr=opts.chartRange||S.range;
-      ctx.fillText((cr==="all"||cr==="1y")?lbls[i].slice(0,7):lbls[i].slice(5),tx(i,len),H-5);
+      ctx.fillText((cr==="all"||cr==="1y")?lbls[i].slice(0,7):lbls[i].slice(5,10),tx(i,len),H-5);
     }
   });
   // Datasets
@@ -289,9 +289,10 @@ function drawCurrent(){
   }else if(S.tab==="rsi"){
     drawChart("chart",[{data:rv2,labels,color:"#ffa502",width:2}],{yMin:0,yMax:100,refs:[{v:70,color:"#f8514950"},{v:30,color:"#3fb95050"},{v:50,color:"#30363d30"}],pct:true,h:190});
   }else if(S.tab==="vol"){
-    const volColors=d.closes.map((c,i)=>i>0&&c>=d.closes[i-1]?"#3fb95060":"#f8514960");
-    const avgVol=d.vols.reduce((a,b)=>a+b,0)/d.vols.length;
-    drawChart("chart",[{data:d.vols,labels,type:"bar",colors:volColors}],{volAvg:avgVol,chartRange:S.range,h:190});
+    const filteredVols=filtered.map(x=>x.v||0);
+    const volColors=closes.map((c,i)=>i>0&&c>=closes[i-1]?"#3fb95060":"#f8514960");
+    const avgVol=d.vols.filter(v=>v>0).reduce((a,b)=>a+b,0)/(d.vols.filter(v=>v>0).length||1);
+    drawChart("chart",[{data:filteredVols,labels,type:"bar",colors:volColors}],{volAvg:avgVol,chartRange:S.range,h:190});
   }else if(S.tab==="compare"){
     setTimeout(drawCompareChart,50);
   }else if(S.tab!=="news"){

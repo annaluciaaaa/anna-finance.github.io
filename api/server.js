@@ -32,7 +32,7 @@ app.get("/stock/:symbol", async (req, res) => {
     const volumes = result.indicators.quote[0].volume || [];
 
     const data = ts
-      .map((t, i) => ({ date: new Date(t * 1000).toISOString().slice(0, 16), c: closes[i], v: volumes[i] || 0 }))
+      .map((t, i) => ({ date: new Date(t * 1000).toISOString().slice(0, 10), c: closes[i], v: volumes[i] || 0 }))
       .filter(d => d.c != null && isFinite(d.c));
 
     res.json({ data });
