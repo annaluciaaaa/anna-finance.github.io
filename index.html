@@ -145,7 +145,7 @@ function mock(t){
     "BTC-USD":95000,"ETH-USD":1800,"SOL-USD":145,"XRP-USD":2.2,"HYPE32196-USD":41,
     "^GSPC":5650,"^IXIC":17800,"^DJI":41500,"^GDAXI":18200,"^FTSE":8300,"^N225":38000};
   let p=b[t]||80;const now=new Date(),data=[];
-  for(let i=364;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);p*=1+(Math.random()-.48)*.018;data.push({date:d.toISOString().slice(0,10),c:+p.toFixed(2)});}
+  for(let i=364;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);p*=1+(Math.random()-.48)*.018;const c=+p.toFixed(2);const o=+(p*(1+(Math.random()-.5)*.006)).toFixed(2);const h=+(Math.max(o,c)*(1+Math.random()*.009)).toFixed(2);const l=+(Math.min(o,c)*(1-Math.random()*.009)).toFixed(2);data.push({date:d.toISOString().slice(0,10),o,h,l,c,v:Math.floor(Math.random()*5e6+1e6)});}
   return data;
 }
 
@@ -317,9 +317,7 @@ function drawCurrent(){
     const avgVol=d.vols.filter(v=>v>0).reduce((a,b)=>a+b,0)/(d.vols.filter(v=>v>0).length||1);
     drawChart("chart",[{data:filteredVols,labels,type:"bar",colors:volColors}],{volAvg:avgVol,chartRange:S.range,h:190});
   }else if(S.tab==="candles"){
-    const fi=d.raw.indexOf(filtered[0]);
-    const start=fi>=0?fi:Math.max(0,d.raw.length-filtered.length);
-    const candleData=filtered.map((r,i)=>({date:r.date,o:d.opens[start+i],h:d.highs[start+i],l:d.lows[start+i],c:r.c}));
+    const candleData=filtered.map(r=>({date:r.date,o:r.o??null,h:r.h??null,l:r.l??null,c:r.c}));
     const fibRefs=S.showFib&&d.fib?[
       {v:d.fib.hi,color:"#6366f1",label:"H"},{v:d.fib.r786,color:"#ef4444",label:".786"},
       {v:d.fib.r618,color:"#f97316",label:".618"},{v:d.fib.r500,color:"#f59e0b",label:".500"},
