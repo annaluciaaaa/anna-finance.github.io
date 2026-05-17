@@ -107,6 +107,15 @@ const NAMES={
   "^GSPC":"S&P 500","^IXIC":"Nasdaq","^DJI":"Dow Jones","^GDAXI":"DAX","^FTSE":"FTSE 100","^N225":"Nikkei 225"
 };
 
+const TV_SYM={
+  "^GSPC":"SP:SPX","^IXIC":"NASDAQ:COMP","^DJI":"DJ:DJI",
+  "^GDAXI":"XETR:DAX","^FTSE":"FTSE:UKX","^N225":"INDEX:NKY",
+  "BTC-USD":"BITSTAMP:BTCUSD","ETH-USD":"BITSTAMP:ETHUSD",
+  "SOL-USD":"COINBASE:SOLUSD","XRP-USD":"BITSTAMP:XRPUSD",
+  "HYPE32196-USD":"BINANCE:HYPEUSDT",
+};
+function toTVSym(s){return TV_SYM[s]||s;}
+
 // ── STATE ────────────────────────────────────────────────────
 const S={
   active:"AAPL",stocks:{},tab:"price",range:"3m",aiText:"",aiLoading:false,
@@ -317,14 +326,7 @@ function drawCurrent(){
     const avgVol=d.vols.filter(v=>v>0).reduce((a,b)=>a+b,0)/(d.vols.filter(v=>v>0).length||1);
     drawChart("chart",[{data:filteredVols,labels,type:"bar",colors:volColors}],{volAvg:avgVol,chartRange:S.range,h:190});
   }else if(S.tab==="candles"){
-    const candleData=filtered.map(r=>({date:r.date,o:r.o??null,h:r.h??null,l:r.l??null,c:r.c}));
-    const fibRefs=S.showFib&&d.fib?[
-      {v:d.fib.hi,color:"#6366f1",label:"H"},{v:d.fib.r786,color:"#ef4444",label:".786"},
-      {v:d.fib.r618,color:"#f97316",label:".618"},{v:d.fib.r500,color:"#f59e0b",label:".500"},
-      {v:d.fib.r382,color:"#10b981",label:".382"},{v:d.fib.r236,color:"#06b6d4",label:".236"},
-      {v:d.fib.lo,color:"#8b5cf6",label:"L"},
-    ].filter(f=>f.v!=null&&isFinite(f.v)):[];
-    drawCandlestick("chart",candleData,{chartRange:S.range,fibRefs,h:260});
+    initTVWidget(S.active);
   }else if(S.tab==="compare"){
     setTimeout(drawCompareChart,50);
   }else if(S.tab!=="news"){
@@ -354,7 +356,40 @@ function drawCompareChart(){
   drawChart("compareChart",datasets,{pct:true,chartRange:S.range,h:220,refs:[{v:0,color:"#64748b40"}]});
 }
 
-// ── CANDLESTICK CHART ─────────────────────────────────────────
+// ── TRADINGVIEW WIDGET ────────────────────────────────────────
+function initTVWidget(symbol){
+  const container=document.getElementById("tv_widget");if(!container)return;
+  const sym=toTVSym(symbol);
+  const interval=S.range==="1d"?"5":S.range==="1w"?"60":S.range==="1m"?"D":S.range==="3m"?"D":S.range==="6m"?"W":"W";
+  function create(){
+    container.innerHTML="";
+    new window.TradingView.widget({
+      container_id:"tv_widget",
+      autosize:true,
+      symbol:sym,
+      interval,
+      timezone:"Etc/UTC",
+      theme:"light",
+      style:"1",
+      locale:"en",
+      toolbar_bg:"#f8fafc",
+      enable_publishing:false,
+      hide_top_toolbar:false,
+      hide_legend:false,
+      save_image:false,
+      allow_symbol_change:true,
+    });
+  }
+  if(window.TradingView){create();}
+  else{
+    if(document.getElementById("tv-script"))return;
+    const s=document.createElement("script");
+    s.id="tv-script";s.src="https://s3.tradingview.com/tv.js";
+    s.onload=create;document.head.appendChild(s);
+  }
+}
+
+// ── CANDLESTICK CHART (legacy, unused) ───────────────────────
 function drawCandlestick(canvasId,data,opts){
   opts=opts||{};
   const canvas=document.getElementById(canvasId);if(!canvas)return;
@@ -724,6 +759,8 @@ function renderMain(){
         </div>
         <canvas id="compareChart"></canvas>
       </div>`
+      :S.tab==="candles"
+      ?`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><div id="tv_widget" style="height:420px"></div></div>`
       :`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;padding:10px;margin-bottom:14px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><canvas id="chart"></canvas></div>`
     )
     // ── AI Analysis
@@ -752,7 +789,8 @@ window.doSelect=async function(t){
 };
 window.doTab=async function(t){
   S.tab=t;renderMain();
-  if((t==="price"||t==="candles")&&S.range==="1d"&&!S.intraday[S.active]){const data=await fetchIntraday(S.active,"1d");if(data){S.intraday[S.active]=data;drawCurrent();}}
+  if(t==="candles"){setTimeout(()=>initTVWidget(S.active),50);}
+  if((t==="price")&&S.range==="1d"&&!S.intraday[S.active]){const data=await fetchIntraday(S.active,"1d");if(data){S.intraday[S.active]=data;drawCurrent();}}
   if(t==="compare")setTimeout(drawCompareChart,100);
   if(t==="news")setTimeout(()=>loadNews(S.active),50);
 };
