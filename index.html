@@ -296,28 +296,7 @@ function drawCurrent(){
   const rv2=calcRSI(closes),mv2=calcMACD(closes),bv2=calcBoll(closes);
 
   if(S.tab==="price"){
-    // FIX: slice 200/50 SMA to match filtered date range
-    const fi=d.raw.indexOf(filtered[0]);
-    const start=fi>=0?fi:Math.max(0,d.raw.length-filtered.length);
-    const s200f=d.s200.slice(start,start+filtered.length);
-    const s50f=d.s50.slice(start,start+filtered.length);
-    const fibRefs=S.showFib&&d.fib?[
-      {v:d.fib.hi,color:"#6366f1",label:"H"},
-      {v:d.fib.r786,color:"#ef4444",label:".786"},
-      {v:d.fib.r618,color:"#f97316",label:".618"},
-      {v:d.fib.r500,color:"#f59e0b",label:".500"},
-      {v:d.fib.r382,color:"#10b981",label:".382"},
-      {v:d.fib.r236,color:"#06b6d4",label:".236"},
-      {v:d.fib.lo,color:"#8b5cf6",label:"L"},
-    ].filter(f=>f.v!=null&&isFinite(f.v)):[];
-    drawChart("chart",[
-      {data:bv2.map(b=>b.u),labels,color:"#58a6ff30",width:1,fill:true,fillColor:"#58a6ff06"},
-      {data:bv2.map(b=>b.l),labels,color:"#58a6ff30",width:1},
-      {data:bv2.map(b=>b.mid),labels,color:"#58a6ff50",width:1,dash:[3,3]},
-      {data:s50f,labels,color:"#ffa50070",width:1},
-      {data:s200f,labels,color:"#ff458060",width:1,dash:[4,4]},
-      {data:closes,labels,color:"#3fb950",width:2,fill:true,fillColor:"#3fb95008"},
-    ],{chartRange:S.range,fibRefs,h:230});
+    initTVWidget(S.active,"3");
   }else if(S.tab==="rsi"){
     drawChart("chart",[{data:rv2,labels,color:"#ffa502",width:2}],{yMin:0,yMax:100,refs:[{v:70,color:"#f8514950"},{v:30,color:"#3fb95050"},{v:50,color:"#30363d30"}],pct:true,h:190});
   }else if(S.tab==="vol"){
@@ -357,9 +336,10 @@ function drawCompareChart(){
 }
 
 // ── TRADINGVIEW WIDGET ────────────────────────────────────────
-function initTVWidget(symbol){
+function initTVWidget(symbol,style){
   const container=document.getElementById("tv_widget");if(!container)return;
   const sym=toTVSym(symbol);
+  style=style||"1";
   const interval=S.range==="1d"?"5":S.range==="1w"?"60":S.range==="1m"?"D":S.range==="3m"?"D":S.range==="6m"?"W":"W";
   function create(){
     container.innerHTML="";
@@ -370,7 +350,7 @@ function initTVWidget(symbol){
       interval,
       timezone:"Etc/UTC",
       theme:"light",
-      style:"1",
+      style,
       locale:"en",
       toolbar_bg:"#f8fafc",
       enable_publishing:false,
@@ -759,7 +739,7 @@ function renderMain(){
         </div>
         <canvas id="compareChart"></canvas>
       </div>`
-      :S.tab==="candles"
+      :(S.tab==="candles"||S.tab==="price")
       ?`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><div id="tv_widget" style="height:420px"></div></div>`
       :`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;padding:10px;margin-bottom:14px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><canvas id="chart"></canvas></div>`
     )
@@ -789,8 +769,8 @@ window.doSelect=async function(t){
 };
 window.doTab=async function(t){
   S.tab=t;renderMain();
-  if(t==="candles"){setTimeout(()=>initTVWidget(S.active),50);}
-  if((t==="price")&&S.range==="1d"&&!S.intraday[S.active]){const data=await fetchIntraday(S.active,"1d");if(data){S.intraday[S.active]=data;drawCurrent();}}
+  if(t==="price"){setTimeout(()=>initTVWidget(S.active,"3"),50);}
+  if(t==="candles"){setTimeout(()=>initTVWidget(S.active,"1"),50);}
   if(t==="compare")setTimeout(drawCompareChart,100);
   if(t==="news")setTimeout(()=>loadNews(S.active),50);
 };
