@@ -613,11 +613,7 @@ function renderSidebar(){
       }).join(""):""}
     </div>`;
   }).join("")
-  +`<div style="margin-top:12px;padding:0 4px">
-    <input id="ti" placeholder="+ Add ticker" maxlength="10" onkeydown="if(event.key==='Enter')doAdd()"
-      style="background:#f8f9ff;border:1.5px solid #e2e8f8;border-radius:8px;padding:7px 8px;font-size:11px;color:#1e2a4a;outline:none;width:100%;margin-bottom:6px"/>
-    <button onclick="doAdd()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:8px;padding:7px;font-size:10px;color:#fff;width:100%;font-weight:700;cursor:pointer">Add</button>
-  </div>`;
+  ;
 }
 
 // ── MAIN PANEL ────────────────────────────────────────────────
@@ -904,7 +900,7 @@ function updateLiveStatus(text,color,pulse){
 <!-- FOOTER -->
 <div id="legal-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;overflow-y:auto;padding:24px 16px">
   <div style="background:#fff;border-radius:16px;max-width:680px;margin:0 auto;padding:28px 28px 24px;position:relative">
-    <button onclick="document.getElementById('legal-modal').style.display='none'" style="position:absolute;top:14px;right:16px;background:#f1f5f9;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-weight:700">✕ Schließen</button>
+    <button onclick="document.getElementById('legal-modal').style.display='none'" style="position:absolute;top:14px;right:16px;background:#f1f5f9;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-weight:700">✕ Close</button>
     <div id="legal-content"></div>
   </div>
 </div>
@@ -912,33 +908,33 @@ function updateLiveStatus(text,color,pulse){
 <div style="background:#f8f9ff;border-top:1.5px solid #e2e8f8;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:10px;color:#94a3b8">
   <span>© 2025 anna-finance.com · Alle Angaben ohne Gewähr · Keine Anlageberatung</span>
   <div style="display:flex;gap:16px">
-    <button onclick="showLegal('impressum')" style="background:none;border:none;font-size:10px;color:#6366f1;cursor:pointer;font-family:monospace;font-weight:600;text-decoration:underline">Impressum</button>
-    <button onclick="showLegal('datenschutz')" style="background:none;border:none;font-size:10px;color:#6366f1;cursor:pointer;font-family:monospace;font-weight:600;text-decoration:underline">Datenschutz</button>
+    <button onclick="showLegal('impressum')" style="background:none;border:none;font-size:10px;color:#6366f1;cursor:pointer;font-family:monospace;font-weight:600;text-decoration:underline">Legal Notice</button>
+    <button onclick="showLegal('datenschutz')" style="background:none;border:none;font-size:10px;color:#6366f1;cursor:pointer;font-family:monospace;font-weight:600;text-decoration:underline">Privacy Policy</button>
   </div>
 </div>
 
 <script>
 const LEGAL={
-  impressum:`<h2 style="font-size:18px;font-weight:800;color:#1e2a4a;margin:0 0 16px;font-family:'Syne',sans-serif">Impressum</h2>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 10px">Angaben gemäß § 25 MedienG und § 5 ECG (Österreich):</p>
+  impressum:`<h2 style="font-size:18px;font-weight:800;color:#1e2a4a;margin:0 0 16px;font-family:'Syne',sans-serif">Legal Notice (Impressum)</h2>
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 10px">Information pursuant to § 25 MedienG and § 5 ECG (Austria):</p>
 <p style="font-size:13px;color:#1e2a4a;line-height:2.1;margin:0 0 14px">
 <b>Anna-Lucia Sams</b><br>
 Rettenpacherstraße 6<br>
 5020 Salzburg<br>
-Österreich
+Austria
 </p>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 10px"><b>Kontakt:</b><br>E-Mail: anna.sams98@gmail.com</p>
-<p style="font-size:11px;color:#94a3b8;line-height:1.7;margin:0">Diese Website dient rein zu Informationszwecken und stellt keine Anlage- oder Finanzberatung dar. Für den Inhalt verantwortlich: Anna-Lucia Sams, Anschrift wie oben.</p>`,
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 10px"><b>Contact:</b><br>Email: anna.sams98@gmail.com</p>
+<p style="font-size:11px;color:#94a3b8;line-height:1.7;margin:0">This website is for informational purposes only and does not constitute financial or investment advice. Responsible for content: Anna-Lucia Sams, address as above.</p>`,
 
-  datenschutz:`<h2 style="font-size:18px;font-weight:800;color:#1e2a4a;margin:0 0 16px;font-family:'Syne',sans-serif">Datenschutzerklärung</h2>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>1. Verantwortliche Stelle</b><br>Anna-Lucia Sams, Rettenpacherstraße 6, 5020 Salzburg — E-Mail: anna.sams98@gmail.com</p>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>2. Erhobene Daten</b><br>Diese Website erhebt selbst keine personenbezogenen Daten. Es werden keine Cookies von uns gesetzt, kein Login, keine Formulare mit personenbezogenen Daten.</p>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>3. Hosting</b><br>Diese Website wird über GitHub Pages (GitHub Inc., San Francisco, USA) gehostet. Beim Aufruf der Seite werden von GitHub ggf. Server-Logfiles gespeichert (IP-Adresse, Browser, Zeitstempel). Datenschutzerklärung GitHub: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" style="color:#6366f1">github.com/privacy</a></p>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>4. Drittanbieter-Dienste</b><br>
-· <b>TradingView:</b> Charts werden als eingebettetes Widget von TradingView geladen. TradingView kann dabei eigene Cookies setzen. Mehr: <a href="https://www.tradingview.com/privacy-policy/" target="_blank" style="color:#6366f1">tradingview.com/privacy-policy</a><br>
-· <b>Yahoo Finance / Railway API:</b> Kursdaten werden über einen eigenen Server (Railway.app) von Yahoo Finance abgerufen. Es werden dabei keine Nutzerdaten weitergegeben.</p>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>5. Betroffenenrechte</b><br>Du hast gemäß DSGVO das Recht auf Auskunft, Berichtigung und Löschung. Da keine personenbezogenen Daten erhoben werden, gibt es hier nichts zu berichtigen oder zu löschen. Bei Fragen: anna.sams98@gmail.com</p>
-<p style="font-size:11px;color:#94a3b8;line-height:1.7;margin:0">Stand: Mai 2025 · Diese Datenschutzerklärung kann jederzeit aktualisiert werden.</p>`
+  datenschutz:`<h2 style="font-size:18px;font-weight:800;color:#1e2a4a;margin:0 0 16px;font-family:'Syne',sans-serif">Privacy Policy</h2>
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>1. Controller</b><br>Anna-Lucia Sams, Rettenpacherstraße 6, 5020 Salzburg, Austria — Email: anna.sams98@gmail.com</p>
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>2. Data collected</b><br>This website does not collect any personal data. No cookies are set by us, there is no login, and no forms requiring personal information.</p>
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>3. Hosting</b><br>This website is hosted via GitHub Pages (GitHub Inc., San Francisco, USA). GitHub may store server log files (IP address, browser, timestamp) when the page is accessed. GitHub privacy statement: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" style="color:#6366f1">github.com/privacy</a></p>
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>4. Third-party services</b><br>
+· <b>TradingView:</b> Charts are loaded as embedded widgets from TradingView, which may set its own cookies. More: <a href="https://www.tradingview.com/privacy-policy/" target="_blank" style="color:#6366f1">tradingview.com/privacy-policy</a><br>
+· <b>Yahoo Finance / Railway API:</b> Market data is fetched via a private server (Railway.app) from Yahoo Finance. No user data is transmitted to third parties.</p>
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>5. Your rights</b><br>Under GDPR you have the right to access, correct, and delete your data. As we collect no personal data, there is nothing to correct or delete. For any questions: anna.sams98@gmail.com</p>
+<p style="font-size:11px;color:#94a3b8;line-height:1.7;margin:0">Last updated: May 2025 · This privacy policy may be updated at any time.</p>`
 };
 function showLegal(key){
   document.getElementById('legal-content').innerHTML=LEGAL[key];
