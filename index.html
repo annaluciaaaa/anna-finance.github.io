@@ -151,7 +151,7 @@ canvas{display:block}
 // ── CONSTANTS ────────────────────────────────────────────────
 const GROUPS={
   "Indices":["^GSPC","^IXIC","^DJI","^GDAXI","^FTSE","^N225"],
-  "ETFs":["SPY","QQQ","ACWI","EEM","GLD"],
+  "ETFs":["SPY","QQQ","URTH","ACWI","EEM","GLD"],
   "Crypto":["BTC-USD","ETH-USD","SOL-USD","XRP-USD","HYPE-USD"],
   "Stocks":["AAPL","MSFT","GOOGL","AMZN","META","NVDA","TSLA"],
   "Growth":["AMD","INTC","VRT","TMO","HIMS","LNTH","FSLR","NVO","PYPL","BABA","AOS","LLY","MELI","CLS","C"]
@@ -163,18 +163,18 @@ const NAMES={
   "AMD":"AMD","INTC":"Intel","VRT":"Vertiv","TMO":"Thermo Fisher","HIMS":"Hims & Hers","LNTH":"Lantheus",
   "FSLR":"First Solar","NVO":"Novo Nordisk","PYPL":"PayPal","BABA":"Alibaba","AOS":"A.O. Smith",
   "LLY":"Eli Lilly","MELI":"Mercado Libre","CLS":"Celestica","C":"Citigroup",
-  "SPY":"S&P 500 ETF","QQQ":"Nasdaq 100 ETF","ACWI":"MSCI World ETF","EEM":"Emerging Markets ETF","GLD":"Gold ETF",
+  "SPY":"S&P 500 ETF","QQQ":"Nasdaq 100 ETF","URTH":"iShares MSCI World ETF","ACWI":"MSCI ACWI ETF","EEM":"Emerging Markets ETF","GLD":"Gold ETF",
   "BTC-USD":"Bitcoin","ETH-USD":"Ethereum","SOL-USD":"Solana","XRP-USD":"XRP","HYPE-USD":"Hyperliquid",
   "^GSPC":"S&P 500","^IXIC":"Nasdaq","^DJI":"Dow Jones","^GDAXI":"DAX","^FTSE":"FTSE 100","^N225":"Nikkei 225"
 };
 
 const TV_SYM={
   "^GSPC":"SP:SPX","^IXIC":"NASDAQ:NDX","^DJI":"DJ:DJI",
-  "^GDAXI":"XETR:DAX","^FTSE":"FTSE:UKX","^N225":"TVC:NI225",
+  "^GDAXI":"XETR:DAX","^FTSE":"FTSE:UKX","^N225":"OANDA:JP225USD",
   "BTC-USD":"COINBASE:BTCUSD","ETH-USD":"COINBASE:ETHUSD",
   "SOL-USD":"COINBASE:SOLUSD","XRP-USD":"COINBASE:XRPUSD",
   "HYPE-USD":"BINANCE:HYPEUSDT",
-  "SPY":"AMEX:SPY","QQQ":"NASDAQ:QQQ","ACWI":"NASDAQ:ACWI","EEM":"AMEX:EEM","GLD":"AMEX:GLD",
+  "SPY":"AMEX:SPY","QQQ":"NASDAQ:QQQ","URTH":"AMEX:URTH","ACWI":"NASDAQ:ACWI","EEM":"AMEX:EEM","GLD":"AMEX:GLD",
 };
 function toTVSym(s){return TV_SYM[s]||s;}
 
@@ -222,7 +222,7 @@ function mock(t){
   const b={"AAPL":210,"MSFT":445,"GOOGL":162,"AMZN":198,"META":615,"NVDA":115,"TSLA":290,
     "AMD":360,"INTC":100,"VRT":328,"TMO":455,"HIMS":35,"LNTH":73,"FSLR":170,"NVO":78,"PYPL":75,"BABA":125,"AOS":70,
     "LLY":800,"MELI":2000,"CLS":80,"C":65,
-    "SPY":565,"QQQ":480,"ACWI":115,"EEM":42,"GLD":310,
+    "SPY":565,"QQQ":480,"URTH":145,"ACWI":115,"EEM":42,"GLD":310,
     "BTC-USD":95000,"ETH-USD":1800,"SOL-USD":145,"XRP-USD":2.2,"HYPE-USD":41,
     "^GSPC":5650,"^IXIC":17800,"^DJI":41500,"^GDAXI":18200,"^FTSE":8300,"^N225":38000};
   let p=b[t]||80;const now=new Date(),data=[];
@@ -605,7 +605,8 @@ window.loadFGI=async function(){
   if(S.fgiLoading)return;
   S.fgiLoading=true;renderFGI();
   try{
-    const r=await fetch(API+"/fgi",{signal:AbortSignal.timeout(10000)});
+    const cnnUrl="https://production.dataviz.cnn.io/index/fearandgreed/graphdata/";
+    const r=await fetch("https://corsproxy.io/?"+encodeURIComponent(cnnUrl),{signal:AbortSignal.timeout(10000)});
     if(!r.ok)throw new Error("status "+r.status);
     const j=await r.json();
     if(j&&j.fear_and_greed){
