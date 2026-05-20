@@ -714,7 +714,6 @@ function renderLanding(){
             </div>
             <div style="font-size:15px;font-weight:800;color:#1e2a4a">${fmtPrice(d.last)}</div>
             <div style="font-size:11px;font-weight:600;color:${c}">${sign} ${Math.abs(d.chg).toFixed(2)}%</div>
-            ${DESC[t]?`<div style="font-size:9px;color:#94a3b8;margin-top:6px;line-height:1.35">${DESC[t]}</div>`:""}
           </div>`;
         }).join("")}
       </div>
