@@ -89,28 +89,52 @@ canvas{display:block}
   </div>
   <div id="intro-glossary" style="display:none;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:14px">
     <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">RSI (Relative Strength Index)</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Measures momentum. <b>Below 30</b> = oversold, possible buy signal. <b>Above 70</b> = overbought, possible sell signal.</div>
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">RSI · Relative Strength Index</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Measures buying and selling momentum on a scale of 0–100. <b>Below 30</b> = oversold (potential buy). <b>Above 70</b> = overbought (potential sell). The middle zone (40–60) means no strong signal.</div>
     </div>
     <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">MACD</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Shows when momentum is shifting. A <b>green histogram</b> means upward pressure is building. A cross above the signal line = bullish sign.</div>
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">MACD · Moving Avg. Convergence</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Compares two moving averages to detect momentum shifts. When the <b>MACD line crosses above</b> the signal line = bullish. When it crosses below = bearish. The histogram shows the strength of that move.</div>
     </div>
     <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Candlestick Chart</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Each candle = one time period. <b>Green</b> = price rose, <b>red</b> = price fell. The thin wicks show the high and low of that period.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Fibonacci Retracement</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Key price levels based on natural ratios (23.6%, 38.2%, 61.8%). Price often pauses or reverses here — used as support and resistance zones.</div>
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Moving Averages · SMA</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">A moving average smooths out price noise. The <b>50-day SMA</b> shows the medium-term trend, the <b>200-day SMA</b> the long-term trend. Price above both = healthy uptrend. A "death cross" (50 drops below 200) is a bearish warning.</div>
     </div>
     <div class="stat-card" style="padding:10px 12px">
       <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Bollinger Bands</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Two bands around a moving average. When price touches the <b>upper band</b> it may be overextended. <b>Lower band</b> can signal a bounce.</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Two dynamic bands (±2 standard deviations) around a 20-day average. Price near the <b>upper band</b> = possibly overextended. Near the <b>lower band</b> = potentially undervalued. When bands narrow, a big move is often coming.</div>
     </div>
     <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Line vs. Candles Tab</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Both open the full TradingView chart. Use <b>Line</b> for a clean price overview, <b>Candles</b> for detailed OHLC analysis. All indicators are pre-loaded.</div>
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Candlestick Chart</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Each candle represents one time period. The <b>body</b> shows open vs. close — green = price rose, red = fell. The thin <b>wicks</b> show the highest and lowest price in that period. Patterns like "Doji" or "Hammer" signal potential reversals.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Fibonacci Retracement</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Drawn from a recent high to low (or vice versa), the key levels are <b>23.6%, 38.2%, 50%, 61.8%</b>. Price very often pauses or bounces at these levels — used by traders to find support and resistance zones.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Support &amp; Resistance</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6"><b>Support</b> is a price level where buying tends to emerge and the price "bounces up." <b>Resistance</b> is where selling pressure appears and the price struggles to break through. Previous highs/lows often become these zones.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Volume</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">The number of shares or contracts traded in a period. <b>High volume on a breakout</b> confirms the move is real. Low volume moves are often weak or quickly reversed. Always check if a price surge is backed by strong volume.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Fear &amp; Greed Index</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Measures overall market sentiment from 0 (extreme fear) to 100 (extreme greed). <b>Extreme fear</b> can be a buying opportunity — markets are often oversold. <b>Extreme greed</b> suggests caution — corrections tend to follow.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">ETF vs. Stock</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">A <b>stock</b> is ownership in one company. An <b>ETF</b> (Exchange-Traded Fund) holds a basket of many stocks — e.g. SPY tracks the S&P 500's 500 largest companies. ETFs give instant diversification with a single purchase.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Market Cap</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Total market value of a company = <b>share price × shares outstanding</b>. Large-cap (&gt;$10B) = more stable. Mid-cap ($2–10B) = growth potential. Small-cap (&lt;$2B) = higher risk, higher reward. Indices like the S&P 500 are weighted by market cap.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Diversification</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">The principle of not putting all eggs in one basket. Spreading investments across <b>different sectors, regions and asset classes</b> (stocks, ETFs, crypto, gold) reduces risk — when one drops, others may hold or rise.</div>
     </div>
   </div>
 </div>
@@ -906,7 +930,7 @@ function updateLiveStatus(text,color,pulse){
 </div>
 
 <div style="background:#f8f9ff;border-top:1.5px solid #e2e8f8;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:10px;color:#94a3b8">
-  <span>© 2025 anna-finance.com · Alle Angaben ohne Gewähr · Keine Anlageberatung</span>
+  <span>© 2025 anna-finance.com · For informational purposes only · Not financial advice</span>
   <div style="display:flex;gap:16px">
     <button onclick="showLegal('impressum')" style="background:none;border:none;font-size:10px;color:#6366f1;cursor:pointer;font-family:monospace;font-weight:600;text-decoration:underline">Legal Notice</button>
     <button onclick="showLegal('datenschutz')" style="background:none;border:none;font-size:10px;color:#6366f1;cursor:pointer;font-family:monospace;font-weight:600;text-decoration:underline">Privacy Policy</button>
