@@ -192,7 +192,16 @@ document.getElementById("overviewTime").textContent=new Date().toLocaleTimeStrin
 // ── MATH ─────────────────────────────────────────────────────
 const sma=(d,p)=>d.map((_,i)=>i<p-1?null:d.slice(i-p+1,i+1).reduce((a,b)=>a+b,0)/p);
 const ema=(d,p)=>{const k=2/(p+1),e=[];d.forEach((v,i)=>e.push(i?v*k+e[i-1]*(1-k):v));return e;};
-function calcRSI(c,p=14){return c.map((_,i)=>{if(i<p)return null;let g=0,l=0;for(let j=i-p+1;j<=i;j++){const x=c[j]-c[j-1];x>0?g+=x:l-=x;}return 100-100/(1+g/(l||1e-6));});}
+function calcRSI(c,p=14){
+  const r=new Array(c.length).fill(null);
+  if(c.length<=p)return r;
+  let ag=0,al=0;
+  for(let i=1;i<=p;i++){const d=c[i]-c[i-1];d>0?ag+=d:al-=d;}
+  ag/=p;al/=p;
+  r[p]=100-100/(1+ag/(al||1e-6));
+  for(let i=p+1;i<c.length;i++){const d=c[i]-c[i-1];ag=(ag*(p-1)+(d>0?d:0))/p;al=(al*(p-1)+(d<0?-d:0))/p;r[i]=100-100/(1+ag/(al||1e-6));}
+  return r;
+}
 function calcMACD(c){const l=ema(c,12).map((v,i)=>v-ema(c,26)[i]);const s=[...Array(26).fill(null),...ema(l.slice(26),9)];return{line:l,sig:s,hist:l.map((v,i)=>s[i]!=null?v-s[i]:null)};}
 function calcBoll(c,p=20,m=2){const sm=sma(c,p);return c.map((_,i)=>{if(!sm[i])return{u:null,mid:null,l:null};const sl=c.slice(i-p+1,i+1),mn=sm[i],std=Math.sqrt(sl.reduce((a,v)=>a+(v-mn)**2,0)/p);return{u:mn+m*std,mid:mn,l:mn-m*std};});}
 function calcSignal(rv,mv,price,bv){
