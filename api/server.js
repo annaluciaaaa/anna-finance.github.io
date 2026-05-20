@@ -66,11 +66,18 @@ app.get("/fgi", async (req, res) => {
   try {
     const r = await fetch("https://production.dataviz.cnn.io/index/fearandgreed/graphdata/", {
       headers: {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Origin": "https://edition.cnn.com",
         "Referer": "https://edition.cnn.com/markets/fear-and-greed",
-        "Accept": "application/json",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-site",
       }
     });
+    if (!r.ok) return res.status(r.status).json({ error: `CNN returned ${r.status}` });
     const j = await r.json();
     res.json(j);
   } catch (e) {

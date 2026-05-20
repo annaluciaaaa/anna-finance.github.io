@@ -596,18 +596,13 @@ window.loadFGI=async function(){
   if(S.fgiLoading)return;
   S.fgiLoading=true;renderFGI();
   try{
-    const r=await fetch("https://api.alternative.me/fng/?limit=31",{signal:AbortSignal.timeout(8000)});
+    const r=await fetch(API+"/fgi",{signal:AbortSignal.timeout(10000)});
     if(!r.ok)throw new Error("status "+r.status);
     const j=await r.json();
-    const data=j.data||[];
-    if(data.length){
-      S.fgi={
-        score:parseInt(data[0].value),
-        rating:data[0].value_classification,
-        prev:data[1]?parseInt(data[1].value):null,
-        week:data[7]?parseInt(data[7].value):null,
-        month:data[30]?parseInt(data[30].value):null
-      };
+    if(j&&j.fear_and_greed){
+      const hist=j.fear_and_greed_historical?.data;
+      S.fgi={score:j.fear_and_greed.score,rating:j.fear_and_greed.rating,
+        prev:hist?.[1]?.y||null,week:hist?.[6]?.y||null,month:hist?.[29]?.y||null};
     }
   }catch(e){console.log("FGI error:",e.message);}
   S.fgiLoading=false;renderFGI();
