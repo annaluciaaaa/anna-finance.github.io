@@ -6,8 +6,9 @@ from datetime import datetime
 SYMBOLS = [
     "AAPL","MSFT","GOOGL","AMZN","META","NVDA","TSLA",
     "AMD","INTC","VRT","TMO","HIMS","LNTH","FSLR","NVO","PYPL","BABA","AOS",
-    "SPY","QQQ","DIA","IWM","EEM","ACWI","GLD","SLV",
-    "BTC-USD","ETH-USD","SOL-USD","XRP-USD","HYPE32196-USD",
+    "LLY","MELI","CLS","C",
+    "SPY","QQQ","URTH","EEM","ACWI","GLD",
+    "BTC-USD","ETH-USD","SOL-USD","XRP-USD","HYPE-USD",
     "^GSPC","^IXIC","^DJI","^GDAXI","^FTSE","^N225"
 ]
 

@@ -167,6 +167,47 @@ const NAMES={
   "BTC-USD":"Bitcoin","ETH-USD":"Ethereum","SOL-USD":"Solana","XRP-USD":"XRP","HYPE-USD":"Hyperliquid",
   "^GSPC":"S&P 500","^IXIC":"Nasdaq","^DJI":"Dow Jones","^GDAXI":"DAX","^FTSE":"FTSE 100","^N225":"Nikkei 225"
 };
+const DESC={
+  "^GSPC":"Tracks the 500 largest US companies — the global benchmark for equity markets.",
+  "^IXIC":"Nasdaq Composite — home to the world's biggest tech and growth companies.",
+  "^DJI":"30 iconic US blue-chip stocks, price-weighted — America's oldest market index.",
+  "^GDAXI":"Germany's top 40 companies — Europe's most closely watched equity benchmark.",
+  "^FTSE":"100 largest companies on the London Stock Exchange — the UK's main market gauge.",
+  "^N225":"Japan's 225-stock benchmark — Asia's most widely followed stock index.",
+  "SPY":"World's largest ETF with $550B+ in assets — mirrors the S&P 500 exactly.",
+  "QQQ":"Tracks the Nasdaq-100's 100 biggest non-financial stocks — heavily tech-weighted.",
+  "URTH":"iShares MSCI World ETF — broad exposure to stocks in 23 developed countries.",
+  "ACWI":"All-world in one fund: 2,900+ stocks across both developed and emerging markets.",
+  "EEM":"Emerging Markets ETF — China, India, Brazil, Taiwan and more in a single trade.",
+  "GLD":"World's most popular gold ETF — tracks the physical gold price directly.",
+  "BTC-USD":"Bitcoin — the original cryptocurrency and the leading digital store of value.",
+  "ETH-USD":"Ethereum — the dominant smart-contract platform powering DeFi and Web3.",
+  "SOL-USD":"Solana — high-throughput blockchain for DeFi and NFTs with near-zero fees.",
+  "XRP-USD":"XRP by Ripple — designed for fast, low-cost cross-border bank payments.",
+  "HYPE-USD":"Hyperliquid — native token of a high-performance on-chain derivatives exchange.",
+  "AAPL":"Apple — world's most valuable company, behind iPhone, Mac, and the App Store.",
+  "MSFT":"Microsoft — cloud leader via Azure, Office 365, and a major investor in OpenAI.",
+  "GOOGL":"Alphabet — Google's parent: search, YouTube, Android, and Google Cloud.",
+  "AMZN":"Amazon — the e-commerce giant and #1 cloud provider in the world via AWS.",
+  "META":"Meta — Facebook, Instagram, and WhatsApp; betting big on AI and augmented reality.",
+  "NVDA":"Nvidia — the AI chip king: its GPUs power virtually every major AI model worldwide.",
+  "TSLA":"Tesla — pioneer of electric vehicles and utility-scale battery energy storage.",
+  "AMD":"AMD — Nvidia's main rival in GPUs and CPUs; growing fast in AI data centers.",
+  "INTC":"Intel — the semiconductor giant rebuilding itself around its own chip foundry business.",
+  "VRT":"Vertiv — critical infrastructure for data centers: cooling, power, and monitoring.",
+  "TMO":"Thermo Fisher Scientific — life-science instruments and services for pharma research.",
+  "HIMS":"Hims & Hers — telehealth platform offering personalized care including GLP-1 treatments.",
+  "LNTH":"Lantheus — leader in precision nuclear medicine diagnostics used in cancer detection.",
+  "FSLR":"First Solar — largest US solar panel maker, focused on utility-scale projects.",
+  "NVO":"Novo Nordisk — maker of Ozempic and Wegovy, the dominant GLP-1 drug company.",
+  "PYPL":"PayPal — digital payments pioneer connecting 400M+ consumers and merchants globally.",
+  "BABA":"Alibaba — China's e-commerce and cloud giant, often compared to Amazon + AWS.",
+  "AOS":"A.O. Smith — manufacturer of water heaters and treatment products across 60+ countries.",
+  "LLY":"Eli Lilly — pharma giant behind Mounjaro and Zepbound, leading the GLP-1 revolution.",
+  "MELI":"MercadoLibre — Latin America's dominant e-commerce and fintech platform.",
+  "CLS":"Celestica — electronics manufacturing partner for AI data center infrastructure.",
+  "C":"Citigroup — global banking giant operating in 160+ countries, undergoing transformation."
+};
 
 const TV_SYM={
   "^GSPC":"SP:SPX","^IXIC":"NASDAQ:NDX","^DJI":"DJ:DJI",
@@ -673,6 +714,7 @@ function renderLanding(){
             </div>
             <div style="font-size:15px;font-weight:800;color:#1e2a4a">${fmtPrice(d.last)}</div>
             <div style="font-size:11px;font-weight:600;color:${c}">${sign} ${Math.abs(d.chg).toFixed(2)}%</div>
+            ${DESC[t]?`<div style="font-size:9px;color:#94a3b8;margin-top:6px;line-height:1.35">${DESC[t]}</div>`:""}
           </div>`;
         }).join("")}
       </div>
@@ -697,6 +739,7 @@ function renderMain(){
       <div>
         <div style="font-size:24px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;letter-spacing:-0.02em">${S.active}</div>
         ${NAMES[S.active]?`<div style="font-size:12px;color:#94a3b8;margin-top:1px">${NAMES[S.active]}</div>`:""}
+        ${DESC[S.active]?`<div style="font-size:11px;color:#64748b;margin-top:4px;max-width:400px;line-height:1.4">${DESC[S.active]}</div>`:""}
         <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px">
           <span style="font-size:22px;font-weight:800;color:#1e2a4a;font-family:'Syne',sans-serif">${fmtPrice(d.last)}</span>
           <span style="font-size:14px;font-weight:600;color:${d.chg>=0?"#10b981":"#ef4444"}">${d.chg>=0?"▲":"▼"} ${d.chg>=0?"+":""}${d.chg.toFixed(2)}%</span>
