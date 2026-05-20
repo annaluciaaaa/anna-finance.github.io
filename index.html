@@ -282,18 +282,21 @@ function mock(t){
 
 // ── API ───────────────────────────────────────────────────────
 const API="https://fulfilling-expression-production-3d1c.up.railway.app";
+const YF_FETCH={"HYPE-USD":"HYPE32196-USD"};
 
 async function fetchStock(t){
+  const sym=YF_FETCH[t]||t;
   try{
-    const r=await fetch(API+"/stock/"+encodeURIComponent(t)+"?range=5y",{signal:AbortSignal.timeout(10000)});
+    const r=await fetch(API+"/stock/"+encodeURIComponent(sym)+"?range=5y",{signal:AbortSignal.timeout(10000)});
     if(r.ok){const j=await r.json();if(j.data&&j.data.length>=10){console.log("Railway OK:",t);return j.data;}}
   }catch(e){console.log("Railway failed:",t,e.message);}
   return null;
 }
 
 async function fetchIntraday(t,range){
+  const sym=YF_FETCH[t]||t;
   try{
-    const r=await fetch(API+"/stock/"+encodeURIComponent(t)+"?range="+range,{signal:AbortSignal.timeout(8000)});
+    const r=await fetch(API+"/stock/"+encodeURIComponent(sym)+"?range="+range,{signal:AbortSignal.timeout(8000)});
     if(r.ok){const j=await r.json();if(j.data&&j.data.length>=2)return j.data;}
   }catch(e){}
   return null;
