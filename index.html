@@ -155,7 +155,7 @@ function toTVSym(s){return TV_SYM[s]||s;}
 
 // ── STATE ────────────────────────────────────────────────────
 const S={
-  active:"SPY",stocks:{},tab:"price",range:"3m",aiText:"",aiLoading:false,
+  active:null,stocks:{},tab:"price",range:"3m",aiText:"",aiLoading:false,
   custom:[],liveLoaded:{},
   collapsed:{"Indices":false,"ETFs":false,"Crypto":true,"Stocks":true,"Growth":true},
   fgi:{},fgiLoading:false,intraday:{}
@@ -619,14 +619,45 @@ function renderSidebar(){
 }
 
 // ── MAIN PANEL ────────────────────────────────────────────────
+function renderLanding(){
+  const el=document.getElementById("main");
+  const GROUP_ICONS={"Indices":"⬡","ETFs":"◈","Crypto":"◆","Stocks":"▲","Growth":"◉"};
+  el.innerHTML=`<div style="padding-bottom:24px">
+    <div style="font-size:20px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;margin-bottom:4px">My Watchlist</div>
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:20px">Click any asset to open its full chart and analysis.</div>
+    ${Object.entries(GROUPS).map(([grp,tickers])=>`
+    <div style="margin-bottom:20px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;letter-spacing:0.1em;margin-bottom:8px">${GROUP_ICONS[grp]||"·"} ${grp.toUpperCase()}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+        ${tickers.map(t=>{
+          const d=S.stocks[t],label=t.replace("^","").replace("-USD","");
+          const name=NAMES[t]||label;
+          if(!d)return`<div onclick="doSelect('${t}')" style="background:#fff;border:1.5px solid #e2e8f8;border-radius:12px;padding:12px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 4px 16px rgba(99,102,241,0.12)'" onmouseout="this.style.boxShadow='none'"><div style="font-size:13px;font-weight:700;color:#1e2a4a">${label}</div><div style="font-size:10px;color:#94a3b8">${name}</div><div style="font-size:10px;color:#cbd5e1;margin-top:8px">Loading…</div></div>`;
+          const c=d.chg>=0?"#10b981":"#ef4444",sign=d.chg>=0?"▲":"▼";
+          return`<div onclick="doSelect('${t}')" style="background:#fff;border:1.5px solid #e2e8f8;border-radius:12px;padding:12px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 4px 16px rgba(99,102,241,0.12)'" onmouseout="this.style.boxShadow='none'">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+              <div><div style="font-size:13px;font-weight:700;color:#1e2a4a">${label}</div><div style="font-size:9px;color:#94a3b8">${name}</div></div>
+              <div style="font-size:8px;padding:2px 5px;border-radius:4px;background:${d.sig.c}15;color:${d.sig.c};font-weight:700;border:1px solid ${d.sig.c}25">${d.sig.i}${d.sig.s.slice(0,4)}</div>
+            </div>
+            <div style="font-size:15px;font-weight:800;color:#1e2a4a">${fmtPrice(d.last)}</div>
+            <div style="font-size:11px;font-weight:600;color:${c}">${sign} ${Math.abs(d.chg).toFixed(2)}%</div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`).join("")}
+    <div style="font-size:9px;color:#94a3b8;margin-top:8px;font-style:italic">For informational purposes only — not financial advice.</div>
+  </div>`;
+}
+
 function renderMain(){
-  const d=S.stocks[S.active],el=document.getElementById("main");
-  if(!d){el.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:300px;color:#94a3b8;font-size:13px">Loading ${S.active}...</div>`;return;}
+  const el=document.getElementById("main");
+  if(!S.active){renderLanding();return;}
+  const d=S.stocks[S.active];
+  if(!d){el.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:300px;color:#94a3b8;font-size:13px">Loading ${S.active}…</div>`;return;}
   const sig=d.sig,lr=d.rv.filter(Boolean).at(-1),lm=d.mv.hist.filter(Boolean).at(-1);
   const lb=d.bv.filter(b=>b.u).at(-1);
   const bbpos=lb?((d.last-lb.l)/(lb.u-lb.l)*100).toFixed(0)+"%":"-";
   const rc=lr<30?"#3fb950":lr>70?"#f85149":"#ffa502";
-  const COMPARE_PICKS=["^GSPC","^IXIC","SPY","QQQ","BTC-USD","GLD","NVDA","META"].filter(t=>t!==S.active);
 
   el.innerHTML=
     // ── Title row
@@ -699,8 +730,8 @@ function renderMain(){
     </div>`:"")
     // ── Tabs
     +`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">
-      ${["price","candles","news"].map(t=>{
-        const l={"price":"Line","candles":"Candles","news":"News"}[t];
+      ${["price","candles"].map(t=>{
+        const l={"price":"Line","candles":"Candles"}[t];
         return`<button class="tab-btn${S.tab===t?" active":""}" onclick="doTab('${t}')">${l}</button>`;
       }).join("")}
     </div>
@@ -724,14 +755,11 @@ function renderMain(){
     })()
     // ── Disclaimer
     +`<div style="background:#fef9ec;border:1.5px solid #fde68a;border-radius:10px;padding:8px 14px;margin-bottom:10px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:14px">⚠️</span>
-      <span style="font-size:10px;color:#92400e;line-height:1.5"><b>Kein Anlageberatung.</b> Alle Inhalte dienen ausschließlich zu Informationszwecken. Bitte führe eigene Recherchen durch, bevor du Investitionsentscheidungen triffst.</span>
+      <span style="font-size:13px">⚠️</span>
+      <span style="font-size:10px;color:#92400e;line-height:1.5"><b>For informational purposes only — not financial advice.</b> Please do your own research before making any investment decisions.</span>
     </div>`
     // ── Chart area
-    +(S.tab==="news"?
-      `<div class="stat-card" style="margin-bottom:14px"><div style="font-size:9px;color:#94a3b8;font-weight:700;letter-spacing:0.1em;margin-bottom:10px">⬡ LATEST NEWS — ${NAMES[S.active]||S.active}</div><div id="news-container"><div style="color:#94a3b8;font-size:12px">Loading...</div></div></div>`
-      :`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><div id="tv_widget" style="height:420px"></div></div>`
-    )
+    +`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><div id="tv_widget" style="height:420px"></div></div>`
     // ── AI Analysis
     +`<div class="stat-card" style="margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -756,10 +784,7 @@ window.doSelect=async function(t){
     renderSidebar();renderMain();renderOverview();
   }
 };
-window.doTab=function(t){
-  S.tab=t;renderMain();
-  if(t==="news")setTimeout(()=>loadNews(S.active),50);
-};
+window.doTab=function(t){S.tab=t;renderMain();};
 window.doToggle=function(grp){S.collapsed[grp]=!S.collapsed[grp];renderSidebar();};
 window.doFib=function(){S.showFib=!S.showFib;renderMain();};
 window.doRange=async function(r){
@@ -850,21 +875,25 @@ function updateLiveStatus(text,color,pulse){
     return false;
   }
 
-  const ok=await loadLive(S.active);
-  if(ok){updateLiveStatus("Live","#10b981",true);}
-  else{
-    updateLiveStatus("Retrying...","#f59e0b",true);
-    await new Promise(r=>setTimeout(r,8000));
-    const ok2=await loadLive(S.active);
-    updateLiveStatus(ok2?"Live":"Demo data",ok2?"#10b981":"#ef4444",ok2);
+  // Load overview tickers first so landing page has data quickly
+  let anyLive=false;
+  for(const t of OVERVIEW_TICKERS){
+    const ok=await loadLive(t);
+    if(ok)anyLive=true;
+    renderMain();
   }
+  updateLiveStatus(anyLive?"Live":"Demo data",anyLive?"#10b981":"#ef4444",anyLive);
 
-  for(const t of ALL.filter(x=>x!==S.active)){await new Promise(r=>setTimeout(r,200));loadLive(t);}
+  // Load remaining tickers in background
+  for(const t of ALL.filter(x=>!OVERVIEW_TICKERS.includes(x))){await new Promise(r=>setTimeout(r,200));loadLive(t);}
 
   setInterval(async function(){
     S.intraday={};
-    const fresh=await fetchStock(S.active);
-    if(fresh){S.stocks[S.active]=processStock(fresh);S.liveLoaded[S.active]=true;renderMain();renderSidebar();renderOverview();}
+    if(S.active){
+      const fresh=await fetchStock(S.active);
+      if(fresh){S.stocks[S.active]=processStock(fresh);S.liveLoaded[S.active]=true;renderMain();renderSidebar();}
+    }
+    renderOverview();
     updateLiveStatus("Live — "+new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}),"#10b981",true);
   },5*60*1000);
 })();
@@ -889,25 +918,24 @@ function updateLiveStatus(text,color,pulse){
 <script>
 const LEGAL={
   impressum:`<h2 style="font-size:18px;font-weight:800;color:#1e2a4a;margin:0 0 16px;font-family:'Syne',sans-serif">Impressum</h2>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 10px">Angaben gemäß § 5 TMG (Deutschland) / § 25 MedienG (Österreich):</p>
-<p style="font-size:13px;color:#1e2a4a;line-height:2;margin:0 0 14px">
-<b>[Vorname Nachname]</b><br>
-[Straße und Hausnummer]<br>
-[PLZ Ort]<br>
-[Deutschland / Österreich]
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 10px">Angaben gemäß § 25 MedienG und § 5 ECG (Österreich):</p>
+<p style="font-size:13px;color:#1e2a4a;line-height:2.1;margin:0 0 14px">
+<b>Anna-Lucia Sams</b><br>
+Rettenpacherstraße 6<br>
+5020 Salzburg<br>
+Österreich
 </p>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 10px"><b>Kontakt:</b><br>E-Mail: [deine@email.com]</p>
-<p style="font-size:11px;color:#94a3b8;line-height:1.7;margin:0">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV: [Vorname Nachname], Anschrift wie oben.<br>
-Diese Website dient rein zu Informationszwecken und stellt keine Anlageberatung dar.</p>`,
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 10px"><b>Kontakt:</b><br>E-Mail: anna.sams98@gmail.com</p>
+<p style="font-size:11px;color:#94a3b8;line-height:1.7;margin:0">Diese Website dient rein zu Informationszwecken und stellt keine Anlage- oder Finanzberatung dar. Für den Inhalt verantwortlich: Anna-Lucia Sams, Anschrift wie oben.</p>`,
 
   datenschutz:`<h2 style="font-size:18px;font-weight:800;color:#1e2a4a;margin:0 0 16px;font-family:'Syne',sans-serif">Datenschutzerklärung</h2>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>1. Verantwortliche Stelle</b><br>[Vorname Nachname], [Adresse] — Kontakt: [deine@email.com]</p>
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>1. Verantwortliche Stelle</b><br>Anna-Lucia Sams, Rettenpacherstraße 6, 5020 Salzburg — E-Mail: anna.sams98@gmail.com</p>
 <p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>2. Erhobene Daten</b><br>Diese Website erhebt selbst keine personenbezogenen Daten. Es werden keine Cookies von uns gesetzt, kein Login, keine Formulare mit personenbezogenen Daten.</p>
 <p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>3. Hosting</b><br>Diese Website wird über GitHub Pages (GitHub Inc., San Francisco, USA) gehostet. Beim Aufruf der Seite werden von GitHub ggf. Server-Logfiles gespeichert (IP-Adresse, Browser, Zeitstempel). Datenschutzerklärung GitHub: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" style="color:#6366f1">github.com/privacy</a></p>
 <p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>4. Drittanbieter-Dienste</b><br>
 · <b>TradingView:</b> Charts werden als eingebettetes Widget von TradingView geladen. TradingView kann dabei eigene Cookies setzen. Mehr: <a href="https://www.tradingview.com/privacy-policy/" target="_blank" style="color:#6366f1">tradingview.com/privacy-policy</a><br>
-· <b>Yahoo Finance / Railway API:</b> Kurs- und Nachrichtendaten werden über einen eigenen Server (Railway.app) von Yahoo Finance abgerufen. Dabei werden keine Nutzerdaten weitergegeben.</p>
-<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>5. Betroffenenrechte</b><br>Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner Daten sowie das Recht auf Datenübertragbarkeit. Da wir keine Daten erheben, gibt es hier nichts zu berichtigen oder zu löschen. Bei Fragen: [deine@email.com]</p>
+· <b>Yahoo Finance / Railway API:</b> Kursdaten werden über einen eigenen Server (Railway.app) von Yahoo Finance abgerufen. Es werden dabei keine Nutzerdaten weitergegeben.</p>
+<p style="font-size:12px;color:#475569;line-height:1.8;margin:0 0 12px"><b>5. Betroffenenrechte</b><br>Du hast gemäß DSGVO das Recht auf Auskunft, Berichtigung und Löschung. Da keine personenbezogenen Daten erhoben werden, gibt es hier nichts zu berichtigen oder zu löschen. Bei Fragen: anna.sams98@gmail.com</p>
 <p style="font-size:11px;color:#94a3b8;line-height:1.7;margin:0">Stand: Mai 2025 · Diese Datenschutzerklärung kann jederzeit aktualisiert werden.</p>`
 };
 function showLegal(key){
