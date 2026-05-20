@@ -61,5 +61,22 @@ app.get("/news/:symbol", async (req, res) => {
   }
 });
 
+// Fear & Greed Index (CNN)
+app.get("/fgi", async (req, res) => {
+  try {
+    const r = await fetch("https://production.dataviz.cnn.io/index/fearandgreed/graphdata/", {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+        "Referer": "https://edition.cnn.com/markets/fear-and-greed",
+        "Accept": "application/json",
+      }
+    });
+    const j = await r.json();
+    res.json(j);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.get("/", (req, res) => res.json({ status: "ok" }));
 app.listen(PORT, () => console.log(`Running on port ${PORT}`));
