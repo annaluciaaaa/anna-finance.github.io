@@ -78,6 +78,43 @@ canvas{display:block}
   <div id="fgi-widget"></div>
 </div>
 
+<!-- INTRO SECTION -->
+<div id="intro-section" style="background:#fff;border-bottom:1.5px solid #e2e8f8;padding:18px 20px">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div style="flex:1;min-width:260px">
+      <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;letter-spacing:-0.01em;margin-bottom:6px">My Finance Dashboard</div>
+      <p style="font-size:12px;color:#475569;line-height:1.8;margin:0">Finance doesn't have to be complicated. Knowing where markets are heading and how to read a few key signals can make a real difference in how you manage your money. This dashboard shows my personal watchlist — the indices, ETFs, stocks, and crypto I actively follow and hold.</p>
+    </div>
+    <button onclick="(()=>{const b=document.getElementById('intro-glossary');const btn=document.getElementById('intro-toggle');const open=b.style.display!=='none';b.style.display=open?'none':'grid';btn.textContent=open?'How to read charts ▾':'Close ▴'})()" id="intro-toggle" style="white-space:nowrap;padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f8;background:#f8f9ff;color:#6366f1;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:0.05em;flex-shrink:0">How to read charts ▾</button>
+  </div>
+  <div id="intro-glossary" style="display:none;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:14px">
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">RSI (Relative Strength Index)</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Measures momentum. <b>Below 30</b> = oversold, possible buy signal. <b>Above 70</b> = overbought, possible sell signal.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">MACD</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Shows when momentum is shifting. A <b>green histogram</b> means upward pressure is building. A cross above the signal line = bullish sign.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Candlestick Chart</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Each candle = one time period. <b>Green</b> = price rose, <b>red</b> = price fell. The thin wicks show the high and low of that period.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Fibonacci Retracement</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Key price levels based on natural ratios (23.6%, 38.2%, 61.8%). Price often pauses or reverses here — used as support and resistance zones.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Bollinger Bands</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Two bands around a moving average. When price touches the <b>upper band</b> it may be overextended. <b>Lower band</b> can signal a bounce.</div>
+    </div>
+    <div class="stat-card" style="padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Line vs. Candles Tab</div>
+      <div style="font-size:11px;color:#475569;line-height:1.6">Both open the full TradingView chart. Use <b>Line</b> for a clean price overview, <b>Candles</b> for detailed OHLC analysis. All indicators are pre-loaded.</div>
+    </div>
+  </div>
+</div>
+
 <!-- MAIN APP -->
 <div style="display:flex">
   <div class="sidebar" id="sidebar"></div>
@@ -92,7 +129,7 @@ const GROUPS={
   "Indices":["^GSPC","^IXIC","^DJI","^GDAXI","^FTSE","^N225"],
   "ETFs":["SPY","QQQ","DIA","IWM","EEM","ACWI","GLD","SLV"],
   "Crypto":["BTC-USD","ETH-USD","SOL-USD","XRP-USD","HYPE32196-USD"],
-  "Mag 7":["AAPL","MSFT","GOOGL","AMZN","META","NVDA","TSLA"],
+  "Stocks":["AAPL","MSFT","GOOGL","AMZN","META","NVDA","TSLA"],
   "Growth":["AMD","INTC","VRT","TMO","HIMS","LNTH","FSLR","NVO","PYPL","BABA","AOS"]
 };
 const ALL=Object.values(GROUPS).flat();
@@ -120,7 +157,7 @@ function toTVSym(s){return TV_SYM[s]||s;}
 const S={
   active:"AAPL",stocks:{},tab:"price",range:"3m",aiText:"",aiLoading:false,
   custom:[],liveLoaded:{},
-  collapsed:{"Indices":false,"ETFs":true,"Crypto":false,"Mag 7":false,"Growth":true},
+  collapsed:{"Indices":false,"ETFs":true,"Crypto":true,"Stocks":true,"Growth":true},
   compareWith:"",showFib:false,fgi:{},fgiLoading:false,intraday:{}
 };
 
@@ -319,7 +356,8 @@ function initTVWidget(symbol,style){
   const container=document.getElementById("tv_widget");if(!container)return;
   const sym=toTVSym(symbol);
   style=style||"1";
-  const interval=S.range==="1d"?"5":S.range==="1w"?"60":S.range==="1m"?"D":S.range==="3m"?"D":S.range==="6m"?"W":"W";
+  const interval={"1d":"5","1w":"60","1m":"D","3m":"D","6m":"D","1y":"W","all":"W"}[S.range]||"D";
+  const range={"1d":"1D","1w":"5D","1m":"1M","3m":"3M","6m":"6M","1y":"12M","all":"ALL"}[S.range]||"3M";
   function create(){
     container.innerHTML="";
     new window.TradingView.widget({
@@ -327,6 +365,7 @@ function initTVWidget(symbol,style){
       autosize:true,
       symbol:sym,
       interval,
+      range,
       timezone:"Etc/UTC",
       theme:"light",
       style,
