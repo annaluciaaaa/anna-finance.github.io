@@ -952,6 +952,7 @@ function updateLiveStatus(text,color,pulse){
     if(data){
       S.stocks[t]=processStock(data);S.liveLoaded[t]=true;
       if(S.active===t)renderMain();
+      else if(S.active===null)renderLanding();
       if(OVERVIEW_TICKERS.includes(t))renderOverview();
       renderSidebar();return true;
     }
