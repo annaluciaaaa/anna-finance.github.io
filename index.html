@@ -150,7 +150,7 @@ canvas{display:block}
 <script>
 // ── CONSTANTS ────────────────────────────────────────────────
 const GROUPS={
-  "Indices":["^GSPC","^IXIC","^DJI","^GDAXI","^FTSE","^N225"],
+  "Indices":["^GSPC","^IXIC","^DJI","^GDAXI","^FTSE","^N225","^HSI","^FCHI","^NSEI"],
   "ETFs":["SPY","QQQ","URTH","ACWI","EEM","GLD"],
   "Crypto":["BTC-USD","ETH-USD","SOL-USD","XRP-USD","HYPE-USD"],
   "Magnificent 7":["AAPL","MSFT","GOOGL","AMZN","META","NVDA","TSLA"],
@@ -168,7 +168,8 @@ const NAMES={
   "LLY":"Eli Lilly","MELI":"Mercado Libre","CLS":"Celestica","C":"Citigroup",
   "SPY":"S&P 500 ETF","QQQ":"Nasdaq 100 ETF","URTH":"iShares MSCI World ETF","ACWI":"MSCI ACWI ETF","EEM":"Emerging Markets ETF","GLD":"Gold ETF",
   "BTC-USD":"Bitcoin","ETH-USD":"Ethereum","SOL-USD":"Solana","XRP-USD":"XRP","HYPE-USD":"Hyperliquid",
-  "^GSPC":"S&P 500","^IXIC":"Nasdaq","^DJI":"Dow Jones","^GDAXI":"DAX","^FTSE":"FTSE 100","^N225":"Nikkei 225"
+  "^GSPC":"S&P 500","^IXIC":"Nasdaq","^DJI":"Dow Jones","^GDAXI":"DAX","^FTSE":"FTSE 100","^N225":"Nikkei 225",
+  "^HSI":"Hang Seng","^FCHI":"CAC 40","^NSEI":"Nifty 50"
 };
 const DESC={
   "^GSPC":"Tracks the 500 largest US companies — the global benchmark for equity markets.",
@@ -177,6 +178,9 @@ const DESC={
   "^GDAXI":"Germany's top 40 companies — Europe's most closely watched equity benchmark.",
   "^FTSE":"100 largest companies on the London Stock Exchange — the UK's main market gauge.",
   "^N225":"Japan's 225-stock benchmark — Asia's most widely followed stock index.",
+  "^HSI":"Hang Seng — Hong Kong's benchmark and the main proxy for Chinese equities.",
+  "^FCHI":"CAC 40 — France's 40 largest companies, Europe's third most important index.",
+  "^NSEI":"Nifty 50 — India's top 50 companies, one of the world's fastest-growing markets.",
   "SPY":"World's largest ETF with $550B+ in assets — mirrors the S&P 500 exactly.",
   "QQQ":"Tracks the Nasdaq-100's 100 biggest non-financial stocks — heavily tech-weighted.",
   "URTH":"iShares MSCI World ETF — broad exposure to stocks in 23 developed countries.",
@@ -214,7 +218,8 @@ const DESC={
 
 const TV_SYM={
   "^GSPC":"FOREXCOM:SPXUSD","^IXIC":"FOREXCOM:NSXUSD","^DJI":"FOREXCOM:DJI",
-  "^GDAXI":"INDEX:DEU40","^FTSE":"FOREXCOM:UKXGBP","^N225":"INDEX:NKY",
+  "^GDAXI":"FOREXCOM:GER40","^FTSE":"FOREXCOM:UKXGBP","^N225":"FOREXCOM:JPN225",
+  "^HSI":"FOREXCOM:HK50","^FCHI":"FOREXCOM:FRA40","^NSEI":"FOREXCOM:IND50",
   "BTC-USD":"COINBASE:BTCUSD","ETH-USD":"COINBASE:ETHUSD",
   "SOL-USD":"COINBASE:SOLUSD","XRP-USD":"COINBASE:XRPUSD",
   "HYPE-USD":"BINANCE:HYPEUSDT",
@@ -268,7 +273,8 @@ function mock(t){
     "LLY":800,"MELI":2000,"CLS":80,"C":65,
     "SPY":565,"QQQ":480,"URTH":145,"ACWI":115,"EEM":42,"GLD":310,
     "BTC-USD":95000,"ETH-USD":1800,"SOL-USD":145,"XRP-USD":2.2,"HYPE-USD":41,
-    "^GSPC":5650,"^IXIC":17800,"^DJI":41500,"^GDAXI":18200,"^FTSE":8300,"^N225":38000};
+    "^GSPC":5650,"^IXIC":17800,"^DJI":41500,"^GDAXI":18200,"^FTSE":8300,"^N225":38000,
+    "^HSI":17000,"^FCHI":7500,"^NSEI":22500};
   let p=b[t]||80;const now=new Date(),data=[];
   for(let i=364;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);p*=1+(Math.random()-.48)*.018;const c=+p.toFixed(2);const o=+(p*(1+(Math.random()-.5)*.006)).toFixed(2);const h=+(Math.max(o,c)*(1+Math.random()*.009)).toFixed(2);const l=+(Math.min(o,c)*(1-Math.random()*.009)).toFixed(2);data.push({date:d.toISOString().slice(0,10),o,h,l,c,v:Math.floor(Math.random()*5e6+1e6)});}
   return data;

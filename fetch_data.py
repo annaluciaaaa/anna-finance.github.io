@@ -9,7 +9,7 @@ SYMBOLS = [
     "LLY","MELI","CLS","C",
     "SPY","QQQ","URTH","EEM","ACWI","GLD",
     "BTC-USD","ETH-USD","SOL-USD","XRP-USD","HYPE-USD",
-    "^GSPC","^IXIC","^DJI","^GDAXI","^FTSE","^N225"
+    "^GSPC","^IXIC","^DJI","^GDAXI","^FTSE","^N225","^HSI","^FCHI","^NSEI"
 ]
 
 os.makedirs("data", exist_ok=True)
