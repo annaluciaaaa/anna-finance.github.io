@@ -290,31 +290,9 @@ function drawChart(canvasId,datasets,opts){
 // ── DRAW CURRENT (FIXED 200 SMA + FIBONACCI) ─────────────────
 function drawCurrent(){
   const d=S.stocks[S.active];if(!d)return;
-  const rawData=(S.range==="1d"&&S.intraday[S.active])?S.intraday[S.active]:d.raw;
-  const filtered=filterByRange(rawData,S.range);
-  const closes=filtered.map(x=>x.c),labels=filtered.map(r=>r.date);
-  const rv2=calcRSI(closes),mv2=calcMACD(closes),bv2=calcBoll(closes);
-
-  if(S.tab==="price"){
-    initTVWidget(S.active,"3");
-  }else if(S.tab==="rsi"){
-    drawChart("chart",[{data:rv2,labels,color:"#ffa502",width:2}],{yMin:0,yMax:100,refs:[{v:70,color:"#f8514950"},{v:30,color:"#3fb95050"},{v:50,color:"#30363d30"}],pct:true,h:190});
-  }else if(S.tab==="vol"){
-    const filteredVols=filtered.map(x=>x.v||0);
-    const volColors=closes.map((c,i)=>i>0&&c>=closes[i-1]?"#3fb95060":"#f8514960");
-    const avgVol=d.vols.filter(v=>v>0).reduce((a,b)=>a+b,0)/(d.vols.filter(v=>v>0).length||1);
-    drawChart("chart",[{data:filteredVols,labels,type:"bar",colors:volColors}],{volAvg:avgVol,chartRange:S.range,h:190});
-  }else if(S.tab==="candles"){
-    initTVWidget(S.active);
-  }else if(S.tab==="compare"){
-    setTimeout(drawCompareChart,50);
-  }else if(S.tab!=="news"){
-    drawChart("chart",[
-      {data:mv2.hist,labels,type:"bar"},
-      {data:mv2.line,labels,color:"#ffa502",width:1.5},
-      {data:mv2.sig,labels,color:"#f85149",width:1.5},
-    ],{h:190});
-  }
+  if(S.tab==="price"){initTVWidget(S.active,"3");}
+  else if(S.tab==="candles"){initTVWidget(S.active,"1");}
+  else if(S.tab==="compare"){setTimeout(drawCompareChart,50);}
 }
 
 // ── COMPARE CHART ─────────────────────────────────────────────
@@ -336,6 +314,7 @@ function drawCompareChart(){
 }
 
 // ── TRADINGVIEW WIDGET ────────────────────────────────────────
+const TV_STUDIES=["BB@tv-basicstudies","RSI@tv-basicstudies","MACD@tv-basicstudies"];
 function initTVWidget(symbol,style){
   const container=document.getElementById("tv_widget");if(!container)return;
   const sym=toTVSym(symbol);
@@ -358,6 +337,7 @@ function initTVWidget(symbol,style){
       hide_legend:false,
       save_image:false,
       allow_symbol_change:true,
+      studies:TV_STUDIES,
     });
   }
   if(window.TradingView){create();}
@@ -698,13 +678,12 @@ function renderMain(){
         }).join("")}
       </div>
     </div>`:"")
-    // ── Tabs + Range + Fib button
+    // ── Tabs
     +`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">
-      ${["price","candles","rsi","macd","vol","compare","news"].map(t=>{
-        const l={"price":"Line+BB","candles":"Candles","rsi":"RSI","macd":"MACD","vol":"Volume","compare":"Compare","news":"News"}[t];
+      ${["price","candles","compare","news"].map(t=>{
+        const l={"price":"Line","candles":"Candles","compare":"Compare","news":"News"}[t];
         return`<button class="tab-btn${S.tab===t?" active":""}" onclick="doTab('${t}')">${l}</button>`;
       }).join("")}
-      <button onclick="doFib()" style="padding:5px 11px;border-radius:5px;font-size:10px;cursor:pointer;font-family:monospace;font-weight:600;border:1.5px solid ${S.showFib?"#f59e0b":"#e2e8f8"};background:${S.showFib?"linear-gradient(135deg,#f59e0b,#f97316)":"#fff"};color:${S.showFib?"#fff":"#64748b"}">⬡ Fib</button>
     </div>
     <div style="display:flex;gap:4px;margin-bottom:10px">
       ${["1d","1w","1m","3m","6m","1y","all"].map(r=>{
@@ -767,10 +746,8 @@ window.doSelect=async function(t){
     renderSidebar();renderMain();renderOverview();
   }
 };
-window.doTab=async function(t){
+window.doTab=function(t){
   S.tab=t;renderMain();
-  if(t==="price"){setTimeout(()=>initTVWidget(S.active,"3"),50);}
-  if(t==="candles"){setTimeout(()=>initTVWidget(S.active,"1"),50);}
   if(t==="compare")setTimeout(drawCompareChart,100);
   if(t==="news")setTimeout(()=>loadNews(S.active),50);
 };
