@@ -130,7 +130,7 @@ const GROUPS={
   "ETFs":["SPY","QQQ","ACWI","EEM","GLD"],
   "Crypto":["BTC-USD","ETH-USD","SOL-USD","XRP-USD","HYPE-USD"],
   "Stocks":["AAPL","MSFT","GOOGL","AMZN","META","NVDA","TSLA"],
-  "Growth":["AMD","INTC","VRT","TMO","HIMS","LNTH","FSLR","NVO","PYPL","BABA","AOS"]
+  "Growth":["AMD","INTC","VRT","TMO","HIMS","LNTH","FSLR","NVO","PYPL","BABA","AOS","LLY","MELI","CLS","C"]
 };
 const ALL=Object.values(GROUPS).flat();
 const OVERVIEW_TICKERS=["^DJI","^GSPC","^IXIC","BTC-USD","GLD","SPY"];
@@ -138,6 +138,7 @@ const NAMES={
   "AAPL":"Apple","MSFT":"Microsoft","GOOGL":"Alphabet","AMZN":"Amazon","META":"Meta","NVDA":"Nvidia","TSLA":"Tesla",
   "AMD":"AMD","INTC":"Intel","VRT":"Vertiv","TMO":"Thermo Fisher","HIMS":"Hims & Hers","LNTH":"Lantheus",
   "FSLR":"First Solar","NVO":"Novo Nordisk","PYPL":"PayPal","BABA":"Alibaba","AOS":"A.O. Smith",
+  "LLY":"Eli Lilly","MELI":"Mercado Libre","CLS":"Celestica","C":"Citigroup",
   "SPY":"S&P 500 ETF","QQQ":"Nasdaq 100 ETF","ACWI":"MSCI World ETF","EEM":"Emerging Markets ETF","GLD":"Gold ETF",
   "BTC-USD":"Bitcoin","ETH-USD":"Ethereum","SOL-USD":"Solana","XRP-USD":"XRP","HYPE-USD":"Hyperliquid",
   "^GSPC":"S&P 500","^IXIC":"Nasdaq","^DJI":"Dow Jones","^GDAXI":"DAX","^FTSE":"FTSE 100","^N225":"Nikkei 225"
@@ -187,6 +188,7 @@ function fmtVol(v){if(!v)return"-";if(v>1e9)return(v/1e9).toFixed(2)+"B";if(v>1e
 function mock(t){
   const b={"AAPL":210,"MSFT":445,"GOOGL":162,"AMZN":198,"META":615,"NVDA":115,"TSLA":290,
     "AMD":360,"INTC":100,"VRT":328,"TMO":455,"HIMS":35,"LNTH":73,"FSLR":170,"NVO":78,"PYPL":75,"BABA":125,"AOS":70,
+    "LLY":800,"MELI":2000,"CLS":80,"C":65,
     "SPY":565,"QQQ":480,"ACWI":115,"EEM":42,"GLD":310,
     "BTC-USD":95000,"ETH-USD":1800,"SOL-USD":145,"XRP-USD":2.2,"HYPE-USD":41,
     "^GSPC":5650,"^IXIC":17800,"^DJI":41500,"^GDAXI":18200,"^FTSE":8300,"^N225":38000};
