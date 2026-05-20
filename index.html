@@ -85,7 +85,7 @@ canvas{display:block}
       <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;letter-spacing:-0.01em;margin-bottom:6px">My Finance Dashboard</div>
       <p style="font-size:12px;color:#475569;line-height:1.8;margin:0">Finance doesn't have to be complicated. Knowing where markets are heading and how to read a few key signals can make a real difference in how you manage your money. This dashboard shows my personal watchlist — the indices, ETFs, stocks, and crypto I actively follow and hold.</p>
     </div>
-    <button onclick="(()=>{const b=document.getElementById('intro-glossary');const btn=document.getElementById('intro-toggle');const open=b.style.display!=='none';b.style.display=open?'none':'grid';btn.textContent=open?'How to read charts ▾':'Close ▴'})()" id="intro-toggle" style="white-space:nowrap;padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f8;background:#f8f9ff;color:#6366f1;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:0.05em;flex-shrink:0">How to read charts ▾</button>
+    <button onclick="(()=>{const b=document.getElementById('intro-glossary');const btn=document.getElementById('intro-toggle');const open=b.style.display!=='none';b.style.display=open?'none':'grid';btn.textContent=open?'How to read charts — in a nutshell ▾':'Close ▴'})()" id="intro-toggle" style="white-space:nowrap;padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f8;background:#f8f9ff;color:#6366f1;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:0.05em;flex-shrink:0">How to read charts — in a nutshell ▾</button>
   </div>
   <div id="intro-glossary" style="display:none;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:14px">
     <div class="stat-card" style="padding:10px 12px">
@@ -596,13 +596,18 @@ window.loadFGI=async function(){
   if(S.fgiLoading)return;
   S.fgiLoading=true;renderFGI();
   try{
-    const r=await fetch(API+"/fgi",{signal:AbortSignal.timeout(10000)});
+    const r=await fetch("https://api.alternative.me/fng/?limit=31",{signal:AbortSignal.timeout(8000)});
     if(!r.ok)throw new Error("status "+r.status);
     const j=await r.json();
-    if(j&&j.fear_and_greed){
-      const hist=j.fear_and_greed_historical?.data;
-      S.fgi={score:j.fear_and_greed.score,rating:j.fear_and_greed.rating,
-        prev:hist?.[1]?.y||null,week:hist?.[6]?.y||null,month:hist?.[29]?.y||null};
+    const data=j.data||[];
+    if(data.length){
+      S.fgi={
+        score:parseInt(data[0].value),
+        rating:data[0].value_classification,
+        prev:data[1]?parseInt(data[1].value):null,
+        week:data[7]?parseInt(data[7].value):null,
+        month:data[30]?parseInt(data[30].value):null
+      };
     }
   }catch(e){console.log("FGI error:",e.message);}
   S.fgiLoading=false;renderFGI();
