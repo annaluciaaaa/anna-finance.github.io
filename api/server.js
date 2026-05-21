@@ -35,6 +35,11 @@ app.get("/stock/:symbol", async (req, res) => {
       c: q.close?.[i] ?? null,
       v: q.volume?.[i] || 0,
     })).filter(d => d.c != null && isFinite(d.c));
+    // Patch last close with the live market price so displayed price matches TradingView
+    const livePrice = result.meta?.regularMarketPrice;
+    if (livePrice && isFinite(livePrice) && data.length > 0) {
+      data[data.length - 1].c = livePrice;
+    }
     res.json({ data });
   } catch (e) {
     res.status(500).json({ error: e.message });
