@@ -157,7 +157,7 @@ const GROUPS={
   "Semiconductors":["AMD","INTC","CLS","VRT"],
   "Health":["LLY","NVO","TMO","HIMS","LNTH"],
   "Finance":["C","PYPL","MELI","BABA"],
-  "Energy & Industrials":["FSLR","AOS"]
+  "Industrials":["FSLR","AOS"]
 };
 const ALL=Object.values(GROUPS).flat();
 const OVERVIEW_TICKERS=["^DJI","^GSPC","^IXIC","BTC-USD","GLD","SPY"];
@@ -231,7 +231,7 @@ function toTVSym(s){return TV_SYM[s]||s;}
 const S={
   active:null,stocks:{},tab:"price",range:"3m",aiText:"",aiLoading:false,
   custom:[],liveLoaded:{},
-  collapsed:{"Indices":false,"ETFs":false,"Crypto":true,"Magnificent 7":false,"Semiconductors":true,"Health":true,"Finance":true,"Energy & Industrials":true},
+  collapsed:{"Indices":false,"ETFs":false,"Crypto":true,"Magnificent 7":false,"Semiconductors":true,"Health":true,"Finance":true,"Industrials":true},
   fgi:{},fgiLoading:false,intraday:{}
 };
 
@@ -706,7 +706,7 @@ function renderSidebar(){
 // ── MAIN PANEL ────────────────────────────────────────────────
 function renderLanding(){
   const el=document.getElementById("main");
-  const GROUP_ICONS={"Indices":"⬡","ETFs":"◈","Crypto":"◆","Magnificent 7":"★","Semiconductors":"◈","Health":"◉","Finance":"◆","Energy & Industrials":"▲"};
+  const GROUP_ICONS={"Indices":"⬡","ETFs":"◈","Crypto":"◆","Magnificent 7":"★","Semiconductors":"◈","Health":"◉","Finance":"◆","Industrials":"▲"};
   el.innerHTML=`<div style="padding-bottom:24px">
     <div style="font-size:20px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;margin-bottom:4px">My Watchlist</div>
     <div style="font-size:11px;color:#94a3b8;margin-bottom:20px">Click any asset to open its full chart and analysis.</div>
