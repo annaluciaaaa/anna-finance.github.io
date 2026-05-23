@@ -825,13 +825,14 @@ function renderMain(){
     </div>`
     // ── Chart area
     +`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><div id="tv_widget" style="height:420px"></div></div>`
-    // ── AI Analysis
+    // ── Technical Summary
     +`<div class="stat-card" style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div style="font-size:10px;color:#6366f1;letter-spacing:0.1em;font-weight:700">⬡ AI ANALYSIS</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div style="font-size:10px;color:#6366f1;letter-spacing:0.1em;font-weight:700">⬡ TECHNICAL SUMMARY</div>
         <button onclick="doAI()" ${S.aiLoading?"disabled":""} style="background:${S.aiLoading?"#e2e8f8":"linear-gradient(135deg,#6366f1,#8b5cf6)"};border:none;border-radius:6px;padding:5px 12px;font-size:10px;color:${S.aiLoading?"#94a3b8":"#fff"};font-weight:600;cursor:pointer">${S.aiLoading?"Analyzing...":"Analyze"}</button>
       </div>
-      <div style="font-size:12px;color:${S.aiText?"#475569":"#94a3b8"};line-height:1.8;font-family:'Syne',sans-serif;font-style:${S.aiText?"normal":"italic"}">${S.aiText||"Click Analyze for an AI assessment of current technical indicators."}</div>
+      <div style="font-size:9px;color:#94a3b8;margin-bottom:8px;font-style:italic">Based on Yahoo Finance data · For exact indicator values use the TradingView chart below</div>
+      <div style="font-size:12px;color:${S.aiText?"#475569":"#94a3b8"};line-height:1.8;font-style:${S.aiText?"normal":"italic"}">${S.aiText||"Click Analyze for a summary of trend, moving averages and performance."}</div>
     </div>
     <div style="font-size:9px;color:#94a3b8;text-align:center;font-style:italic;padding-bottom:24px">For informational purposes only — not financial advice. Do your own research.</div>`;
 
