@@ -739,10 +739,7 @@ function renderMain(){
   if(!S.active){renderLanding();return;}
   const d=S.stocks[S.active];
   if(!d){el.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:300px;color:#94a3b8;font-size:13px">Loading ${S.active}…</div>`;return;}
-  const sig=d.sig,lr=d.rv.filter(Boolean).at(-1),lm=d.mv.hist.filter(Boolean).at(-1);
-  const lb=d.bv.filter(b=>b.u).at(-1);
-  const bbpos=lb?((d.last-lb.l)/(lb.u-lb.l)*100).toFixed(0)+"%":"-";
-  const rc=lr<30?"#3fb950":lr>70?"#f85149":"#ffa502";
+  const sig=d.sig;
 
   el.innerHTML=
     // ── Title row
@@ -764,24 +761,6 @@ function renderMain(){
     </div>`
     // ── Signal tags
     +`<div style="margin-bottom:12px">${sig.rs.map(r=>`<span class="signal-tag">${r}</span>`).join("")}</div>`
-    // ── 3 stat cards
-    +`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px">
-      <div class="stat-card">
-        <div style="font-size:9px;color:#94a3b8;margin-bottom:6px;font-weight:700;letter-spacing:0.05em">RSI (14)</div>
-        <div style="font-size:22px;font-weight:800;color:${rc}">${lr?lr.toFixed(1):"-"}</div>
-        <div style="font-size:9px;color:#94a3b8;margin-top:2px">${lr<30?"oversold":lr>70?"overbought":"neutral"}</div>
-      </div>
-      <div class="stat-card">
-        <div style="font-size:9px;color:#94a3b8;margin-bottom:6px;font-weight:700;letter-spacing:0.05em">MACD Hist.</div>
-        <div style="font-size:20px;font-weight:800;color:${lm>0?"#10b981":"#ef4444"}">${lm?lm.toFixed(3):"-"}</div>
-        <div style="font-size:9px;color:#94a3b8;margin-top:2px">${lm>0?"bullish":"bearish"} momentum</div>
-      </div>
-      <div class="stat-card">
-        <div style="font-size:9px;color:#94a3b8;margin-bottom:6px;font-weight:700;letter-spacing:0.05em">BB Position</div>
-        <div style="font-size:22px;font-weight:800;color:#6366f1">${bbpos}</div>
-        <div style="font-size:9px;color:#94a3b8;margin-top:2px">of band width</div>
-      </div>
-    </div>`
     // ── SMA row
     +`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px">
       ${[{label:"SMA 20",val:d.s20.filter(Boolean).at(-1)},{label:"SMA 50",val:d.s50.filter(Boolean).at(-1)},{label:"SMA 200",val:d.s200.filter(Boolean).at(-1)}].map(({label,val})=>{
