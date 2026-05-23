@@ -8,7 +8,7 @@ SYMBOLS = [
     "AMD","INTC","VRT","TMO","HIMS","LNTH","FSLR","NVO","PYPL","BABA","AOS",
     "LLY","MELI","CLS","C",
     "SPY","QQQ","URTH","EEM","ACWI","GLD",
-    "BTC-USD","ETH-USD","SOL-USD","XRP-USD","HYPE32196-USD",
+    "BTC-USD","ETH-USD","SOL-USD","XRP-USD","BNB-USD","LTC-USD","HYPE32196-USD",
     "^GSPC","^IXIC","^DJI","^GDAXI","^FTSE","^N225","^HSI","^FCHI","^NSEI"
 ]
 

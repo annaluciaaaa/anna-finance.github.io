@@ -153,7 +153,7 @@ canvas{display:block}
 const GROUPS={
   "Indices":["^GSPC","^IXIC","^DJI","^GDAXI","^FTSE","^N225","^HSI","^FCHI","^NSEI"],
   "ETFs":["SPY","QQQ","URTH","ACWI","EEM","GLD"],
-  "Crypto":["BTC-USD","ETH-USD","SOL-USD","XRP-USD","HYPE-USD"],
+  "Crypto":["BTC-USD","ETH-USD","SOL-USD","XRP-USD","BNB-USD","LTC-USD","HYPE-USD"],
   "Magnificent 7":["AAPL","MSFT","GOOGL","AMZN","META","NVDA","TSLA"],
   "Semiconductors":["AMD","INTC","CLS","VRT"],
   "Health":["LLY","NVO","TMO","HIMS","LNTH"],
@@ -168,7 +168,7 @@ const NAMES={
   "FSLR":"First Solar","NVO":"Novo Nordisk","PYPL":"PayPal","BABA":"Alibaba","AOS":"A.O. Smith",
   "LLY":"Eli Lilly","MELI":"Mercado Libre","CLS":"Celestica","C":"Citigroup",
   "SPY":"S&P 500 ETF","QQQ":"Nasdaq 100 ETF","URTH":"iShares MSCI World ETF","ACWI":"MSCI ACWI ETF","EEM":"Emerging Markets ETF","GLD":"Gold ETF",
-  "BTC-USD":"Bitcoin","ETH-USD":"Ethereum","SOL-USD":"Solana","XRP-USD":"XRP","HYPE-USD":"Hyperliquid",
+  "BTC-USD":"Bitcoin","ETH-USD":"Ethereum","SOL-USD":"Solana","XRP-USD":"XRP","BNB-USD":"BNB","LTC-USD":"Litecoin","HYPE-USD":"Hyperliquid",
   "^GSPC":"S&P 500","^IXIC":"Nasdaq","^DJI":"Dow Jones","^GDAXI":"DAX","^FTSE":"FTSE 100","^N225":"Nikkei 225",
   "^HSI":"Hang Seng","^FCHI":"CAC 40","^NSEI":"Nifty 50"
 };
@@ -192,6 +192,8 @@ const DESC={
   "ETH-USD":"Ethereum — the dominant smart-contract platform powering DeFi and Web3.",
   "SOL-USD":"Solana — high-throughput blockchain for DeFi and NFTs with near-zero fees.",
   "XRP-USD":"XRP by Ripple — designed for fast, low-cost cross-border bank payments.",
+  "BNB-USD":"BNB — Binance's native token used for trading fees, DeFi, and the BNB Chain.",
+  "LTC-USD":"Litecoin — one of the oldest cryptocurrencies, faster and cheaper than Bitcoin.",
   "HYPE-USD":"Hyperliquid — native token of a high-performance on-chain derivatives exchange.",
   "AAPL":"Apple — world's most valuable company, behind iPhone, Mac, and the App Store.",
   "MSFT":"Microsoft — cloud leader via Azure, Office 365, and a major investor in OpenAI.",
@@ -223,6 +225,8 @@ const TV_SYM={
   "^HSI":"FOREXCOM:HK50","^FCHI":"FOREXCOM:FRA40","^NSEI":"FOREXCOM:IND50",
   "BTC-USD":"COINBASE:BTCUSD","ETH-USD":"COINBASE:ETHUSD",
   "SOL-USD":"COINBASE:SOLUSD","XRP-USD":"COINBASE:XRPUSD",
+  "BNB-USD":"BINANCE:BNBUSDT",
+  "LTC-USD":"COINBASE:LTCUSD",
   "HYPE-USD":"BYBIT:HYPEUSDT",
   "SPY":"AMEX:SPY","QQQ":"NASDAQ:QQQ","URTH":"AMEX:URTH","ACWI":"NASDAQ:ACWI","EEM":"AMEX:EEM","GLD":"AMEX:GLD",
 };
@@ -273,7 +277,7 @@ function mock(t){
     "AMD":360,"INTC":100,"VRT":328,"TMO":455,"HIMS":35,"LNTH":73,"FSLR":170,"NVO":78,"PYPL":75,"BABA":125,"AOS":70,
     "LLY":800,"MELI":2000,"CLS":80,"C":65,
     "SPY":565,"QQQ":480,"URTH":145,"ACWI":115,"EEM":42,"GLD":310,
-    "BTC-USD":95000,"ETH-USD":1800,"SOL-USD":145,"XRP-USD":2.2,"HYPE-USD":41,
+    "BTC-USD":95000,"ETH-USD":1800,"SOL-USD":145,"XRP-USD":2.2,"BNB-USD":580,"LTC-USD":85,"HYPE-USD":41,
     "^GSPC":5650,"^IXIC":17800,"^DJI":41500,"^GDAXI":18200,"^FTSE":8300,"^N225":38000,
     "^HSI":17000,"^FCHI":7500,"^NSEI":22500};
   let p=b[t]||80;const now=new Date(),data=[];
