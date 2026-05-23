@@ -75,6 +75,7 @@ canvas{display:block}
     <div id="overviewTime" style="font-size:9px;color:#94a3b8"></div>
   </div>
   <div id="overview-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:8px;margin-bottom:10px"></div>
+  <div id="market-hours" style="margin-bottom:10px"></div>
   <div id="fgi-widget"></div>
 </div>
 
@@ -540,6 +541,51 @@ function timeAgo(ts){
   return Math.floor(s/86400)+"d ago";
 }
 
+// ── MARKET HOURS ─────────────────────────────────────────────
+function renderMarketHours(){
+  const el=document.getElementById("market-hours");if(!el)return;
+  const now=new Date();
+  const dow=now.getUTCDay(); // 0=Sun,6=Sat
+  const isWeekend=dow===0||dow===6;
+
+  function fmt(date,tz){
+    return date.toLocaleTimeString("en-US",{timeZone:tz,hour:"2-digit",minute:"2-digit",hour12:false});
+  }
+  function isOpen(tz,openH,openM,closeH,closeM,lunchStart,lunchEnd){
+    if(isWeekend)return false;
+    const t=new Date(now.toLocaleString("en-US",{timeZone:tz}));
+    const h=t.getHours(),m=t.getMinutes(),tot=h*60+m;
+    const o=openH*60+openM,c=closeH*60+closeM;
+    if(tot<o||tot>=c)return false;
+    if(lunchStart&&lunchEnd){const ls=lunchStart[0]*60+lunchStart[1],le=lunchEnd[0]*60+lunchEnd[1];if(tot>=ls&&tot<le)return false;}
+    return true;
+  }
+
+  const markets=[
+    {flag:"🇺🇸",name:"NYSE",      tz:"America/New_York",   o:[9,30],c:[16,0]},
+    {flag:"🇬🇧",name:"LSE",       tz:"Europe/London",      o:[8,0], c:[16,30]},
+    {flag:"🇩🇪",name:"XETRA",     tz:"Europe/Berlin",      o:[9,0], c:[17,30]},
+    {flag:"🇯🇵",name:"TSE",       tz:"Asia/Tokyo",         o:[9,0], c:[15,30],lunch:[[11,30],[12,30]]},
+    {flag:"🇭🇰",name:"HKEX",      tz:"Asia/Hong_Kong",     o:[9,30],c:[16,0], lunch:[[12,0],[13,0]]},
+    {flag:"🇮🇳",name:"NSE",       tz:"Asia/Kolkata",       o:[9,15],c:[15,30]},
+  ];
+
+  el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:6px">
+    ${markets.map(m=>{
+      const open=isOpen(m.tz,m.o[0],m.o[1],m.c[0],m.c[1],m.lunch?m.lunch[0]:null,m.lunch?m.lunch[1]:null);
+      const time=fmt(now,m.tz);
+      const col=open?"#10b981":"#94a3b8";
+      const bg=open?"#10b98112":"#f1f5f9";
+      return`<div style="display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:20px;background:${bg};border:1px solid ${col}30">
+        <div style="width:6px;height:6px;border-radius:50%;background:${col};flex-shrink:0${open?";animation:pulse 2s infinite":""}"></div>
+        <span style="font-size:10px;font-weight:700;color:#1e2a4a">${m.flag} ${m.name}</span>
+        <span style="font-size:9px;color:#94a3b8">${time}</span>
+        <span style="font-size:9px;font-weight:700;color:${col}">${open?"OPEN":"CLOSED"}</span>
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+
 // ── OVERVIEW ──────────────────────────────────────────────────
 function renderOverview(){
   const grid=document.getElementById("overview-grid");if(!grid)return;
@@ -831,7 +877,7 @@ function renderMain(){
         <div style="font-size:10px;color:#6366f1;letter-spacing:0.1em;font-weight:700">⬡ TECHNICAL SUMMARY</div>
         <button onclick="doAI()" ${S.aiLoading?"disabled":""} style="background:${S.aiLoading?"#e2e8f8":"linear-gradient(135deg,#6366f1,#8b5cf6)"};border:none;border-radius:6px;padding:5px 12px;font-size:10px;color:${S.aiLoading?"#94a3b8":"#fff"};font-weight:600;cursor:pointer">${S.aiLoading?"Analyzing...":"Analyze"}</button>
       </div>
-      <div style="font-size:9px;color:#94a3b8;margin-bottom:8px;font-style:italic">Based on Yahoo Finance data · For exact indicator values use the TradingView chart below</div>
+      <div style="font-size:9px;color:#94a3b8;margin-bottom:8px;font-style:italic">Based on Yahoo Finance data · For exact indicator values use the TradingView chart above</div>
       <div style="font-size:12px;color:${S.aiText?"#475569":"#94a3b8"};line-height:1.8;font-style:${S.aiText?"normal":"italic"}">${S.aiText||"Click Analyze for a summary of trend, moving averages and performance."}</div>
     </div>
     <div style="font-size:9px;color:#94a3b8;text-align:center;font-style:italic;padding-bottom:24px">For informational purposes only — not financial advice. Do your own research.</div>`;
@@ -930,7 +976,7 @@ function updateLiveStatus(text,color,pulse){
 // ── INIT ──────────────────────────────────────────────────────
 (async function(){
   for(const t of ALL){S.stocks[t]=processStock(mock(t));}
-  renderSidebar();renderMain();renderOverview();
+  renderSidebar();renderMain();renderOverview();renderMarketHours();
   loadFGI();
   updateLiveStatus("Connecting...","#f59e0b",true);
 
@@ -964,9 +1010,10 @@ function updateLiveStatus(text,color,pulse){
       const fresh=await fetchStock(S.active);
       if(fresh){S.stocks[S.active]=processStock(fresh);S.liveLoaded[S.active]=true;renderMain();renderSidebar();}
     }
-    renderOverview();
+    renderOverview();renderMarketHours();
     updateLiveStatus("Live — "+new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}),"#10b981",true);
   },5*60*1000);
+  setInterval(renderMarketHours,60*1000);
 })();
 </script>
 
