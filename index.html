@@ -884,33 +884,37 @@ window.closeMobileOverlay=function(){
 };
 window.doAI=function(){
   const d=S.stocks[S.active];if(!d)return;
-  const lr=d.rv.filter(Boolean).at(-1),lm=d.mv.hist.filter(Boolean).at(-1);
-  const lb=d.bv.filter(b=>b.u).at(-1),sig=d.sig,lines=[];
-  if(lr<30)lines.push(`RSI at ${lr.toFixed(1)} — strongly oversold. Historically a possible reversal signal.`);
-  else if(lr<40)lines.push(`RSI at ${lr.toFixed(1)} — slightly oversold. Selling pressure is easing.`);
-  else if(lr>70)lines.push(`RSI at ${lr.toFixed(1)} — strongly overbought. A correction may follow.`);
-  else if(lr>60)lines.push(`RSI at ${lr.toFixed(1)} — slightly overbought. Strong momentum, caution advised.`);
-  else lines.push(`RSI at ${lr.toFixed(1)} — neutral zone, no extreme signal.`);
-  const pm=d.mv.hist.filter(Boolean).at(-2);
-  if(pm!=null&&lm!=null){
-    if(pm<0&&lm>0)lines.push("MACD crossover upward — bullish signal, possible start of an uptrend.");
-    else if(pm>0&&lm<0)lines.push("MACD crossover downward — bearish signal, possible start of a downtrend.");
-    else if(lm>0)lines.push(`MACD histogram positive (${lm.toFixed(4)}) — upward momentum active.`);
-    else lines.push(`MACD histogram negative (${lm.toFixed(4)}) — downward momentum active.`);
+  const sig=d.sig,lines=[];
+  // SMA trend
+  const s20=d.s20.filter(Boolean).at(-1),s50=d.s50.filter(Boolean).at(-1),s200=d.s200.filter(Boolean).at(-1);
+  const above20=s20&&d.last>s20,above50=s50&&d.last>s50,above200=s200&&d.last>s200;
+  if(above20&&above50&&above200)lines.push("Price is trading above all three moving averages (SMA 20, 50, 200) — a strong uptrend structure.");
+  else if(!above20&&!above50&&!above200)lines.push("Price is below all three moving averages — the trend is clearly bearish.");
+  else if(above50&&above200)lines.push("Price is above SMA 50 and 200 but below SMA 20 — medium and long-term trend intact, short-term pullback.");
+  else if(!above200)lines.push("Price is below the 200-day moving average — long-term trend is bearish.");
+  // Golden/death cross
+  if(s50&&s200){
+    if(s50>s200)lines.push("SMA 50 is above SMA 200 — golden cross in place, a long-term bullish signal.");
+    else lines.push("SMA 50 is below SMA 200 — death cross in place, a long-term bearish signal.");
   }
-  if(lb){
-    const pos=((d.last-lb.l)/(lb.u-lb.l)*100).toFixed(0);
-    if(d.last<=lb.l)lines.push("Price at lower Bollinger Band — potential reversal zone, wait for confirmation.");
-    else if(d.last>=lb.u)lines.push("Price at upper Bollinger Band — breakout or reversal possible.");
-    else lines.push(`Price at ${pos}% of Bollinger Band — no extreme BB signal.`);
+  // Performance context
+  if(d.perf1m){
+    if(d.perf1m.pct>10)lines.push(`Up ${d.perf1m.pct.toFixed(1)}% over the past month — strong recent momentum.`);
+    else if(d.perf1m.pct<-10)lines.push(`Down ${Math.abs(d.perf1m.pct).toFixed(1)}% over the past month — notable weakness recently.`);
   }
-  if(S.showFib&&d.fib){
-    const lvls=[{l:".236",v:d.fib.r236},{l:".382",v:d.fib.r382},{l:".500",v:d.fib.r500},{l:".618",v:d.fib.r618},{l:".786",v:d.fib.r786}];
-    for(const f of lvls){if(Math.abs(d.last-f.v)/f.v<0.015){lines.push(`Price near Fibonacci ${f.l} level ($${fmtPrice(f.v)}) — key support/resistance zone.`);break;}}
+  if(d.perf1y){
+    if(d.perf1y.pct>30)lines.push(`Up ${d.perf1y.pct.toFixed(1)}% over the past year — strong long-term performance.`);
+    else if(d.perf1y.pct<-20)lines.push(`Down ${Math.abs(d.perf1y.pct).toFixed(1)}% over the past year — underperforming.`);
   }
-  if(sig.s==="BULLISH")lines.push(`Overall: Multiple bullish signals active (score ${sig.sc}). Upside potential — always confirm with your own research.`);
-  else if(sig.s==="BEARISH")lines.push(`Overall: Multiple bearish signals active (score ${sig.sc}). Caution advised.`);
-  else lines.push(`Overall: Mixed signals (score ${sig.sc}). Wait for clearer confirmation before acting.`);
+  // Volume
+  if(d.vols&&d.vols.at(-1)>0){
+    const avg=d.vols.slice(-20).reduce((a,b)=>a+b,0)/20;
+    if(avg>0){const ratio=d.vols.at(-1)/avg;if(ratio>1.5)lines.push(`Volume ${(ratio).toFixed(1)}x above the 20-day average — high conviction in the latest move.`);else if(ratio<0.5)lines.push("Volume well below average — low conviction, treat the move with caution.");}
+  }
+  // Overall signal
+  if(sig.s==="BULLISH")lines.push(`Overall signal: Bullish. Multiple positive factors align — but always do your own research before acting.`);
+  else if(sig.s==="BEARISH")lines.push(`Overall signal: Bearish. Multiple negative factors align — caution advised.`);
+  else lines.push(`Overall signal: Neutral. No strong directional edge — wait for clearer confirmation.`);
   S.aiText=lines.join(" ");renderMain();
 };
 window.addEventListener("resize",drawCurrent);
