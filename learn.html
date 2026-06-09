@@ -221,9 +221,115 @@ li { margin-bottom: 0.3rem; }
   .fib-desc { display: none; }
   .ichi-name { width: 100px; }
 }
+
+/* ── Disclaimer Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(5, 7, 18, 0.88);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.2rem;
+  animation: fadeIn 0.3s ease;
+}
+.modal-overlay.hidden { display: none; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal-box {
+  background: #131830;
+  border: 1px solid #2a3260;
+  border-radius: 16px;
+  max-width: 520px;
+  width: 100%;
+  padding: 2rem 2rem 1.6rem;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(129,140,248,0.08);
+  position: relative;
+}
+.modal-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 1.2rem;
+}
+.modal-title {
+  font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--text); margin-bottom: 0.5rem;
+}
+.modal-sub {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+  color: var(--accent); letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 1.2rem;
+}
+.modal-points {
+  display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1.5rem;
+}
+.modal-point {
+  display: flex; gap: 0.75rem; align-items: flex-start;
+  background: #090d1e; border: 1px solid #1e2545;
+  border-radius: 10px; padding: 0.85rem 1rem;
+}
+.modal-point-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.modal-point-text {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.74rem;
+  color: var(--muted); line-height: 1.65;
+}
+.modal-point-text strong { color: var(--text); }
+.modal-checkbox-row {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  background: rgba(129,140,248,0.05);
+  border: 1px solid rgba(129,140,248,0.15);
+  border-radius: 10px; margin-bottom: 1.2rem; cursor: pointer;
+}
+.modal-checkbox-row input[type=checkbox] {
+  width: 16px; height: 16px; margin-top: 1px; flex-shrink: 0;
+  accent-color: var(--accent); cursor: pointer;
+}
+.modal-checkbox-row label {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.74rem;
+  color: var(--muted); line-height: 1.6; cursor: pointer;
+}
+.modal-checkbox-row label strong { color: var(--text); }
+.modal-btn {
+  width: 100%; padding: 0.85rem;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border: none; border-radius: 10px;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700;
+  color: #fff; cursor: pointer; opacity: 0.4;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.modal-btn.active { opacity: 1; }
+.modal-btn.active:hover { transform: translateY(-1px); }
 </style>
 </head>
 <body>
+
+<!-- ── Disclaimer Modal ── -->
+<div class="modal-overlay" id="disclaimerModal">
+  <div class="modal-box">
+    <div class="modal-icon">⚠️</div>
+    <div class="modal-sub">Disclaimer · Educational Content Only</div>
+    <div class="modal-title">Before you read on</div>
+    <div class="modal-points">
+      <div class="modal-point">
+        <div class="modal-point-icon">🚫</div>
+        <div class="modal-point-text"><strong>No buy or sell recommendations.</strong> Nothing on this page constitutes financial advice or a recommendation to buy, sell, or hold any asset. All content is for educational purposes only.</div>
+      </div>
+      <div class="modal-point">
+        <div class="modal-point-icon">📐</div>
+        <div class="modal-point-text"><strong>Signals are hints, not guarantees.</strong> Technical analysis tools like Fibonacci levels, RSI, candlestick patterns, and Ichimoku are indicators of probability — not certainty. Exceptions happen constantly. The same pattern can play out completely differently depending on the market context.</div>
+      </div>
+      <div class="modal-point">
+        <div class="modal-point-icon">📊</div>
+        <div class="modal-point-text"><strong>Past patterns ≠ future results.</strong> Markets are influenced by countless unpredictable factors. Even well-established signals fail regularly. Always do your own research and consider seeking professional financial advice before making any investment decisions.</div>
+      </div>
+    </div>
+    <div class="modal-checkbox-row" onclick="toggleCheck()">
+      <input type="checkbox" id="disclaimerCheck" onchange="toggleBtn()">
+      <label for="disclaimerCheck"><strong>I understand</strong> that this is educational content only, not financial advice, and that all signals and patterns are indicators with no guaranteed outcome.</label>
+    </div>
+    <button class="modal-btn" id="disclaimerBtn" disabled onclick="closeModal()">Continue to Learning Guide →</button>
+  </div>
+</div>
+
 <div class="wrap">
 
 <div class="site-header">
@@ -1148,6 +1254,24 @@ function show(id) {
   document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
   document.getElementById('sec-' + id).classList.add('on');
   event.target.classList.add('on');
+}
+
+function toggleCheck() {
+  const cb = document.getElementById('disclaimerCheck');
+  cb.checked = !cb.checked;
+  toggleBtn();
+}
+function toggleBtn() {
+  const cb = document.getElementById('disclaimerCheck');
+  const btn = document.getElementById('disclaimerBtn');
+  btn.disabled = !cb.checked;
+  btn.classList.toggle('active', cb.checked);
+}
+function closeModal() {
+  const overlay = document.getElementById('disclaimerModal');
+  overlay.style.opacity = '0';
+  overlay.style.transition = 'opacity 0.25s ease';
+  setTimeout(() => overlay.classList.add('hidden'), 250);
 }
 </script>
 </body>
