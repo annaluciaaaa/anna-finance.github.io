@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart Reading Guide — anna-finance</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #080a0f;
+  --surface: #0d1018;
+  --card: #111520;
+  --border: #1a2035;
+  --border2: #222840;
+  --green: #39ff8f;
+  --red: #ff4060;
+  --yellow: #ffcc00;
+  --blue: #4488ff;
+  --purple: #b06eff;
+  --orange: #ff8c42;
+  --cyan: #00ddcc;
+  --text: #dce3f5;
+  --muted: #8892b0;
+  --dim: #5a6480;
+  --accent: #6366f1;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.025) 1px, transparent 1px);
+  background-size: 44px 44px;
+  pointer-events: none;
+  z-index: 0;
+}
+.wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 1.2rem 5rem; }
+
+header { padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--border); }
+.back-link {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+  color: var(--accent); text-decoration: none; margin-bottom: 1rem;
+  opacity: 0.7; transition: opacity 0.2s;
+}
+.back-link:hover { opacity: 1; }
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 3px; color: var(--accent); text-transform: uppercase; margin-bottom: 0.5rem;
+}
+header h1 {
+  font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 800; line-height: 1.1; color: var(--text); margin-bottom: 0.4rem;
+}
+header h1 span { color: var(--accent); }
+header p { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted); }
+
+nav {
+  position: sticky; top: 0; z-index: 20;
+  background: rgba(8,10,15,0.96); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; overflow-x: auto;
+  margin: 0 -1.2rem; padding: 0 1.2rem;
+}
+nav::-webkit-scrollbar { display: none; }
+.nb {
+  padding: 0.9rem 1rem; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 0.3px; color: var(--dim);
+  background: none; border: none; border-bottom: 2px solid transparent;
+  cursor: pointer; white-space: nowrap; transition: all 0.2s;
+}
+.nb:hover { color: var(--text); }
+.nb.on { color: var(--accent); border-bottom-color: var(--accent); }
+
+.sec { display: none; padding-top: 2rem; animation: up 0.3s ease; }
+.sec.on { display: block; }
+@keyframes up { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.4rem; color: var(--text); }
+h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
+p, li { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--muted); line-height: 1.75; }
+p strong, li strong { color: var(--text); }
+ul { padding-left: 1.2rem; margin-bottom: 0.6rem; }
+li { margin-bottom: 0.3rem; }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; margin-bottom: 1rem; }
+.card.g { border-left: 3px solid var(--green); }
+.card.r { border-left: 3px solid var(--red); }
+.card.y { border-left: 3px solid var(--yellow); }
+.card.b { border-left: 3px solid var(--blue); }
+.card.p { border-left: 3px solid var(--purple); }
+.card.o { border-left: 3px solid var(--orange); }
+.card.c { border-left: 3px solid var(--cyan); }
+.card.a { border-left: 3px solid var(--accent); }
+
+.tag {
+  display: inline-block; padding: 0.18rem 0.65rem; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+  font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.7rem;
+}
+.tag.g { background: rgba(57,255,143,0.1); color: var(--green); }
+.tag.r { background: rgba(255,64,96,0.1); color: var(--red); }
+.tag.y { background: rgba(255,204,0,0.1); color: var(--yellow); }
+.tag.b { background: rgba(68,136,255,0.1); color: var(--blue); }
+.tag.p { background: rgba(176,110,255,0.1); color: var(--purple); }
+.tag.o { background: rgba(255,140,66,0.1); color: var(--orange); }
+.tag.c { background: rgba(0,221,204,0.1); color: var(--cyan); }
+.tag.a { background: rgba(99,102,241,0.1); color: var(--accent); }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media(max-width:600px) { .grid2 { grid-template-columns: 1fr; } }
+
+.svgbox {
+  background: #050710; border-radius: 8px; padding: 1rem; margin: 0.8rem 0;
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+}
+.svgbox svg { max-width: 100%; }
+.svglabel { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--dim); text-align: center; }
+
+.candle-row {
+  display: flex; gap: 1.5rem; align-items: flex-end; justify-content: center;
+  flex-wrap: wrap; background: #050710; border-radius: 10px;
+  padding: 1.5rem; margin: 1rem 0;
+}
+.candle-item { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+.candle-label { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; color: var(--dim); text-align: center; max-width: 76px; line-height: 1.4; }
+
+.ind-row { display: flex; gap: 1rem; align-items: flex-start; padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
+.ind-row:last-child { border-bottom: none; }
+.ind-name { font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; color: var(--blue); font-weight: 600; width: 82px; flex-shrink: 0; padding-top: 2px; }
+.ind-body { flex: 1; }
+.ind-body p { margin: 0; }
+.ind-badge {
+  padding: 0.18rem 0.5rem; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.63rem; font-weight: 600;
+  flex-shrink: 0; white-space: nowrap; align-self: flex-start; margin-top: 2px;
+}
+.ind-badge.g { background: rgba(57,255,143,0.1); color: var(--green); }
+.ind-badge.r { background: rgba(255,64,96,0.1); color: var(--red); }
+
+.fib-table { display: flex; flex-direction: column; gap: 0.4rem; margin: 0.8rem 0; }
+.fib-row { display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem 0.8rem; background: #050710; border-radius: 6px; border: 1px solid var(--border); }
+.fib-pct { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 600; width: 52px; flex-shrink: 0; }
+.fib-bar { height: 4px; border-radius: 2px; flex: 1; }
+.fib-desc { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); width: 160px; text-align: right; flex-shrink: 0; }
+
+.ichi-row { display: flex; gap: 0.8rem; align-items: center; padding: 0.65rem 0; border-bottom: 1px solid var(--border); }
+.ichi-row:last-child { border-bottom: none; }
+.ichi-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.ichi-name { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text); width: 130px; flex-shrink: 0; }
+.ichi-desc { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); }
+
+.vp-wrap { display: flex; gap: 0.8rem; background: #050710; border-radius: 8px; padding: 1rem; margin: 0.8rem 0; height: 200px; }
+.vp-prices { display: flex; flex-direction: column; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.63rem; color: var(--dim); }
+.vp-bars { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 3px; }
+.vp-row { display: flex; align-items: center; gap: 5px; height: 18px; }
+.vp-bar { height: 100%; border-radius: 2px; }
+.vp-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; flex-shrink: 0; }
+
+.ms-row { display: flex; gap: 1rem; align-items: flex-start; padding: 0.8rem; background: #050710; border-radius: 8px; margin-bottom: 0.6rem; border: 1px solid var(--border); }
+.ms-icon { font-size: 1.3rem; flex-shrink: 0; width: 32px; text-align: center; }
+.ms-body h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.2rem; }
+.ms-body p { margin: 0; font-size: 0.75rem; }
+
+.step { display: flex; gap: 1rem; padding: 1rem; background: #050710; border-radius: 8px; margin-bottom: 0.7rem; border: 1px solid var(--border); }
+.step-n { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 600; color: var(--dim); width: 26px; flex-shrink: 0; }
+.step-body h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text); }
+.step-body p { margin: 0; font-size: 0.76rem; }
+
+.rrr { display: flex; height: 44px; border-radius: 6px; overflow: hidden; margin: 0.8rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 600; }
+.rrr-l { display: flex; align-items: center; justify-content: center; }
+
+.psych-card { background: var(--card); border: 1px solid var(--border2); border-radius: 10px; padding: 1.2rem; margin-bottom: 0.8rem; position: relative; overflow: hidden; }
+.psych-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; }
+.psych-card.danger::before { background: var(--red); }
+.psych-card.warn::before { background: var(--yellow); }
+.psych-card.tip::before { background: var(--green); }
+.psych-title { font-size: 0.93rem; font-weight: 600; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
+
+.section-divider { margin: 2rem 0 1.5rem; border-top: 1px solid var(--border); padding-top: 2rem; }
+
+@media(max-width:500px) {
+  .ind-row { flex-direction: column; gap: 0.5rem; }
+  .ind-name { width: auto; }
+  .fib-desc { display: none; }
+  .ichi-name { width: 100px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a href="index.html" class="back-link">← Back to Dashboard</a>
+  <div class="eyebrow">Anna-Finance · Learning Guide</div>
+  <h1>How to <span>Read Charts</span></h1>
+  <p>Candlesticks · Patterns · Indicators · Fibonacci · Ichimoku · Volume Profile · Psychology</p>
+</header>
+
+<nav>
+  <button class="nb on" onclick="show('candles')">1. Candlesticks</button>
+  <button class="nb" onclick="show('patterns')">2. Patterns</button>
+  <button class="nb" onclick="show('indicators')">3. Indicators</button>
+  <button class="nb" onclick="show('fibonacci')">4. Fibonacci</button>
+  <button class="nb" onclick="show('advanced')">5. Advanced</button>
+  <button class="nb" onclick="show('psychology')">6. Strategy & Psychology</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 1 — CANDLESTICKS
+═══════════════════════════════════════════════ -->
+<div class="sec on" id="sec-candles">
+  <h2>Reading Candlesticks</h2>
+
+  <div class="card a">
+    <div class="tag a">Anatomy</div>
+    <h3>Four values encoded in every candle</h3>
+    <p>Every candle — regardless of time period (1 min, 1 day, 1 week) — encodes exactly four prices: <strong>Open, Close, High, Low</strong>. The body shows Open vs. Close. The wicks (or "shadows") extend to the High and Low. Color tells you the direction: green = Close above Open, red = Close below Open.</p>
+  </div>
+
+  <div class="candle-row">
+    <div class="candle-item">
+      <svg width="60" height="160" viewBox="0 0 60 160">
+        <line x1="30" y1="10" x2="30" y2="40" stroke="#39ff8f" stroke-width="2"/>
+        <rect x="14" y="40" width="32" height="80" fill="#39ff8f" rx="2" opacity="0.85"/>
+        <line x1="30" y1="120" x2="30" y2="150" stroke="#39ff8f" stroke-width="2"/>
+        <text x="50" y="14" fill="#5a6480" font-size="8" font-family="JetBrains Mono">High</text>
+        <text x="50" y="44" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Close</text>
+        <text x="50" y="124" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Open</text>
+        <text x="50" y="154" fill="#5a6480" font-size="8" font-family="JetBrains Mono">Low</text>
+      </svg>
+      <div class="candle-label" style="color:#39ff8f">BULLISH<br>Close &gt; Open<br>Buyers won</div>
+    </div>
+    <div class="candle-item">
+      <svg width="60" height="160" viewBox="0 0 60 160">
+        <line x1="30" y1="10" x2="30" y2="40" stroke="#ff4060" stroke-width="2"/>
+        <rect x="14" y="40" width="32" height="80" fill="#ff4060" rx="2" opacity="0.85"/>
+        <line x1="30" y1="120" x2="30" y2="150" stroke="#ff4060" stroke-width="2"/>
+        <text x="50" y="14" fill="#5a6480" font-size="8" font-family="JetBrains Mono">High</text>
+        <text x="50" y="44" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Open</text>
+        <text x="50" y="124" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Close</text>
+        <text x="50" y="154" fill="#5a6480" font-size="8" font-family="JetBrains Mono">Low</text>
+      </svg>
+      <div class="candle-label" style="color:#ff4060">BEARISH<br>Close &lt; Open<br>Sellers won</div>
+    </div>
+    <div class="candle-item">
+      <svg width="60" height="160" viewBox="0 0 60 160">
+        <line x1="30" y1="18" x2="30" y2="77" stroke="#ffcc00" stroke-width="2"/>
+        <rect x="12" y="77" width="36" height="6" fill="#ffcc00" rx="1"/>
+        <line x1="30" y1="83" x2="30" y2="142" stroke="#ffcc00" stroke-width="2"/>
+      </svg>
+      <div class="candle-label" style="color:#ffcc00">DOJI<br>Open ≈ Close<br>Indecision</div>
+    </div>
+    <div class="candle-item">
+      <svg width="60" height="160" viewBox="0 0 60 160">
+        <line x1="30" y1="36" x2="30" y2="48" stroke="#39ff8f" stroke-width="2"/>
+        <rect x="14" y="48" width="32" height="30" fill="#39ff8f" rx="2" opacity="0.85"/>
+        <line x1="30" y1="78" x2="30" y2="150" stroke="#39ff8f" stroke-width="2"/>
+      </svg>
+      <div class="candle-label" style="color:#39ff8f">HAMMER<br>Bullish signal<br>after downtrend</div>
+    </div>
+    <div class="candle-item">
+      <svg width="60" height="160" viewBox="0 0 60 160">
+        <line x1="30" y1="8" x2="30" y2="80" stroke="#ff4060" stroke-width="2"/>
+        <rect x="14" y="80" width="32" height="30" fill="#ff4060" rx="2" opacity="0.85"/>
+        <line x1="30" y1="110" x2="30" y2="120" stroke="#ff4060" stroke-width="2"/>
+      </svg>
+      <div class="candle-label" style="color:#ff4060">SHOOTING<br>STAR<br>Bearish signal</div>
+    </div>
+  </div>
+
+  <div class="card g">
+    <div class="tag g">Bullish</div>
+    <h3>Green candle — buyers in control</h3>
+    <p>Close is above open. The bigger the body, the stronger the buying pressure. A <strong>long upper wick</strong> on a green candle means sellers tried to push back but buyers recovered — still bullish, but showing some resistance above. A <strong>long lower wick</strong> means buyers defended the dip aggressively.</p>
+  </div>
+
+  <div class="card r">
+    <div class="tag r">Bearish</div>
+    <h3>Red candle — sellers in control</h3>
+    <p>Close is below open. A large body with no lower wick = relentless selling pressure, nobody stepped in to buy. A <strong>long lower wick on a red candle</strong> = buyers tried to stall the decline but couldn't hold — still weak, but less catastrophic than a pure body.</p>
+  </div>
+
+  <div class="card y">
+    <div class="tag y">Reversal signal</div>
+    <h3>Doji — indecision at a critical level</h3>
+    <p>Open ≈ Close. Neither buyers nor sellers won. After a sustained trend, a Doji means the trend's energy is dissipating. <strong>Context is everything:</strong> a Doji in the middle of a range means little; a Doji after 8 green candles at a major resistance = high-probability reversal signal.</p>
+  </div>
+
+  <div class="card g">
+    <div class="tag g">Hammer</div>
+    <h3>Bullish reversal at the bottom</h3>
+    <p>Small body near the top, very long lower wick (at least 2× the body). Price sold off hard intraday but buyers stepped in and drove it back up by close. <strong>Most reliable when appearing after a downtrend at a clear support level.</strong> The longer the lower wick, the stronger the statement from buyers.</p>
+  </div>
+
+  <div class="card r">
+    <div class="tag r">Shooting Star</div>
+    <h3>Bearish reversal at the top</h3>
+    <p>Small body near the bottom, very long upper wick. Price rallied strongly intraday but sellers crushed it back down by close. The exact mirror of the Hammer. <strong>Most meaningful after an uptrend at a resistance zone</strong> — buyers tried to break through but got rejected hard.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card g">
+      <div class="tag g">Bullish Engulfing</div>
+      <h3>Strong reversal from downtrend</h3>
+      <p>A large green candle completely engulfs the previous red candle — higher high, lower low, and closes above its open. Signals decisive shift in momentum. <strong>Most reliable at clear support levels</strong> after multiple red candles.</p>
+    </div>
+    <div class="card r">
+      <div class="tag r">Bearish Engulfing</div>
+      <h3>Strong reversal from uptrend</h3>
+      <p>A large red candle swallows the prior green candle entirely. Selling pressure has overwhelmed buyers in a single session. Most powerful when occurring at resistance after an extended rally with elevated RSI.</p>
+    </div>
+    <div class="card g">
+      <div class="tag g">Three White Soldiers</div>
+      <h3>Strong bullish momentum shift</h3>
+      <p>Three consecutive large green candles, each opening within the previous body and closing near its high. Shows sustained, disciplined buying across multiple sessions. Requires volume confirmation to be taken seriously.</p>
+    </div>
+    <div class="card r">
+      <div class="tag r">Three Black Crows</div>
+      <h3>Strong bearish momentum shift</h3>
+      <p>Three consecutive large red candles, each closing near its low. Persistent institutional selling across multiple sessions. The bearish counterpart — most significant at market tops with high volume.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 2 — PATTERNS
+═══════════════════════════════════════════════ -->
+<div class="sec" id="sec-patterns">
+  <h2>Chart Patterns</h2>
+
+  <div class="grid2">
+
+    <div class="card g" style="padding:1rem">
+      <div class="tag g">Bullish Reversal</div>
+      <div class="svgbox">
+        <svg width="200" height="88" viewBox="0 0 200 88">
+          <polyline points="5,15 25,30 45,52" fill="none" stroke="#ff4060" stroke-width="1.5"/>
+          <circle cx="45" cy="52" r="4" fill="#ffcc00"/>
+          <circle cx="72" cy="52" r="4" fill="#ffcc00"/>
+          <polyline points="45,52 60,38 72,52 90,36 110,18 130,8" fill="none" stroke="#39ff8f" stroke-width="2"/>
+          <line x1="0" y1="52" x2="140" y2="52" stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3"/>
+          <text x="3" y="68" fill="#ffcc00" font-size="8" font-family="JetBrains Mono">Support</text>
+          <text x="105" y="10" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Breakout</text>
+        </svg>
+        <div class="svglabel">Double Bottom</div>
+      </div>
+      <p>Price tests support twice, holds both times, reverses bullish. Confirmation = clean break above the neckline (the high between the two lows) with volume.</p>
+    </div>
+
+    <div class="card r" style="padding:1rem">
+      <div class="tag r">Bearish Reversal</div>
+      <div class="svgbox">
+        <svg width="200" height="88" viewBox="0 0 200 88">
+          <polyline points="5,75 25,55 45,30" fill="none" stroke="#39ff8f" stroke-width="1.5"/>
+          <circle cx="45" cy="30" r="4" fill="#ffcc00"/>
+          <circle cx="72" cy="30" r="4" fill="#ffcc00"/>
+          <polyline points="45,30 60,46 72,30 90,48 110,65 130,78" fill="none" stroke="#ff4060" stroke-width="2"/>
+          <line x1="0" y1="30" x2="140" y2="30" stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3"/>
+          <text x="3" y="26" fill="#ffcc00" font-size="8" font-family="JetBrains Mono">Resistance</text>
+        </svg>
+        <div class="svglabel">Double Top</div>
+      </div>
+      <p>Price fails at the same resistance twice. Each rejection confirms sellers are entrenched there. Breakdown below the neckline = strong sell signal.</p>
+    </div>
+
+    <div class="card r" style="padding:1rem">
+      <div class="tag r">Bearish Reversal</div>
+      <div class="svgbox">
+        <svg width="200" height="88" viewBox="0 0 200 88">
+          <polyline points="5,65 18,48 30,62 50,20 68,62 82,48 96,65" fill="none" stroke="#ff4060" stroke-width="1.8"/>
+          <line x1="0" y1="63" x2="170" y2="63" stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3"/>
+          <polyline points="96,65 116,78" fill="none" stroke="#ff4060" stroke-width="2.2"/>
+          <text x="2" y="59" fill="#ffcc00" font-size="7" font-family="JetBrains Mono">Neckline</text>
+          <text x="42" y="16" fill="#ff4060" font-size="7" font-family="JetBrains Mono">Head</text>
+          <text x="96" y="78" fill="#ff4060" font-size="7" font-family="JetBrains Mono">↓ Breakdown</text>
+        </svg>
+        <div class="svglabel">Head & Shoulders</div>
+      </div>
+      <p>Left shoulder, higher head, lower right shoulder. Break of the neckline = confirmation. One of the most reliable bearish reversal patterns. Target = neckline minus the head's height.</p>
+    </div>
+
+    <div class="card g" style="padding:1rem">
+      <div class="tag g">Bullish Reversal</div>
+      <div class="svgbox">
+        <svg width="200" height="88" viewBox="0 0 200 88">
+          <polyline points="5,28 18,50 30,28 50,72 68,28 82,50 96,28" fill="none" stroke="#39ff8f" stroke-width="1.8"/>
+          <line x1="0" y1="28" x2="170" y2="28" stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3"/>
+          <polyline points="96,28 116,12 140,4" fill="none" stroke="#39ff8f" stroke-width="2.2"/>
+          <text x="2" y="24" fill="#ffcc00" font-size="7" font-family="JetBrains Mono">Neckline</text>
+          <text x="44" y="85" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">Head (low)</text>
+          <text x="118" y="10" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">↑ Breakout</text>
+        </svg>
+        <div class="svglabel">Inverse Head & Shoulders</div>
+      </div>
+      <p>Three lows, middle deepest. The bullish mirror of H&S. Break above neckline after a downtrend = strong buy signal. Volume surge on the breakout = confirmation.</p>
+    </div>
+
+    <div class="card g" style="padding:1rem">
+      <div class="tag g">Bullish Continuation</div>
+      <div class="svgbox">
+        <svg width="200" height="88" viewBox="0 0 200 88">
+          <path d="M10,78 Q55,88 100,20" fill="none" stroke="#39ff8f" stroke-width="2"/>
+          <path d="M100,20 Q112,30 125,24 Q136,18 146,22" fill="none" stroke="#39ff8f" stroke-width="2"/>
+          <polyline points="146,22 172,5" fill="none" stroke="#39ff8f" stroke-width="2.5"/>
+          <line x1="10" y1="20" x2="172" y2="20" stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3"/>
+          <text x="148" y="5" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">Breakout!</text>
+          <text x="30" y="85" fill="#5a6480" font-size="8" font-family="JetBrains Mono">Cup</text>
+          <text x="110" y="85" fill="#5a6480" font-size="8" font-family="JetBrains Mono">Handle</text>
+        </svg>
+        <div class="svglabel">Cup & Handle</div>
+      </div>
+      <p>U-shaped recovery (cup) then a shallow pullback (handle). Breakout above resistance = strong continuation. Handle should retrace no more than 30–50% of the cup's height.</p>
+    </div>
+
+    <div class="card r" style="padding:1rem">
+      <div class="tag r">Bearish Pattern</div>
+      <div class="svgbox">
+        <svg width="200" height="88" viewBox="0 0 200 88">
+          <line x1="10" y1="72" x2="135" y2="20" stroke="#ff4060" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="10" y1="83" x2="135" y2="50" stroke="#ff4060" stroke-width="1" stroke-dasharray="3,3"/>
+          <polyline points="10,78 28,64 48,70 68,55 88,62 108,48 125,40" fill="none" stroke="#dce3f5" stroke-width="1.8"/>
+          <polyline points="125,40 152,70 168,78" fill="none" stroke="#ff4060" stroke-width="2.5"/>
+          <text x="148" y="66" fill="#ff4060" font-size="7" font-family="JetBrains Mono">Breakdown!</text>
+        </svg>
+        <div class="svglabel">Rising Wedge (Bearish)</div>
+      </div>
+      <p>Price rises in a narrowing channel — converging trendlines signal weakening momentum despite higher prices. When the lower line breaks → strong sell-off. The taller the wedge, the bigger the drop.</p>
+    </div>
+
+    <div class="card y" style="padding:1rem">
+      <div class="tag y">Neutral → Breakout</div>
+      <div class="svgbox">
+        <svg width="200" height="88" viewBox="0 0 200 88">
+          <line x1="10" y1="14" x2="115" y2="43" stroke="#5a6480" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="10" y1="74" x2="115" y2="43" stroke="#5a6480" stroke-width="1" stroke-dasharray="3,3"/>
+          <polyline points="10,14 28,50 46,24 64,44 82,30 100,42" fill="none" stroke="#dce3f5" stroke-width="1.5"/>
+          <polyline points="115,43 142,18 158,8" fill="none" stroke="#39ff8f" stroke-width="2" stroke-dasharray="5,3"/>
+          <polyline points="115,43 142,64 158,74" fill="none" stroke="#ff4060" stroke-width="2" stroke-dasharray="5,3"/>
+          <text x="160" y="10" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Bull</text>
+          <text x="160" y="76" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Bear</text>
+        </svg>
+        <div class="svglabel">Symmetrical Triangle</div>
+      </div>
+      <p>Consolidation between converging lines — direction unclear until breakout. <strong>Volume is the key:</strong> a breakout without volume is often a trap. High volume on the break confirms the new direction.</p>
+    </div>
+
+    <div class="card a" style="padding:1rem">
+      <div class="tag a">Long-Term Signal</div>
+      <div class="svgbox">
+        <svg width="200" height="88" viewBox="0 0 200 88">
+          <polyline points="5,82 30,74 55,64 80,50 105,34 130,22 155,14 175,8" fill="none" stroke="#ff4060" stroke-width="1.5"/>
+          <polyline points="5,85 30,76 55,64 80,48 105,30 130,17 155,10 175,4" fill="none" stroke="#39ff8f" stroke-width="1.5"/>
+          <circle cx="80" cy="49" r="5" fill="#ffcc00"/>
+          <text x="82" y="44" fill="#ffcc00" font-size="7" font-family="JetBrains Mono">Golden Cross</text>
+          <text x="5" y="76" fill="#ff4060" font-size="7" font-family="JetBrains Mono">SMA 200</text>
+          <text x="5" y="68" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">SMA 50</text>
+        </svg>
+        <div class="svglabel">Golden Cross / Death Cross</div>
+      </div>
+      <p><strong>Golden Cross:</strong> SMA 50 crosses above SMA 200 → long-term bullish. <strong>Death Cross:</strong> SMA 50 crosses below → long-term bearish. Lagging signals, but historically among the most reliable for major trend shifts.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 3 — INDICATORS
+═══════════════════════════════════════════════ -->
+<div class="sec" id="sec-indicators">
+  <h2>Key Indicators</h2>
+
+  <div class="card b">
+    <div class="ind-row">
+      <div class="ind-name">RSI</div>
+      <div class="ind-body">
+        <h3>Relative Strength Index (0–100)</h3>
+        <p>Measures momentum by comparing recent gains to losses over 14 periods. <strong>Below 30</strong> = oversold, potential buying zone. <strong>Above 70</strong> = overbought, potential selling zone. The 40–60 range = neutral, no strong signal. RSI can stay extreme in strong trends — always combine with context.</p>
+      </div>
+      <div class="ind-badge g">RSI &lt; 30 = Buy Zone</div>
+    </div>
+    <div class="ind-row">
+      <div class="ind-name">MACD</div>
+      <div class="ind-body">
+        <h3>Moving Average Convergence Divergence</h3>
+        <p>Two EMAs (12, 26) create the MACD line. When it crosses the <strong>signal line (EMA 9) upward</strong> = bullish crossover. Downward = bearish. The histogram shows the gap between them — growing histogram = strengthening momentum. Shrinking = momentum fading.</p>
+      </div>
+      <div class="ind-badge g">Crossover = Entry Signal</div>
+    </div>
+    <div class="ind-row">
+      <div class="ind-name">SMA / EMA</div>
+      <div class="ind-body">
+        <h3>Moving Averages</h3>
+        <p>Price above SMA 200 = long-term uptrend. Above SMA 50 = medium-term uptrend. Golden Cross (SMA 50 > SMA 200) = major bullish shift. Death Cross = major bearish warning. EMA reacts faster to recent price changes; SMA is smoother and more stable.</p>
+      </div>
+      <div class="ind-badge r">Death Cross = Sell Alert</div>
+    </div>
+    <div class="ind-row">
+      <div class="ind-name">Bollinger Bands</div>
+      <div class="ind-body">
+        <h3>Dynamic volatility envelope</h3>
+        <p>Middle = 20-day SMA. Upper/lower = ±2 standard deviations. Price near the <strong>lower band</strong> = possibly oversold. Near the <strong>upper band</strong> = possibly overextended. When bands <strong>squeeze tight (Bollinger Squeeze)</strong>, volatility is compressed and a large move is imminent — direction unknown until the breakout.</p>
+      </div>
+      <div class="ind-badge g">Squeeze = Breakout Building</div>
+    </div>
+    <div class="ind-row">
+      <div class="ind-name">Volume</div>
+      <div class="ind-body">
+        <h3>The confirmation layer</h3>
+        <p>A breakout on <strong>high volume</strong> is legitimate. The same move on low volume is suspicious and often reverses quickly. Think of volume as the market's conviction score — it answers "how many participants actually agree with this move?" Always check volume before trusting a pattern.</p>
+      </div>
+      <div class="ind-badge g">High Vol = Confirms Move</div>
+    </div>
+  </div>
+
+  <div class="card y">
+    <div class="tag y">Core Principle</div>
+    <h3>Never use a single indicator in isolation</h3>
+    <p>Each indicator alone has modest reliability. Combine them: RSI oversold <strong>+</strong> MACD turning bullish <strong>+</strong> price on support <strong>+</strong> volume rising = the probability compounds significantly. Three confirming signals pointing the same direction is dramatically more meaningful than any one alone.</p>
+  </div>
+
+  <div class="card a">
+    <div class="tag a">Dashboard Signals</div>
+    <h3>How BULLISH / BEARISH / NEUTRAL is calculated on this site</h3>
+    <p>The signal score adds or subtracts points: RSI &lt; 30 (+2), RSI &gt; 70 (−2), MACD bullish crossover (+2), MACD bearish crossover (−2), price at lower Bollinger Band (+2), price at upper band (−2). Total ≥ 3 = <strong style="color:var(--green)">BULLISH</strong> · ≤ −3 = <strong style="color:var(--red)">BEARISH</strong> · else = <strong style="color:var(--yellow)">NEUTRAL</strong>.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 4 — FIBONACCI
+═══════════════════════════════════════════════ -->
+<div class="sec" id="sec-fibonacci">
+  <h2>Fibonacci Retracement</h2>
+
+  <div class="card b">
+    <div class="tag b">The Origin</div>
+    <h3>Why do markets follow Fibonacci ratios?</h3>
+    <p>The Fibonacci sequence (1, 1, 2, 3, 5, 8, 13, 21…) appears throughout nature — in spiral shells, plant growth, galaxy arms. The key ratios (23.6%, 38.2%, 50%, 61.8%) come from dividing consecutive numbers. Because traders worldwide have adopted these levels for decades, markets actually react at them — a <strong>self-fulfilling prophecy</strong> backed by real psychology.</p>
+  </div>
+
+  <div class="card b">
+    <div class="tag b">The Levels</div>
+    <h3>Draw the tool from swing low to high → pullback zones appear</h3>
+    <p>Select a significant move (e.g. BTC from $60k to $100k). The tool automatically plots where a correction is likely to pause, find support, or reverse:</p>
+    <div class="fib-table">
+      <div class="fib-row">
+        <div class="fib-pct" style="color:#39ff8f">0%</div>
+        <div class="fib-bar" style="background:#39ff8f;width:100%"></div>
+        <div class="fib-desc">High — starting point</div>
+      </div>
+      <div class="fib-row">
+        <div class="fib-pct" style="color:#7bffb5">23.6%</div>
+        <div class="fib-bar" style="background:#7bffb5;width:76%"></div>
+        <div class="fib-desc">Shallow pullback</div>
+      </div>
+      <div class="fib-row">
+        <div class="fib-pct" style="color:#ffcc00">38.2%</div>
+        <div class="fib-bar" style="background:#ffcc00;width:62%"></div>
+        <div class="fib-desc">⭐ First key zone</div>
+      </div>
+      <div class="fib-row">
+        <div class="fib-pct" style="color:#ffaa00">50%</div>
+        <div class="fib-bar" style="background:#ffaa00;width:50%"></div>
+        <div class="fib-desc">⭐⭐ Psychological midpoint</div>
+      </div>
+      <div class="fib-row">
+        <div class="fib-pct" style="color:#ff8c42">61.8%</div>
+        <div class="fib-bar" style="background:#ff8c42;width:38%"></div>
+        <div class="fib-desc">⭐⭐⭐ Golden Ratio</div>
+      </div>
+      <div class="fib-row">
+        <div class="fib-pct" style="color:#ff6060">78.6%</div>
+        <div class="fib-bar" style="background:#ff6060;width:21%"></div>
+        <div class="fib-desc">Deep pullback</div>
+      </div>
+      <div class="fib-row">
+        <div class="fib-pct" style="color:#ff4060">100%</div>
+        <div class="fib-bar" style="background:#ff4060;width:5%"></div>
+        <div class="fib-desc">Low — end point</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card o">
+    <div class="tag o">Golden Ratio</div>
+    <h3>The 61.8% level — the most important Fibonacci zone</h3>
+    <p>Derived from the ratio of consecutive Fibonacci numbers (34 ÷ 55 = 0.618). When price pulls back to the 61.8% level after a strong move, shows a bullish candle there (Hammer, Engulfing), and RSI is below 40 — <strong>that's one of the highest-probability setups in all of technical analysis.</strong> Traders across every market watch this level simultaneously, which is exactly what creates the reaction.</p>
+  </div>
+
+  <div class="card g">
+    <div class="tag g">Practical Example</div>
+    <h3>BTC: $60k → $100k → correction</h3>
+    <p>Move size: $100,000 − $60,000 = $40,000<br><br>
+    <strong>38.2% level:</strong> $100k − ($40k × 0.382) = <strong>$84,720</strong><br>
+    <strong>50.0% level:</strong> $100k − ($40k × 0.500) = <strong>$80,000</strong><br>
+    <strong>61.8% level:</strong> $100k − ($40k × 0.618) = <strong>$75,280</strong> ← Golden Zone<br><br>
+    Thousands of traders are watching these exact numbers. When BTC reaches $75k and shows a bullish signal, many enter simultaneously — the combined buying power creates the bounce. That is the self-fulfilling dynamic made visible.</p>
+  </div>
+
+  <div class="card y">
+    <div class="tag y">Confluence</div>
+    <h3>Fibonacci + other signals = Confluence Zone</h3>
+    <p>The strongest trade setups arise when a Fibonacci level <strong>coincides with other factors:</strong> the 61.8% retracement aligns with a major prior support AND the 200-day SMA AND an RSI below 35 — all at the same price point. Traders call this a <strong>confluence zone</strong>. Three independent reasons to expect a reaction at the same level is significantly more powerful than any one alone.</p>
+  </div>
+
+  <div class="card p">
+    <div class="tag p">Extensions</div>
+    <h3>Projecting Take-Profit targets beyond the high</h3>
+    <p>Extensions go past 100% and project where the next impulse wave might reach. After a successful retracement bounce, traders use <strong>127.2%</strong> and <strong>161.8%</strong> as Take-Profit targets. These are the same mathematical ratios working in the forward direction instead of backward. The 161.8% extension (the "Golden Extension") is the most commonly used TP level by professional swing traders.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 5 — ADVANCED
+═══════════════════════════════════════════════ -->
+<div class="sec" id="sec-advanced">
+  <h2>Advanced — Ichimoku</h2>
+
+  <div class="card p">
+    <div class="tag p">What is Ichimoku?</div>
+    <h3>The most complete single indicator in existence</h3>
+    <p>Ichimoku Kinko Hyo ("equilibrium chart at a glance") was developed by a Japanese journalist over 30 years of research. It shows trend direction, momentum, support, resistance, and entry signals — all simultaneously. Intimidating at first, but once understood it replaces multiple other indicators entirely.</p>
+  </div>
+
+  <div class="svgbox" style="margin-bottom:1rem">
+    <svg width="100%" height="170" viewBox="0 0 400 170" preserveAspectRatio="xMidYMid meet">
+      <polygon points="50,122 150,78 250,66 350,56 350,86 250,96 150,106 50,136" fill="rgba(57,255,143,0.08)"/>
+      <polyline points="50,122 150,78 250,66 350,56" fill="none" stroke="#39ff8f" stroke-width="1.5"/>
+      <polyline points="50,136 150,106 250,96 350,86" fill="none" stroke="#ff4060" stroke-width="1.5"/>
+      <polyline points="28,150 60,136 90,126 120,106 150,90 180,70 210,50 240,40 270,30 300,25 330,20 360,15" fill="none" stroke="#dce3f5" stroke-width="2.2"/>
+      <polyline points="28,146 80,126 130,101 180,80 230,60 280,46 330,34" fill="none" stroke="#ff8c42" stroke-width="1.2" stroke-dasharray="4,2"/>
+      <polyline points="28,150 100,136 170,116 240,90 310,66 360,48" fill="none" stroke="#4488ff" stroke-width="1.2" stroke-dasharray="4,2"/>
+      <polyline points="130,150 180,136 230,116 280,90 330,68" fill="none" stroke="#b06eff" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="352" y="52" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Span A</text>
+      <text x="352" y="88" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Span B</text>
+      <text x="145" y="98" fill="rgba(57,255,143,0.5)" font-size="9" font-family="JetBrains Mono">CLOUD (bullish)</text>
+      <text x="328" y="28" fill="#ff8c42" font-size="8" font-family="JetBrains Mono">Tenkan</text>
+      <text x="352" y="44" fill="#4488ff" font-size="8" font-family="JetBrains Mono">Kijun</text>
+      <text x="280" y="84" fill="#b06eff" font-size="8" font-family="JetBrains Mono">Chikou</text>
+    </svg>
+    <div class="svglabel">Price above a green cloud with Tenkan above Kijun = confirmed uptrend</div>
+  </div>
+
+  <div class="card p">
+    <div class="tag p">The 5 Lines</div>
+    <div class="ichi-row">
+      <div class="ichi-dot" style="background:#ff8c42"></div>
+      <div class="ichi-name">Tenkan-sen</div>
+      <div class="ichi-desc">9-period midpoint. Fast line — short-term momentum. When above Kijun = bullish bias.</div>
+    </div>
+    <div class="ichi-row">
+      <div class="ichi-dot" style="background:#4488ff"></div>
+      <div class="ichi-name">Kijun-sen</div>
+      <div class="ichi-desc">26-period midpoint. The baseline. Price below Kijun = bearish. Acts as dynamic support/resistance.</div>
+    </div>
+    <div class="ichi-row">
+      <div class="ichi-dot" style="background:#39ff8f"></div>
+      <div class="ichi-name">Senkou Span A</div>
+      <div class="ichi-desc">Upper cloud boundary. Average of Tenkan + Kijun, plotted 26 periods into the future.</div>
+    </div>
+    <div class="ichi-row">
+      <div class="ichi-dot" style="background:#ff4060"></div>
+      <div class="ichi-name">Senkou Span B</div>
+      <div class="ichi-desc">Lower cloud boundary. 52-period midpoint, plotted 26 periods ahead.</div>
+    </div>
+    <div class="ichi-row">
+      <div class="ichi-dot" style="background:#b06eff"></div>
+      <div class="ichi-name">Chikou Span</div>
+      <div class="ichi-desc">Today's close plotted 26 periods back. Confirms strength when above historical price.</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card g">
+      <div class="tag g">Bullish Setup</div>
+      <h3>All green — strong uptrend</h3>
+      <p>① Price <strong>above the cloud</strong><br>② Cloud is <strong>green</strong> (Span A above Span B)<br>③ Tenkan above Kijun<br>④ Chikou above price from 26 periods ago<br><br>All four = confirmed strong uptrend.</p>
+    </div>
+    <div class="card r">
+      <div class="tag r">Bearish Setup</div>
+      <h3>All red — strong downtrend</h3>
+      <p>① Price <strong>below the cloud</strong><br>② Cloud is <strong>red</strong> (Span B above Span A)<br>③ Kijun above Tenkan<br>④ Chikou below old price<br><br>All four = confirmed strong downtrend.</p>
+    </div>
+  </div>
+
+  <div class="card y">
+    <div class="tag y">TK Cross</div>
+    <h3>The primary entry signal</h3>
+    <p>When Tenkan crosses Kijun upward <strong>above the cloud</strong> = strong buy (TK Bullish Cross). Below the cloud = weak signal. Inside the cloud = unreliable. This positioning filter dramatically reduces false entries compared to standard crossover systems. The best TK crosses happen when the cloud ahead is also green (future support already visible).</p>
+  </div>
+
+  <div class="section-divider">
+    <h2>Volume Profile</h2>
+  </div>
+
+  <div class="card b">
+    <div class="tag b">The Concept</div>
+    <h3>Not when volume happened — but at which price</h3>
+    <p>Standard volume bars show <em>when</em> activity occurred. Volume Profile reveals <em>at which price level</em> that activity occurred. This distinction is critical: "there was high volume on Tuesday" is far less actionable than "the heaviest trading happened at exactly $42,000" — which tells you where the most participants entered.</p>
+  </div>
+
+  <div class="card b">
+    <div class="tag b">Visualization</div>
+    <h3>Horizontal bars = activity at each price level</h3>
+    <p>Long bar = heavy trading = meaningful zone. Short bar = price flew through with little participation.</p>
+    <div class="vp-wrap">
+      <div class="vp-prices">
+        <span>$50k</span>
+        <span>$48k</span>
+        <span>$46k</span>
+        <span>$44k</span>
+        <span>$42k</span>
+        <span>$40k</span>
+        <span>$38k</span>
+      </div>
+      <div class="vp-bars">
+        <div class="vp-row"><div class="vp-bar" style="width:10%;background:rgba(68,136,255,0.35)"></div></div>
+        <div class="vp-row"><div class="vp-bar" style="width:22%;background:rgba(68,136,255,0.4)"></div></div>
+        <div class="vp-row"><div class="vp-bar" style="width:40%;background:rgba(68,136,255,0.48)"></div></div>
+        <div class="vp-row"><div class="vp-bar" style="width:84%;background:rgba(255,204,0,0.5);border:1px solid rgba(255,204,0,0.6)"></div><span class="vp-label" style="color:#ffcc00">POC</span></div>
+        <div class="vp-row"><div class="vp-bar" style="width:65%;background:rgba(68,136,255,0.52)"></div></div>
+        <div class="vp-row"><div class="vp-bar" style="width:28%;background:rgba(68,136,255,0.38)"></div></div>
+        <div class="vp-row"><div class="vp-bar" style="width:8%;background:rgba(68,136,255,0.28)"></div></div>
+      </div>
+    </div>
+    <p>The <strong style="color:#ffcc00">yellow bar = Point of Control (POC)</strong> — the most traded price. Acts like a magnet; price often gravitates back to it after a deviation.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card y">
+      <div class="tag y">POC</div>
+      <h3>Point of Control</h3>
+      <p>The price level with the <strong>most volume</strong>. The market found "fair value" here — participants from both sides agreed on this price the most. Price tends to return to the POC like a magnet after extended moves away from it.</p>
+    </div>
+    <div class="card c">
+      <div class="tag c">Value Area</div>
+      <h3>VAH & VAL</h3>
+      <p><strong>Value Area = 70% of all transactions.</strong> VAH (Value Area High) is the upper boundary, VAL the lower. Price inside = "fair." Price outside = extreme zone that often snaps back inside quickly.</p>
+    </div>
+    <div class="card g">
+      <div class="tag g">Low Volume Node</div>
+      <h3>Thin zones = fast movement</h3>
+      <p>Where little was traded, there is little resistance. Price rushes through Low Volume Nodes — this is why charts sometimes show what look like "teleportation" moves.</p>
+    </div>
+    <div class="card r">
+      <div class="tag r">High Volume Node</div>
+      <h3>Dense zones = stalls and bounces</h3>
+      <p>Where lots was traded, many participants have open positions they're defending. Price often consolidates or reverses at High Volume Nodes — they act as durable support and resistance.</p>
+    </div>
+  </div>
+
+  <div class="section-divider">
+    <h2>Order Flow & Liquidity</h2>
+  </div>
+
+  <div class="card p">
+    <div class="tag p">The Big Picture</div>
+    <h3>Who actually moves markets</h3>
+    <p>Retail traders don't move prices — <strong>institutional money</strong> does: hedge funds, market makers, large funds. They hold so much capital that they can't simply click "buy" — they need <strong>liquidity</strong> (other people's orders) to fill their positions. And liquidity concentrates exactly where retail traders place their stop-losses.</p>
+  </div>
+
+  <div class="card r">
+    <div class="tag r">Stop Hunt</div>
+    <h3>Why price always seems to hit your stop first</h3>
+    <div class="svgbox">
+      <svg width="340" height="130" viewBox="0 0 340 130">
+        <polyline points="10,65 38,62 66,72 94,65 122,68" fill="none" stroke="#dce3f5" stroke-width="1.8"/>
+        <line x1="10" y1="85" x2="200" y2="85" stroke="#ff4060" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="12" y="97" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Retail stop-losses here</text>
+        <polyline points="122,68 142,88 148,95 142,84 156,68" fill="none" stroke="#ff4060" stroke-width="2"/>
+        <text x="150" y="100" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Stop Hunt!</text>
+        <polyline points="156,68 174,56 196,42 222,28 258,16 300,6" fill="none" stroke="#39ff8f" stroke-width="2.2"/>
+        <text x="262" y="13" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Pump ↑</text>
+        <rect x="139" y="80" width="22" height="18" fill="rgba(57,255,143,0.1)" rx="2"/>
+        <text x="164" y="90" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">← Institutional buy</text>
+      </svg>
+    </div>
+    <p>Retail sets stops just below support. Institutions know this. They briefly push price through that level, triggering all the stop orders (= sell orders they can buy from), then immediately pump. This is a <strong>Liquidity Grab</strong> — they used your stop to fill their long position.</p>
+  </div>
+
+  <div class="card p">
+    <div class="tag p">Liquidity Pools</div>
+    <h3>Where liquidity accumulates</h3>
+    <ul>
+      <li><strong>Just below old lows</strong> — long traders have stops there</li>
+      <li><strong>Just above old highs</strong> — short traders have stops there</li>
+      <li><strong>Round numbers</strong> ($40k, $50k, $100k) — psychologically obvious, dense order clustering</li>
+      <li><strong>Equal highs / equal lows</strong> — two matching levels is a neon sign pointing to liquidity</li>
+    </ul>
+  </div>
+
+  <div class="card b">
+    <div class="tag b">Order Block</div>
+    <h3>The origin of a strong impulsive move</h3>
+    <div class="svgbox">
+      <svg width="320" height="118" viewBox="0 0 320 118">
+        <rect x="28" y="58" width="38" height="26" fill="rgba(68,136,255,0.12)" stroke="#4488ff" stroke-width="1" rx="2"/>
+        <text x="30" y="55" fill="#4488ff" font-size="8" font-family="JetBrains Mono">Order Block</text>
+        <polyline points="8,88 28,82 48,70 68,54 90,38 118,24 148,14" fill="none" stroke="#39ff8f" stroke-width="2"/>
+        <polyline points="148,14 166,24 182,38 194,57 200,70" fill="none" stroke="#dce3f5" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <polyline points="200,70 214,53 238,34 268,17 298,6" fill="none" stroke="#39ff8f" stroke-width="2.2"/>
+        <text x="196" y="84" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Bounce ↑</text>
+      </svg>
+    </div>
+    <p>An Order Block is the last candle (or cluster) before a strong impulsive move away. Institutions built their position there. When price returns to that zone, they often add to their position again → strong bounce. Most reliable when the Order Block coincides with a Fibonacci level.</p>
+  </div>
+
+  <div class="section-divider">
+    <h2>Market Structure</h2>
+  </div>
+
+  <div class="card g">
+    <div class="tag g">The Foundation</div>
+    <h3>A trend is a sequence of highs and lows</h3>
+    <p>An uptrend = <strong>Higher Highs (HH) and Higher Lows (HL)</strong>. A downtrend = <strong>Lower Lows (LL) and Lower Highs (LH)</strong>. Nothing more complex than this. When this sequence breaks, the trend is in question — that's a Break of Structure.</p>
+  </div>
+
+  <div class="svgbox">
+    <svg width="100%" height="152" viewBox="0 0 400 152" preserveAspectRatio="xMidYMid meet">
+      <polyline points="20,136 60,96 80,111 120,66 140,81 180,36 200,54 240,14" fill="none" stroke="#39ff8f" stroke-width="2"/>
+      <text x="56" y="90" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HH</text>
+      <text x="76" y="124" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HL</text>
+      <text x="116" y="60" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HH</text>
+      <text x="136" y="94" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HL</text>
+      <text x="176" y="30" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HH</text>
+      <text x="196" y="66" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HL</text>
+      <polyline points="240,14 258,30 268,46 262,64 248,80 238,90 242,107" fill="none" stroke="#ff4060" stroke-width="2"/>
+      <text x="252" y="40" fill="#ff4060" font-size="9" font-family="JetBrains Mono">LH!</text>
+      <text x="238" y="100" fill="#ff4060" font-size="9" font-family="JetBrains Mono">LL!</text>
+      <line x1="240" y1="54" x2="330" y2="54" stroke="#ffcc00" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="248" y="50" fill="#ffcc00" font-size="8" font-family="JetBrains Mono">BOS — Structure Break</text>
+      <polyline points="242,107 260,91 270,108 290,81 305,101 330,66" fill="none" stroke="#ff4060" stroke-width="2"/>
+    </svg>
+    <div class="svglabel">Green = Uptrend (HH/HL) → Structure Break → Red = Downtrend (LH/LL)</div>
+  </div>
+
+  <div class="ms-row">
+    <div class="ms-icon">📈</div>
+    <div class="ms-body">
+      <h4 style="color:#39ff8f">Higher High (HH)</h4>
+      <p>New high above the previous high. Buyers remain in control, consistently pushing price further up.</p>
+    </div>
+  </div>
+  <div class="ms-row">
+    <div class="ms-icon">🔼</div>
+    <div class="ms-body">
+      <h4 style="color:#39ff8f">Higher Low (HL)</h4>
+      <p>Each pullback ends higher than the last. Buyers step in sooner every time — strong bullish structure.</p>
+    </div>
+  </div>
+  <div class="ms-row">
+    <div class="ms-icon">📉</div>
+    <div class="ms-body">
+      <h4 style="color:#ff4060">Lower Low (LL)</h4>
+      <p>New low below the previous low. Sellers driving price progressively deeper.</p>
+    </div>
+  </div>
+  <div class="ms-row">
+    <div class="ms-icon">🔽</div>
+    <div class="ms-body">
+      <h4 style="color:#ff4060">Lower High (LH)</h4>
+      <p>Each recovery ends lower than the last. Nobody is buying at the old levels anymore — bearish.</p>
+    </div>
+  </div>
+
+  <div class="card y">
+    <div class="tag y">Break of Structure (BOS)</div>
+    <h3>The structural warning sign</h3>
+    <p>In an uptrend: if price creates a new Lower Low (breaks below the last Higher Low), the bullish structure has broken. Not necessarily a panic sell — but a serious signal to check higher timeframes and reduce exposure. The first Lower High that follows = <strong>Change of Character (CHoCH)</strong>, confirming the trend has officially reversed.</p>
+  </div>
+
+  <div class="section-divider">
+    <h2>Divergences</h2>
+  </div>
+
+  <div class="card p">
+    <div class="tag p">What is a divergence?</div>
+    <h3>Price and indicator disagree — pay attention</h3>
+    <p>A divergence occurs when price makes a new extreme (higher high or lower low) but the indicator does <strong>not confirm it</strong>. This disconnect reveals that the move lacks real momentum — the surface is calm but something is shifting underneath.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card g">
+      <div class="tag g">Bullish Divergence</div>
+      <h3>Price: lower low · RSI: higher low</h3>
+      <div class="svgbox">
+        <svg width="200" height="118" viewBox="0 0 200 118">
+          <text x="5" y="10" fill="#dce3f5" font-size="8" font-family="JetBrains Mono">PRICE</text>
+          <polyline points="10,30 38,63 66,48 98,78 128,58" fill="none" stroke="#dce3f5" stroke-width="1.8"/>
+          <circle cx="38" cy="63" r="3" fill="#39ff8f"/>
+          <circle cx="98" cy="78" r="3" fill="#39ff8f"/>
+          <line x1="38" y1="63" x2="98" y2="78" stroke="#39ff8f" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="68" y="72" fill="#dce3f5" font-size="8" font-family="JetBrains Mono">RSI</text>
+          <polyline points="10,112 38,93 66,103 98,85 128,103" fill="none" stroke="#b06eff" stroke-width="1.8"/>
+          <circle cx="38" cy="93" r="3" fill="#39ff8f"/>
+          <circle cx="98" cy="85" r="3" fill="#39ff8f"/>
+          <line x1="38" y1="93" x2="98" y2="85" stroke="#39ff8f" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="100" y="83" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">↑ higher!</text>
+        </svg>
+      </div>
+      <p>Price makes lower low, RSI makes higher low. <strong>Buying momentum is secretly building.</strong> Strongest when RSI is below 30. One of the most reliable reversal signals in technical analysis.</p>
+    </div>
+    <div class="card r">
+      <div class="tag r">Bearish Divergence</div>
+      <h3>Price: higher high · RSI: lower high</h3>
+      <div class="svgbox">
+        <svg width="200" height="118" viewBox="0 0 200 118">
+          <text x="5" y="10" fill="#dce3f5" font-size="8" font-family="JetBrains Mono">PRICE</text>
+          <polyline points="10,58 38,33 66,48 98,16 128,38" fill="none" stroke="#dce3f5" stroke-width="1.8"/>
+          <circle cx="38" cy="33" r="3" fill="#ff4060"/>
+          <circle cx="98" cy="16" r="3" fill="#ff4060"/>
+          <line x1="38" y1="33" x2="98" y2="16" stroke="#ff4060" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="68" y="70" fill="#dce3f5" font-size="8" font-family="JetBrains Mono">RSI</text>
+          <polyline points="10,96 38,78 66,91 98,86 128,94" fill="none" stroke="#b06eff" stroke-width="1.8"/>
+          <circle cx="38" cy="78" r="3" fill="#ff4060"/>
+          <circle cx="98" cy="86" r="3" fill="#ff4060"/>
+          <line x1="38" y1="78" x2="98" y2="86" stroke="#ff4060" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="100" y="84" fill="#ff4060" font-size="7" font-family="JetBrains Mono">↓ lower!</text>
+        </svg>
+      </div>
+      <p>Price makes higher high, RSI makes lower high. <strong>Momentum is secretly fading</strong> while price still looks strong. Warning to reduce long exposure. Strongest when RSI is above 70.</p>
+    </div>
+  </div>
+
+  <div class="card y">
+    <div class="tag y">Hidden Divergence</div>
+    <h3>Trend continuation, not reversal</h3>
+    <p><strong>Bullish hidden divergence:</strong> Price makes Higher Low, RSI makes Lower Low → trend continues upward. <strong>Bearish hidden divergence:</strong> Price makes Lower High, RSI makes Higher High → trend continues downward. Use these for continuation trades within a trend, not reversals against it. Best used on the 4H and Daily chart.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 6 — STRATEGY & PSYCHOLOGY
+═══════════════════════════════════════════════ -->
+<div class="sec" id="sec-psychology">
+  <h2>Trade Planning</h2>
+
+  <div class="card b">
+    <div class="tag b">The Framework</div>
+    <h3>Never enter without a written plan</h3>
+    <p>Professionals define <strong>before entering</strong>: exactly where to buy, where to exit if wrong (stop-loss), and where to take profit. Without this, you're not trading — you're gambling and telling yourself a story. The plan removes emotion from the equation because all decisions are made in advance, calmly.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-n">01</div>
+    <div class="step-body">
+      <h4>Determine the trend</h4>
+      <p>Start with the weekly, then daily chart. Bullish or bearish structure? Only trade in the direction of the larger trend — counter-trend positions have lower win rates and require much tighter management to be profitable.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-n">02</div>
+    <div class="step-body">
+      <h4>Define your entry point</h4>
+      <p>Enter at a logical, technically justified level — a confluence of support, a Fibonacci zone, a clear pattern completion. Never buy simply because price is going up (that's FOMO). The entry should have a clear reason that can be written down in one sentence.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-n">03</div>
+    <div class="step-body">
+      <h4>Set your Stop-Loss (SL)</h4>
+      <p>Where is your thesis invalidated? Typically just below the last support or Fibonacci level. If price breaks that level, the setup is wrong — exit without hesitation. No hoping, no adjusting the stop downward. The stop defines the maximum loss you accept on this idea.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-n">04</div>
+    <div class="step-body">
+      <h4>Set Take-Profit levels (TP)</h4>
+      <p>Where will you exit with a gain? Next resistance, a Fibonacci extension (127.2%, 161.8%), or a prior swing high. Consider partial exits: close 50% at TP1, let the remainder run with a trailing stop to TP2.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-n">05</div>
+    <div class="step-body">
+      <h4>Check the Risk/Reward ratio</h4>
+      <p>Calculate: potential loss (Entry − SL) vs. potential gain (TP − Entry). Minimum acceptable = <strong>1:2</strong>. Target = <strong>1:3</strong>. If the ratio is worse than 1:2, don't take the trade — the math doesn't support it even with a good win rate.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-n">06</div>
+    <div class="step-body">
+      <h4>Size the position correctly</h4>
+      <p>Never risk more than 1–2% of total capital per trade. Formula: <strong>Position Size = (Capital × 0.01) ÷ (Entry − SL as decimal)</strong>. This means a string of losses can never wipe you out — you survive to trade another day.</p>
+    </div>
+  </div>
+
+  <div class="card g">
+    <div class="tag g">Risk/Reward Visual</div>
+    <h3>R:R 1:3 — the goal</h3>
+    <p>At R:R 1:3, you can lose 3 out of every 4 trades and still break even. At a 50% win rate, you grow your account meaningfully without needing to be "right" most of the time.</p>
+    <div class="rrr">
+      <div class="rrr-l" style="width:25%;background:rgba(255,64,96,0.2);color:#ff4060;border-right:2px solid #ff4060">RISK −1R</div>
+      <div class="rrr-l" style="width:75%;background:rgba(57,255,143,0.1);color:#39ff8f">REWARD +3R ✓</div>
+    </div>
+    <p><strong>Example:</strong> Entry $100 · SL $97 (−$3) · TP $109 (+$9) → R:R = 1:3 ✓</p>
+  </div>
+
+  <div class="card y">
+    <div class="tag y">Trailing Stop</div>
+    <h3>Locking in gains as the trade moves in your favor</h3>
+    <p>Once a trade is running, move the stop-loss upward with price. Example: start at $97 (initial risk), move to $100 when price hits $103 (breakeven). Move to $104 when price hits $107. You can never lose money now, but still have upside remaining. This is how professionals let winners run without giving everything back.</p>
+  </div>
+
+  <div class="card a">
+    <div class="tag a">Timeframes</div>
+    <h3>Which chart period to use</h3>
+    <p><strong>1W (Weekly)</strong> → Big picture, long-term trend direction — check this first<br>
+    <strong>1D (Daily)</strong> → Medium-term trend, most reliable signals for investors<br>
+    <strong>4H</strong> → Swing trading, good for timing precise entries<br>
+    <strong>1H / 15min</strong> → Short-term, high noise, many false signals<br><br>
+    The rule: always zoom out first, then zoom in. A strong setup on the 15-minute chart is nearly worthless if the daily and weekly are in a downtrend — you'd be fighting the large money flow.</p>
+  </div>
+
+  <div class="section-divider">
+    <h2>Trading Psychology</h2>
+  </div>
+
+  <div class="card r">
+    <div class="tag r">The Uncomfortable Truth</div>
+    <h3>90% of traders fail — not because of bad analysis</h3>
+    <p>The majority of retail traders lose not because their setups are wrong, but because they don't follow their own rules when it matters. <strong>Emotion consistently overrides strategy</strong> in live trading. Understanding this — really internalizing it — is the single most important shift toward becoming profitable.</p>
+  </div>
+
+  <div class="psych-card danger">
+    <div class="psych-title">😱 FOMO — Fear of Missing Out</div>
+    <p>Price pumps hard and you're not in it. You buy at the top because you can't stand watching. <strong>This is the single most common and expensive mistake in all of retail trading.</strong> Institutions are selling into your FOMO buying — they need your order to exit. Rule: <strong>if you feel FOMO, do nothing.</strong> There is always another setup, always another trade.</p>
+  </div>
+
+  <div class="psych-card danger">
+    <div class="psych-title">😤 Revenge Trading</div>
+    <p>You lose a trade and immediately open another one to recover the loss. Then you lose more. Then another. This is a death spiral that has destroyed more accounts than any market crash. <strong>Mandatory rule: 30-minute minimum pause after any losing trade.</strong> Let the emotional response metabolize before you touch anything. The market will still be there.</p>
+  </div>
+
+  <div class="psych-card warn">
+    <div class="psych-title">🤞 Not Respecting the Stop-Loss</div>
+    <p>"It'll reverse soon." Sometimes it does — and that one time trains you to repeat it, until a trade goes −60% and you're hoping instead of acting. <strong>A stop-loss is a contract with yourself. Do not renegotiate mid-trade.</strong> The mathematics of recovery is brutal: recovering from −50% requires a +100% gain just to break even.</p>
+  </div>
+
+  <div class="psych-card warn">
+    <div class="psych-title">💰 Cutting Winners Too Early</div>
+    <p>Up 10% and you close nervously. The trade continues to +50% without you. Meanwhile you hold losing trades "just a bit longer." This is the exact opposite of optimal — cutting gains and extending losses. The fix: <strong>trailing stop-loss</strong>. Let profits run mechanically while protecting against catastrophic reversal.</p>
+  </div>
+
+  <div class="psych-card warn">
+    <div class="psych-title">📊 Overtrading</div>
+    <p>You need action. You find setups in noise. Every trade has fees and every impulsive trade costs real capital. <strong>The best traders take very few, very high-quality setups.</strong> "I have no position right now" is a completely valid and often optimal state. Boredom is not a valid reason to enter a trade.</p>
+  </div>
+
+  <div class="psych-card tip">
+    <div class="psych-title">📓 The Trading Journal — most powerful tool available</div>
+    <p>Log every trade: entry price, SL, TP, the reason for the trade, your emotional state when entering, and the outcome. After 50 trades you'll see invisible patterns emerge: "I always lose when I trade after 11pm." "My best setups consistently come from this type of level." Without this data, you repeat identical mistakes indefinitely. With it, you compound improvements instead.</p>
+  </div>
+
+  <div class="card g">
+    <div class="tag g">The Emotion Cycle</div>
+    <h3>Where is the crowd right now? Do the opposite.</h3>
+    <div class="svgbox">
+      <svg width="100%" height="165" viewBox="0 0 400 165" preserveAspectRatio="xMidYMid meet">
+        <path d="M 20,145 Q 58,26 98,20 Q 138,16 158,56 Q 178,96 198,135 Q 218,156 238,150 Q 278,140 318,76 Q 348,26 378,17" fill="none" stroke="#4488ff" stroke-width="2"/>
+        <circle cx="98" cy="20" r="5" fill="#39ff8f"/>
+        <text x="80" y="14" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Euphoria</text>
+        <text x="68" y="26" fill="#5a6480" font-size="7" font-family="JetBrains Mono">← Consider selling</text>
+        <circle cx="158" cy="56" r="4" fill="#ffcc00"/>
+        <text x="160" y="53" fill="#ffcc00" font-size="8" font-family="JetBrains Mono">Anxiety</text>
+        <circle cx="198" cy="135" r="5" fill="#ff4060"/>
+        <text x="166" y="152" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Capitulation</text>
+        <text x="166" y="162" fill="#ff4060" font-size="7" font-family="JetBrains Mono">← Consider buying</text>
+        <circle cx="238" cy="150" r="4" fill="#ffcc00"/>
+        <text x="240" y="147" fill="#ffcc00" font-size="8" font-family="JetBrains Mono">Hope</text>
+        <circle cx="318" cy="76" r="4" fill="#b06eff"/>
+        <text x="320" y="73" fill="#b06eff" font-size="8" font-family="JetBrains Mono">Optimism</text>
+        <circle cx="378" cy="17" r="5" fill="#39ff8f"/>
+        <text x="354" y="12" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Euphoria</text>
+      </svg>
+    </div>
+    <p>The contrarian approach: when <strong>everyone is euphoric</strong> — reduce positions. When <strong>everyone is capitulating</strong> and nobody wants to buy — start looking for entries. Warren Buffett: <em style="color:var(--text)">"Be fearful when others are greedy, and greedy when others are fearful."</em> The Fear & Greed Index on the dashboard reflects exactly this sentiment cycle.</p>
+  </div>
+
+  <div class="card b">
+    <div class="tag b">Rules for Mental Discipline</div>
+    <h3>System wins over emotion every time</h3>
+    <ul>
+      <li>Write your plan <strong>before</strong> the trade, never during it when emotion is active</li>
+      <li>Define if-then rules in advance: "If X happens, I do Y" — no improvising</li>
+      <li>Never trade when tired, stressed, hungry, or emotionally heightened</li>
+      <li>Set a daily loss limit (e.g. −2% of capital) after which trading stops for the day</li>
+      <li>Evaluate your <em>process</em>, not just outcomes — a well-executed trade can still lose money</li>
+      <li>Physical exercise measurably improves impulse control — treat it as part of your trading edge</li>
+    </ul>
+  </div>
+
+  <div class="card a">
+    <div class="tag a">Note</div>
+    <h3>This guide is for educational purposes only</h3>
+    <p>Nothing on this page constitutes financial advice. Technical analysis provides probabilistic tools, not certainties. Always do your own research before making any investment decision. Past pattern performance does not guarantee future results.</p>
+  </div>
+
+</div><!-- end psychology -->
+
+</div><!-- /wrap -->
+
+<script>
+function show(id) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.getElementById('sec-' + id).classList.add('on');
+  event.target.classList.add('on');
+}
+</script>
+</body>
+</html>
