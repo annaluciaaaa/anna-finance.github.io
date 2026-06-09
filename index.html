@@ -59,14 +59,15 @@ button,input{font-family:'Inter',sans-serif}
 .gtab{padding:11px 15px;font-size:11px;font-weight:600;color:#94a3b8;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.15s;margin-bottom:-1px}
 .gtab:hover{color:#475569}
 .gtab.on{color:#6366f1;border-bottom-color:#6366f1;font-weight:700}
-.asset-card{background:#fff;border:1.5px solid #e2e8f8;border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
-.asset-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6366f1,#8b5cf6);opacity:0;transition:opacity 0.15s}
-.asset-card:hover{border-color:#c7d2fe;box-shadow:0 4px 20px rgba(99,102,241,0.1);transform:translateY(-1px)}
-.asset-card:hover::before{opacity:1}
-.asset-sym{font-size:15px;font-weight:800;color:#1e2a4a;font-family:'Syne',sans-serif;letter-spacing:-0.01em}
-.asset-name{font-size:10px;color:#94a3b8;margin-top:2px;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.asset-price{font-size:16px;font-weight:800;color:#1e2a4a;font-family:'Syne',sans-serif}
-.asset-chg{font-size:11px;font-weight:600;margin-top:2px}
+.asset-list{background:#fff;border:1.5px solid #e2e8f8;border-radius:14px;overflow:hidden;margin-bottom:24px}
+.asset-row{display:flex;align-items:center;padding:13px 18px;cursor:pointer;transition:background 0.12s;border-bottom:1px solid #f1f5f9;gap:14px}
+.asset-row:last-child{border-bottom:none}
+.asset-row:hover{background:#f8f9ff}
+.asset-bar{width:3px;height:34px;border-radius:2px;flex-shrink:0}
+.asset-sym{font-size:14px;font-weight:800;color:#1e2a4a;font-family:'Syne',sans-serif;width:64px;flex-shrink:0}
+.asset-name{font-size:11px;color:#94a3b8;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.asset-price{font-size:14px;font-weight:700;color:#1e2a4a;text-align:right;flex-shrink:0;min-width:72px}
+.asset-chg{font-size:12px;font-weight:700;text-align:right;flex-shrink:0;min-width:62px}
 .tab-btn{padding:5px 11px;border-radius:5px;font-size:10px;cursor:pointer;transition:all 0.15s}
 .tab-btn.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;box-shadow:0 2px 8px rgba(99,102,241,0.3)}
 .tab-btn:not(.active){background:#fff;color:#64748b;border:1.5px solid #e2e8f8}
@@ -228,7 +229,7 @@ function toTVSym(s){return TV_SYM[s]||s;}
 const S={
   active:null,stocks:{},tab:"price",range:"3m",aiText:"",aiLoading:false,
   custom:[],liveLoaded:{},
-  activeGroup:null,
+  activeGroup:"Indices",
   fgi:{},fgiLoading:false,intraday:{}
 };
 function findGroup(t){for(const[g,ts]of Object.entries(GROUPS)){if(ts.includes(t))return g;}if(S.custom.includes(t))return"My Tickers";return null;}
@@ -236,7 +237,6 @@ function renderNav(){
   const groups=Object.assign({},GROUPS);
   if(S.custom.length)groups["My Tickers"]=S.custom;
   document.getElementById("group-tabs").innerHTML=
-    `<button class="gtab${!S.activeGroup?" on":""}" onclick="setGroup(null)">All</button>`+
     Object.keys(groups).map(g=>`<button class="gtab${S.activeGroup===g?" on":""}" onclick="setGroup('${g}')">${g}</button>`).join("");
 }
 window.setGroup=function(g){S.activeGroup=g;S.active=null;renderNav();renderLanding();};
@@ -729,27 +729,25 @@ function renderLanding(){
   const el=document.getElementById("main");
   const allGroups=Object.assign({},GROUPS);
   if(S.custom.length)allGroups["My Tickers"]=S.custom;
-  const toShow=S.activeGroup?{[S.activeGroup]:allGroups[S.activeGroup]}:allGroups;
-  const showHeader=!S.activeGroup;
-  el.innerHTML=`<div style="padding-bottom:32px">
-    ${Object.entries(toShow).map(([grp,tickers])=>`
-    ${showHeader?`<div style="font-size:11px;font-weight:700;color:#6366f1;letter-spacing:0.08em;text-transform:uppercase;margin:${grp===Object.keys(toShow)[0]?"0":"20px"} 0 10px">${grp}</div>`:"<div style='margin-top:4px'></div>"}
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px">
+  const tickers=(allGroups[S.activeGroup]||allGroups[Object.keys(allGroups)[0]]);
+  el.innerHTML=`<div style="max-width:640px;padding-bottom:32px">
+    <div class="asset-list">
       ${tickers.map(t=>{
         const d=S.stocks[t];
         const label=t.replace("^","").replace("-USD","");
         const name=NAMES[t]||label;
-        const c=d?(d.chg>=0?"#10b981":"#ef4444"):"#94a3b8";
-        const sign=d?(d.chg>=0?"+":""):"";
-        return`<div class="asset-card" onclick="doSelect('${t}')">
+        const up=d?d.chg>=0:null;
+        const c=up===null?"#cbd5e1":up?"#10b981":"#ef4444";
+        return`<div class="asset-row" onclick="doSelect('${t}')">
+          <div class="asset-bar" style="background:${c}"></div>
           <div class="asset-sym">${label}</div>
           <div class="asset-name">${name}</div>
           <div class="asset-price">${d?fmtPrice(d.last):"—"}</div>
-          <div class="asset-chg" style="color:${c}">${d?sign+d.chg.toFixed(2)+"%":"loading…"}</div>
+          <div class="asset-chg" style="color:${c}">${d?(up?"+":"")+d.chg.toFixed(2)+"%":"…"}</div>
         </div>`;
       }).join("")}
-    </div>`).join("")}
-    <div style="font-size:9px;color:#cbd5e1;margin-top:20px;font-style:italic">For informational purposes only — not financial advice.</div>
+    </div>
+    <div style="font-size:9px;color:#cbd5e1;font-style:italic">For informational purposes only — not financial advice.</div>
   </div>`;
 }
 
@@ -760,9 +758,9 @@ function renderMain(){
   if(!d){el.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:300px;color:#94a3b8;font-size:13px">Loading ${S.active}…</div>`;return;}
   const sig=d.sig;
 
-  const grpLabel=findGroup(S.active);
+  const grpLabel=findGroup(S.active)||S.activeGroup||"Watchlist";
   el.innerHTML=
-    `<button onclick="setGroup(${grpLabel?`'${grpLabel}'`:'null'})" style="display:inline-flex;align-items:center;gap:5px;background:none;border:1.5px solid #e2e8f8;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:#64748b;cursor:pointer;margin-bottom:14px;transition:all 0.15s;font-family:'Inter',sans-serif" onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'" onmouseout="this.style.borderColor='#e2e8f8';this.style.color='#64748b'">← ${grpLabel||"Watchlist"}</button>`+
+    `<button onclick="setGroup('${grpLabel}')" style="display:inline-flex;align-items:center;gap:5px;background:none;border:1.5px solid #e2e8f8;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:#64748b;cursor:pointer;margin-bottom:14px;transition:all 0.15s;font-family:'Inter',sans-serif" onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'" onmouseout="this.style.borderColor='#e2e8f8';this.style.color='#64748b'">← ${grpLabel}</button>`+
     // ── Title row
     `<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px">
       <div>
