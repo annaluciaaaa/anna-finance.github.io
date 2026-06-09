@@ -78,8 +78,6 @@ canvas{display:block}
 .index-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6366f1,#8b5cf6)}
 .index-card:hover{border-color:#6366f1;box-shadow:0 4px 16px rgba(99,102,241,0.15);transform:translateY(-1px)}
 .index-card.is-active{border-color:#6366f1;box-shadow:0 4px 16px rgba(99,102,241,0.2)}
-.fgi-bar{height:8px;border-radius:4px;background:linear-gradient(90deg,#ef4444 0%,#f97316 25%,#f59e0b 50%,#10b981 75%,#6366f1 100%);position:relative;margin:8px 0 4px}
-.fgi-needle{position:absolute;top:-5px;width:3px;height:18px;background:#1e2a4a;border-radius:2px;transform:translateX(-50%);box-shadow:0 0 4px rgba(0,0,0,0.3)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:680px){
@@ -127,8 +125,7 @@ canvas{display:block}
     <div id="overviewTime" style="font-size:9px;color:#94a3b8"></div>
   </div>
   <div id="overview-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:8px;margin-bottom:10px"></div>
-  <div id="market-hours" style="margin-bottom:10px"></div>
-  <div id="fgi-widget"></div>
+  <div id="market-hours"></div>
 </div>
 
 <!-- TICKER NAV -->
@@ -230,7 +227,7 @@ const S={
   active:null,stocks:{},tab:"price",range:"3m",aiText:"",aiLoading:false,
   custom:[],liveLoaded:{},
   activeGroup:"Indices",
-  fgi:{},fgiLoading:false,intraday:{}
+  intraday:{}
 };
 function findGroup(t){for(const[g,ts]of Object.entries(GROUPS)){if(ts.includes(t))return g;}if(S.custom.includes(t))return"My Tickers";return null;}
 function showDashboard(){
@@ -622,117 +619,8 @@ function renderOverview(){
       </div>
     </div>`;
   }).join("");
-  renderFGI();
 }
 
-// ── FEAR & GREED ──────────────────────────────────────────────
-function fgiGaugeSVG(score, rating){
-  const cx=115,cy=108,R=90,ri=60;
-  const ZONES=[[0,25,"#d62b2b"],[25,45,"#e07020"],[45,55,"#e8b800"],[55,75,"#4db56a"],[75,100,"#2d8c4e"]];
-  const ZONE_LABELS=["Extreme\nFear","Fear","Neutral","Greed","Extreme\nGreed"];
-  const COL={"extreme fear":"#d62b2b","fear":"#e07020","neutral":"#e8b800","greed":"#4db56a","extreme greed":"#2d8c4e"}[rating.toLowerCase()]||"#64748b";
-  function a(s){return Math.PI*(1-s/100);}
-  function op(s){return[cx+R*Math.cos(a(s)),cy-R*Math.sin(a(s))];}
-  function ip(s){return[cx+ri*Math.cos(a(s)),cy-ri*Math.sin(a(s))];}
-  function arc(s1,s2,fill){
-    const[ox1,oy1]=op(s1),[ox2,oy2]=op(s2),[ix2,iy2]=ip(s2),[ix1,iy1]=ip(s1);
-    const lg=(s2-s1)*1.8>180?1:0;
-    return `<path d="M${ox1.toFixed(1)} ${oy1.toFixed(1)} A${R} ${R} 0 ${lg} 1 ${ox2.toFixed(1)} ${oy2.toFixed(1)} L${ix2.toFixed(1)} ${iy2.toFixed(1)} A${ri} ${ri} 0 ${lg} 0 ${ix1.toFixed(1)} ${iy1.toFixed(1)} Z" fill="${fill}"/>`;
-  }
-  // Zone boundary ticks
-  const ticks=[0,25,45,55,75,100].map(s=>{
-    const ang=a(s);
-    return `<line x1="${(cx+(R+1)*Math.cos(ang)).toFixed(1)}" y1="${(cy-(R+1)*Math.sin(ang)).toFixed(1)}" x2="${(cx+(ri-1)*Math.cos(ang)).toFixed(1)}" y2="${(cy-(ri-1)*Math.sin(ang)).toFixed(1)}" stroke="#fff" stroke-width="2.5"/>`;
-  }).join("");
-  // Zone labels inside arc
-  const midR=(R+ri)/2;
-  const zoneText=ZONES.map(([s1,s2,c],i)=>{
-    const mid=(s1+s2)/2,ang=a(mid);
-    const lx=(cx+midR*Math.cos(ang)).toFixed(1),ly=(cy-midR*Math.sin(ang)).toFixed(1);
-    const rot=(90-ang*180/Math.PI).toFixed(1);
-    const parts=ZONE_LABELS[i].split("\n");
-    if(s2-s1<15) return "";
-    return parts.length>1
-      ?`<text text-anchor="middle" fill="white" font-size="6.5" font-weight="700" font-family="monospace" transform="rotate(${rot},${lx},${ly})"><tspan x="${lx}" dy="-4">${parts[0]}</tspan><tspan x="${lx}" dy="9">${parts[1]}</tspan></text>`
-      :`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="7" font-weight="700" font-family="monospace" transform="rotate(${rot},${lx},${ly})">${parts[0]}</text>`;
-  }).join("");
-  // Score scale ticks on outside
-  const scaleTicks=[0,25,50,75,100].map(s=>{
-    const ang=a(s);
-    const lx=(cx+(R+14)*Math.cos(ang)).toFixed(1),ly=(cy-(R+14)*Math.sin(ang)).toFixed(1);
-    return `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="#94a3b8" font-size="8" font-family="monospace">${s}</text>`;
-  }).join("");
-  // Needle
-  const cs=Math.min(99,Math.max(1,score)),ang=a(cs);
-  const nx=(cx+(R-8)*Math.cos(ang)).toFixed(1),ny=(cy-(R-8)*Math.sin(ang)).toFixed(1);
-  // Base triangle for needle (wider at center)
-  const baseAngle=ang+Math.PI/2;
-  const bx1=(cx+7*Math.cos(baseAngle)).toFixed(1),by1=(cy-7*Math.sin(baseAngle)).toFixed(1);
-  const bx2=(cx-7*Math.cos(baseAngle)).toFixed(1),by2=(cy+7*Math.sin(baseAngle)).toFixed(1);
-  return `<svg viewBox="0 0 230 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px;display:block">
-    ${ZONES.map(([s1,s2,c])=>arc(s1,s2,c)).join("")}
-    ${ticks}
-    ${zoneText}
-    ${scaleTicks}
-    <polygon points="${nx},${ny} ${bx1},${by1} ${bx2},${by2}" fill="#1e2a4a" opacity="0.9"/>
-    <circle cx="${cx}" cy="${cy}" r="9" fill="#1e2a4a"/>
-    <circle cx="${cx}" cy="${cy}" r="5" fill="white"/>
-    <text x="${cx}" y="${cy-26}" text-anchor="middle" font-size="38" font-weight="800" fill="${COL}" font-family="Syne,sans-serif">${Math.round(score)}</text>
-    <text x="${cx}" y="${cy-11}" text-anchor="middle" font-size="9.5" fill="${COL}" font-weight="700" font-family="monospace" letter-spacing="1">${rating.toUpperCase()}</text>
-  </svg>`;
-}
-
-function renderFGI(){
-  const el=document.getElementById("fgi-widget");if(!el)return;
-  const f=S.fgi,score=f.score||null,rating=f.rating||"";
-  const COL={"extreme fear":"#d62b2b","fear":"#e07020","neutral":"#e8b800","greed":"#4db56a","extreme greed":"#2d8c4e"}[rating.toLowerCase()]||"#64748b";
-  if(!score){
-    el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid #e2e8f8;border-radius:12px;padding:10px 14px">
-      <div style="font-size:9px;color:#94a3b8;font-weight:700;letter-spacing:0.1em">⬡ FEAR & GREED INDEX</div>
-      <button onclick="loadFGI()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:6px;padding:4px 10px;font-size:9px;color:#fff;font-weight:700;cursor:pointer">${S.fgiLoading?"Loading...":"Load"}</button>
-    </div>`;
-    return;
-  }
-  const hist=[{l:"Previous close",v:f.prev},{l:"1 week ago",v:f.week},{l:"1 month ago",v:f.month}].filter(h=>h.v!=null);
-  const histColors=v=>v<25?"#d62b2b":v<45?"#e07020":v<55?"#e8b800":v<75?"#4db56a":"#2d8c4e";
-  const histRating=v=>v<25?"Extreme Fear":v<45?"Fear":v<55?"Neutral":v<75?"Greed":"Extreme Greed";
-  el.innerHTML=`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;padding:16px 18px;box-shadow:0 2px 8px rgba(99,102,241,0.06)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div style="font-size:10px;color:#6366f1;font-weight:700;letter-spacing:0.1em">⬡ FEAR & GREED INDEX</div>
-      <button onclick="loadFGI()" style="background:#f8f9ff;border:1px solid #e2e8f8;border-radius:6px;padding:3px 8px;font-size:9px;color:#64748b;cursor:pointer">${S.fgiLoading?"Loading...":"Refresh"}</button>
-    </div>
-    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-      <div style="flex:0 0 auto;margin:0 auto">${fgiGaugeSVG(score,rating)}</div>
-      ${hist.length?`<div style="flex:1;min-width:130px">
-        <div style="font-size:9px;color:#94a3b8;font-weight:700;letter-spacing:0.08em;margin-bottom:10px;text-transform:uppercase">Historical</div>
-        ${hist.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f1f5f9">
-          <span style="font-size:11px;color:#64748b">${h.l}</span>
-          <div style="display:flex;align-items:center;gap:6px">
-            <span style="font-size:10px;color:${histColors(h.v)};font-weight:700">${histRating(h.v)}</span>
-            <span style="font-size:13px;font-weight:800;color:#1e2a4a">${Math.round(h.v)}</span>
-          </div>
-        </div>`).join("")}
-      </div>`:""}
-    </div>
-  </div>`;
-}
-
-window.loadFGI=async function(){
-  if(S.fgiLoading)return;
-  S.fgiLoading=true;renderFGI();
-  try{
-    const cnnUrl="https://production.dataviz.cnn.io/index/fearandgreed/graphdata/";
-    const r=await fetch("https://corsproxy.io/?"+encodeURIComponent(cnnUrl),{signal:AbortSignal.timeout(10000)});
-    if(!r.ok)throw new Error("status "+r.status);
-    const j=await r.json();
-    if(j&&j.fear_and_greed){
-      const hist=j.fear_and_greed_historical?.data;
-      S.fgi={score:j.fear_and_greed.score,rating:j.fear_and_greed.rating,
-        prev:hist?.[1]?.y||null,week:hist?.[6]?.y||null,month:hist?.[29]?.y||null};
-    }
-  }catch(e){console.log("FGI error:",e.message);}
-  S.fgiLoading=false;renderFGI();
-};
 
 // ── SIDEBAR ───────────────────────────────────────────────────
 
@@ -953,7 +841,6 @@ function updateLiveStatus(text,color,pulse){
 (async function(){
   for(const t of ALL){S.stocks[t]=processStock(mock(t));}
   renderNav();renderMain();renderOverview();renderMarketHours();
-  loadFGI();
   updateLiveStatus("Connecting...","#f59e0b",true);
 
   async function loadLive(t){
