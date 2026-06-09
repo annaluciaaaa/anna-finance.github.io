@@ -228,8 +228,9 @@ li { margin-bottom: 0.3rem; }
   background: rgba(5, 7, 18, 0.88);
   backdrop-filter: blur(10px);
   display: flex; align-items: center; justify-content: center;
-  padding: 1.2rem;
+  padding: 1rem;
   animation: fadeIn 0.3s ease;
+  overflow-y: auto;
 }
 .modal-overlay.hidden { display: none; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -239,9 +240,13 @@ li { margin-bottom: 0.3rem; }
   border-radius: 16px;
   max-width: 520px;
   width: 100%;
-  padding: 2rem 2rem 1.6rem;
+  padding: 1.6rem 1.4rem 1.4rem;
   box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(129,140,248,0.08);
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: auto;
 }
 .modal-icon {
   width: 44px; height: 44px; border-radius: 12px;
@@ -280,7 +285,8 @@ li { margin-bottom: 0.3rem; }
   border-radius: 10px; margin-bottom: 1.2rem; cursor: pointer;
 }
 .modal-checkbox-row input[type=checkbox] {
-  width: 16px; height: 16px; margin-top: 1px; flex-shrink: 0;
+  width: 20px; height: 20px; min-width: 20px; min-height: 20px;
+  margin-top: 1px; flex-shrink: 0;
   accent-color: var(--accent); cursor: pointer;
 }
 .modal-checkbox-row label {
@@ -298,6 +304,14 @@ li { margin-bottom: 0.3rem; }
 }
 .modal-btn.active { opacity: 1; }
 .modal-btn.active:hover { transform: translateY(-1px); }
+@media (max-width: 480px) {
+  .modal-box { padding: 1.2rem 1rem 1rem; }
+  .modal-point { padding: 0.65rem 0.75rem; }
+  .modal-point-text { font-size: 0.7rem; }
+  .modal-checkbox-row { padding: 0.75rem; }
+  .modal-checkbox-row label { font-size: 0.7rem; }
+  .modal-points { gap: 0.5rem; margin-bottom: 1rem; }
+}
 </style>
 </head>
 <body>
