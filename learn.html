@@ -343,11 +343,12 @@ li { margin-bottom: 0.3rem; }
 <header>
   <div class="eyebrow">Anna-Finance · Learning Guide</div>
   <h1>How to <span>Read Charts</span></h1>
-  <p>Candlesticks · Patterns · Indicators · Fibonacci · Ichimoku · Volume Profile · Psychology</p>
+  <p>Basics · Candlesticks · Patterns · Indicators · Fibonacci · Ichimoku · Volume Profile · Psychology</p>
 </header>
 
 <nav>
-  <button class="nb on" onclick="show('candles')">1. Candlesticks</button>
+  <button class="nb on" onclick="show('basics')">0. Basics</button>
+  <button class="nb" onclick="show('candles')">1. Candlesticks</button>
   <button class="nb" onclick="show('patterns')">2. Patterns</button>
   <button class="nb" onclick="show('indicators')">3. Indicators</button>
   <button class="nb" onclick="show('fibonacci')">4. Fibonacci</button>
@@ -356,9 +357,110 @@ li { margin-bottom: 0.3rem; }
 </nav>
 
 <!-- ═══════════════════════════════════════════════
+     TAB 0 — BASICS
+═══════════════════════════════════════════════ -->
+<div class="sec on" id="sec-basics">
+  <h2>The Basics</h2>
+
+  <div class="grid2">
+    <div class="card a">
+      <div class="tag a">Asset Type</div>
+      <h3>Stock</h3>
+      <p>A <strong>stock</strong> is a small ownership stake in a company. If Apple has 1 billion shares and you own 100, you own 0.000001% of Apple. When the company grows and earns more money, the stock price tends to rise. When it struggles, the price falls. Stockholders may also receive <strong>dividends</strong> — a share of the company's profits paid out regularly.</p>
+    </div>
+    <div class="card b">
+      <div class="tag b">Asset Type</div>
+      <h3>ETF — Exchange-Traded Fund</h3>
+      <p>An ETF holds a <strong>basket of many assets</strong> in a single tradeable share. SPY, for example, contains all 500 companies of the S&P 500 — buying one share of SPY gives you instant exposure to all of them. ETFs are the easiest way to diversify without picking individual stocks. They trade on exchanges like regular stocks.</p>
+    </div>
+    <div class="card p">
+      <div class="tag p">Asset Type</div>
+      <h3>Index</h3>
+      <p>An index is a <strong>number that tracks a group of assets</strong>. The S&P 500 tracks the 500 largest US companies; the DAX tracks Germany's top 40. You can't buy an index directly — but you can buy an ETF that mirrors it (e.g. SPY ≈ S&P 500). Indices are the world's main benchmarks for measuring market performance.</p>
+    </div>
+    <div class="card o">
+      <div class="tag o">Asset Type</div>
+      <h3>Cryptocurrency</h3>
+      <p>Digital assets that run on decentralized blockchain networks — no central bank or government controls them. <strong>Bitcoin</strong> is the original and largest by market cap, treated as a store of value. <strong>Ethereum</strong> adds programmable "smart contracts." Crypto is significantly more volatile than stocks or ETFs — higher potential reward, higher risk.</p>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:1rem">
+    <div class="card g">
+      <div class="tag g">Market Structure</div>
+      <h3>Bull Market vs. Bear Market</h3>
+      <p>A <strong>bull market</strong> is a sustained rise of 20%+ from a recent low — optimism, economic growth, rising prices. A <strong>bear market</strong> is a decline of 20%+ from a recent high — fear, contraction, falling prices. Most indices have historically trended upward over the long term, even after major bear markets.</p>
+    </div>
+    <div class="card y">
+      <div class="tag y">Valuation</div>
+      <h3>Market Capitalization</h3>
+      <p>Total market value of a company = <strong>share price × total shares outstanding</strong>. <strong>Large-cap</strong> (&gt;$10B) = stable, established companies like Apple or Microsoft. <strong>Mid-cap</strong> ($2–10B) = growth potential with moderate risk. <strong>Small-cap</strong> (&lt;$2B) = higher risk, higher reward. Major indices like the S&P 500 are weighted by market cap.</p>
+    </div>
+  </div>
+
+  <div class="card g" style="margin-top:1rem">
+    <div class="tag g">Core Concept</div>
+    <h3>Support & Resistance</h3>
+    <div class="svgbox">
+      <svg width="100%" height="120" viewBox="0 0 400 120" preserveAspectRatio="xMidYMid meet">
+        <line x1="0" y1="30" x2="400" y2="30" stroke="#ff4060" stroke-width="1" stroke-dasharray="5,4"/>
+        <text x="6" y="26" fill="#ff4060" font-size="9" font-family="JetBrains Mono">Resistance — sellers appear here</text>
+        <line x1="0" y1="90" x2="400" y2="90" stroke="#39ff8f" stroke-width="1" stroke-dasharray="5,4"/>
+        <text x="6" y="106" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">Support — buyers appear here</text>
+        <polyline points="10,90 36,70 62,50 80,30 96,46 120,62 144,46 168,30 188,46 210,62 234,46 258,30 278,50 298,70 318,90 338,70 358,55 380,35" fill="none" stroke="#dce3f5" stroke-width="2"/>
+      </svg>
+    </div>
+    <p><strong>Support</strong> is a price level where buying repeatedly emerges — the price tends to "bounce" from it. <strong>Resistance</strong> is where selling pressure consistently appears — the price struggles to break through. These levels form because many traders remember past highs and lows and act on them. <strong>When resistance breaks, it often becomes the new support</strong> — and vice versa.</p>
+  </div>
+
+  <div class="card c" style="margin-top:1rem">
+    <div class="tag c">Sentiment</div>
+    <h3>Fear & Greed Index</h3>
+    <div style="display:flex;gap:0.5rem;margin:0.8rem 0;flex-wrap:wrap">
+      <div style="flex:1;min-width:80px;padding:0.6rem;background:#090d1e;border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#ff4060">0–25</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:3px">Extreme Fear</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#39ff8f;margin-top:4px">→ potential buy</div>
+      </div>
+      <div style="flex:1;min-width:80px;padding:0.6rem;background:#090d1e;border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#ff8c42">25–45</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:3px">Fear</div>
+      </div>
+      <div style="flex:1;min-width:80px;padding:0.6rem;background:#090d1e;border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#ffcc00">45–55</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:3px">Neutral</div>
+      </div>
+      <div style="flex:1;min-width:80px;padding:0.6rem;background:#090d1e;border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#60a5fa">55–75</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:3px">Greed</div>
+      </div>
+      <div style="flex:1;min-width:80px;padding:0.6rem;background:#090d1e;border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#39ff8f">75–100</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:3px">Extreme Greed</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#ff4060;margin-top:4px">→ caution</div>
+      </div>
+    </div>
+    <p>Measures overall market sentiment on a scale of 0–100 using inputs like volatility, momentum, safe-haven demand, and social media signals. <strong>Extreme Fear</strong> historically marks oversold conditions and buying opportunities. <strong>Extreme Greed</strong> signals euphoria — corrections tend to follow. Contrarian investors watch this closely: when everyone is greedy, it's time to be careful; when everyone is fearful, it may be time to buy.</p>
+  </div>
+
+  <div class="card y" style="margin-top:1rem">
+    <div class="tag y">Risk Management</div>
+    <h3>Diversification</h3>
+    <p>The principle of <strong>not putting all eggs in one basket</strong>. Spreading investments across different sectors (tech, health, energy), regions (US, Europe, Asia), and asset classes (stocks, ETFs, crypto, bonds, gold) reduces overall risk. When one asset crashes, others may hold or rise. A simple diversified portfolio might be: <strong>70% broad ETFs + 20% individual stocks + 10% crypto/alternatives</strong>. The exact split depends on your risk tolerance and time horizon.</p>
+  </div>
+
+  <div class="card a" style="margin-top:1rem">
+    <div class="tag a">Reading Charts</div>
+    <h3>What is a candlestick chart?</h3>
+    <p>Most price charts you see on this dashboard use <strong>candlestick charts</strong>. Each "candle" represents one time period (1 day, 1 hour, etc.) and shows four values: the <strong>Open</strong> and <strong>Close</strong> prices (the body), and the <strong>High</strong> and <strong>Low</strong> (the thin wicks). A <strong>green candle</strong> means price closed higher than it opened — buyers won that period. A <strong>red candle</strong> means sellers pushed it lower. See Tab 1 for full candlestick patterns.</p>
+  </div>
+
+</div><!-- end basics -->
+
+<!-- ═══════════════════════════════════════════════
      TAB 1 — CANDLESTICKS
 ═══════════════════════════════════════════════ -->
-<div class="sec on" id="sec-candles">
+<div class="sec" id="sec-candles">
   <h2>Reading Candlesticks</h2>
 
   <div class="card a">

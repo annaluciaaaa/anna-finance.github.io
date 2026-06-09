@@ -53,10 +53,19 @@
 body{background:#f0f4ff;color:#1e2a4a;font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#f0f4ff}::-webkit-scrollbar-thumb{background:#6366f1;border-radius:2px}
 button,input{font-family:'Inter',sans-serif}
-.sidebar{width:162px;background:#fff;border-right:1.5px solid #e2e8f8;padding:8px 6px;overflow-y:auto;flex-shrink:0;height:calc(100vh - 54px);position:sticky;top:54px;box-shadow:2px 0 12px rgba(99,102,241,0.06)}
-.ticker-item{padding:6px 8px;border-radius:6px;margin-bottom:2px;cursor:pointer;transition:all 0.15s;border:1px solid transparent}
-.ticker-item:hover{background:linear-gradient(135deg,#6366f110,#8b5cf610)}
-.ticker-item.active{background:linear-gradient(135deg,#6366f120,#8b5cf620);border-color:#6366f1}
+#ticker-nav{position:sticky;top:54px;z-index:15;background:#fff;border-bottom:1.5px solid #e2e8f8;box-shadow:0 2px 8px rgba(99,102,241,0.05)}
+#group-tabs{display:flex;overflow-x:auto;padding:0 16px;border-bottom:1px solid #f1f5f9;gap:2px}
+#group-tabs::-webkit-scrollbar{display:none}
+.gtab{padding:9px 13px;font-size:10px;font-weight:700;letter-spacing:0.05em;color:#94a3b8;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.15s;margin-bottom:-1px}
+.gtab:hover{color:#475569}
+.gtab.on{color:#6366f1;border-bottom-color:#6366f1}
+.gtab .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#6366f1;margin-left:4px;vertical-align:middle;margin-top:-1px}
+#ticker-chips{display:flex;overflow-x:auto;padding:7px 16px;gap:6px;align-items:center}
+#ticker-chips::-webkit-scrollbar{display:none}
+.tchip{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid #e2e8f8;background:#f8f9ff;color:#475569;cursor:pointer;white-space:nowrap;transition:all 0.15s}
+.tchip:hover{border-color:#6366f1;color:#6366f1;background:#f0f1ff}
+.tchip.active{background:#6366f1;border-color:#6366f1;color:#fff}
+.tchip .chg{font-size:9px;font-weight:600;margin-left:4px;opacity:0.85}
 .tab-btn{padding:5px 11px;border-radius:5px;font-size:10px;cursor:pointer;transition:all 0.15s}
 .tab-btn.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;box-shadow:0 2px 8px rgba(99,102,241,0.3)}
 .tab-btn:not(.active){background:#fff;color:#64748b;border:1.5px solid #e2e8f8}
@@ -71,15 +80,12 @@ canvas{display:block}
 .fgi-needle{position:absolute;top:-5px;width:3px;height:18px;background:#1e2a4a;border-radius:2px;transform:translateX(-50%);box-shadow:0 0 4px rgba(0,0,0,0.3)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 @keyframes spin{to{transform:rotate(360deg)}}
-#mobile-ticker-btn{display:none;position:fixed;bottom:20px;right:16px;z-index:30;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:50px;padding:10px 18px;color:#fff;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;box-shadow:0 4px 16px rgba(99,102,241,0.4);cursor:pointer}
-#mobile-overlay{display:none;position:fixed;inset:0;background:#fff;z-index:40;overflow-y:auto;padding:16px}
 @media(max-width:680px){
-  .sidebar{display:none}
-  #mobile-ticker-btn{display:flex;align-items:center;gap:6px}
   #overview-grid{grid-template-columns:repeat(3,1fr)!important}
-  .overview-section{padding:10px 10px}
   #main{padding:10px!important}
   .header-subtitle{display:none}
+  .gtab{padding:8px 10px;font-size:9px}
+  .tchip{font-size:10px;padding:4px 9px}
 }
 </style>
 </head>
@@ -101,15 +107,11 @@ canvas{display:block}
   </div>
 </div>
 
-<!-- MOBILE TICKER OVERLAY -->
-<div id="mobile-overlay">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;position:sticky;top:0;background:#fff;padding-bottom:10px;border-bottom:1.5px solid #e2e8f8">
-    <div style="font-size:14px;font-weight:700;color:#1e2a4a">Select Ticker</div>
-    <button onclick="closeMobileOverlay()" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:monospace">✕ Close</button>
-  </div>
-  <div id="mobile-sidebar-content"></div>
+<!-- TICKER NAV -->
+<div id="ticker-nav">
+  <div id="group-tabs"></div>
+  <div id="ticker-chips"></div>
 </div>
-<button id="mobile-ticker-btn" onclick="openMobileOverlay()">☰ Tickers</button>
 
 <!-- MARKET OVERVIEW -->
 <div style="background:linear-gradient(180deg,#f8f9ff,#f0f4ff);border-bottom:1.5px solid #e2e8f8;padding:12px 16px">
@@ -123,75 +125,19 @@ canvas{display:block}
 </div>
 
 <!-- INTRO SECTION -->
-<div id="intro-section" style="background:#fff;border-bottom:1.5px solid #e2e8f8;padding:18px 20px">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
-    <div style="flex:1;min-width:260px">
-      <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;letter-spacing:-0.01em;margin-bottom:6px">My Finance Dashboard</div>
-      <p style="font-size:12px;color:#475569;line-height:1.8;margin:0">Finance doesn't have to be complicated. Knowing where markets are heading and how to read a few key signals can make a real difference in how you manage your money. This dashboard shows my personal watchlist — the indices, ETFs, stocks, and crypto I actively follow and hold.</p>
+<div id="intro-section" style="background:#fff;border-bottom:1.5px solid #e2e8f8;padding:14px 20px">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div style="flex:1;min-width:240px">
+      <div style="font-size:16px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;letter-spacing:-0.01em;margin-bottom:4px">My Finance Dashboard</div>
+      <p style="font-size:11.5px;color:#475569;line-height:1.7;margin:0">Finance doesn't have to be complicated. Knowing where markets are heading and how to read a few key signals can make a real difference in how you manage your money. This dashboard shows my personal watchlist — the indices, ETFs, stocks, and crypto I actively follow and hold.</p>
     </div>
-    <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end">
-      <a href="learn.html" style="white-space:nowrap;padding:7px 14px;border-radius:8px;border:1.5px solid #6366f1;background:linear-gradient(135deg,#6366f115,#8b5cf615);color:#6366f1;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:0.05em;text-decoration:none;display:inline-flex;align-items:center;gap:5px">📖 Full Learning Guide</a>
-      <button onclick="(()=>{const b=document.getElementById('intro-glossary');const btn=document.getElementById('intro-toggle');const open=b.style.display!=='none';b.style.display=open?'none':'grid';btn.textContent=open?'How to read charts — in a nutshell ▾':'Close ▴'})()" id="intro-toggle" style="white-space:nowrap;padding:7px 14px;border-radius:8px;border:1.5px solid #e2e8f8;background:#f8f9ff;color:#6366f1;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:0.05em">How to read charts — in a nutshell ▾</button>
-    </div>
-  </div>
-  <div id="intro-glossary" style="display:none;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:14px">
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">RSI · Relative Strength Index</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Measures buying and selling momentum on a scale of 0–100. <b>Below 30</b> = oversold (potential buy). <b>Above 70</b> = overbought (potential sell). The middle zone (40–60) means no strong signal.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">MACD · Moving Avg. Convergence</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Compares two moving averages to detect momentum shifts. When the <b>MACD line crosses above</b> the signal line = bullish. When it crosses below = bearish. The histogram shows the strength of that move.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Moving Averages · SMA</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">A moving average smooths out price noise. The <b>50-day SMA</b> shows the medium-term trend, the <b>200-day SMA</b> the long-term trend. Price above both = healthy uptrend. A "death cross" (50 drops below 200) is a bearish warning.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Bollinger Bands</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Two dynamic bands (±2 standard deviations) around a 20-day average. Price near the <b>upper band</b> = possibly overextended. Near the <b>lower band</b> = potentially undervalued. When bands narrow, a big move is often coming.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Candlestick Chart</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Each candle represents one time period. The <b>body</b> shows open vs. close — green = price rose, red = fell. The thin <b>wicks</b> show the highest and lowest price in that period. Patterns like "Doji" or "Hammer" signal potential reversals.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Fibonacci Retracement</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Drawn from a recent high to low (or vice versa), the key levels are <b>23.6%, 38.2%, 50%, 61.8%</b>. Price very often pauses or bounces at these levels — used by traders to find support and resistance zones.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Support &amp; Resistance</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6"><b>Support</b> is a price level where buying tends to emerge and the price "bounces up." <b>Resistance</b> is where selling pressure appears and the price struggles to break through. Previous highs/lows often become these zones.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Volume</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">The number of shares or contracts traded in a period. <b>High volume on a breakout</b> confirms the move is real. Low volume moves are often weak or quickly reversed. Always check if a price surge is backed by strong volume.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Fear &amp; Greed Index</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Measures overall market sentiment from 0 (extreme fear) to 100 (extreme greed). <b>Extreme fear</b> can be a buying opportunity — markets are often oversold. <b>Extreme greed</b> suggests caution — corrections tend to follow.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">ETF vs. Stock</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">A <b>stock</b> is ownership in one company. An <b>ETF</b> (Exchange-Traded Fund) holds a basket of many stocks — e.g. SPY tracks the S&P 500's 500 largest companies. ETFs give instant diversification with a single purchase.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Market Cap</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">Total market value of a company = <b>share price × shares outstanding</b>. Large-cap (&gt;$10B) = more stable. Mid-cap ($2–10B) = growth potential. Small-cap (&lt;$2B) = higher risk, higher reward. Indices like the S&P 500 are weighted by market cap.</div>
-    </div>
-    <div class="stat-card" style="padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:5px;letter-spacing:0.05em">Diversification</div>
-      <div style="font-size:11px;color:#475569;line-height:1.6">The principle of not putting all eggs in one basket. Spreading investments across <b>different sectors, regions and asset classes</b> (stocks, ETFs, crypto, gold) reduces risk — when one drops, others may hold or rise.</div>
-    </div>
+    <a href="learn.html" style="white-space:nowrap;padding:8px 16px;border-radius:8px;border:1.5px solid #6366f1;background:linear-gradient(135deg,#6366f115,#8b5cf615);color:#6366f1;font-size:10px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;flex-shrink:0">📖 Learning Guide →</a>
   </div>
 </div>
 
 <!-- MAIN APP -->
-<div style="display:flex">
-  <div class="sidebar" id="sidebar"></div>
-  <div style="flex:1;padding:16px;overflow-y:auto;min-width:0" id="main">
-    <div style="display:flex;align-items:center;justify-content:center;height:300px;color:#94a3b8;font-size:13px">Loading data...</div>
-  </div>
+<div id="main" style="padding:16px;min-width:0">
+  <div style="display:flex;align-items:center;justify-content:center;height:300px;color:#94a3b8;font-size:13px">Loading data...</div>
 </div>
 
 <script>
@@ -282,9 +228,26 @@ function toTVSym(s){return TV_SYM[s]||s;}
 const S={
   active:null,stocks:{},tab:"price",range:"3m",aiText:"",aiLoading:false,
   custom:[],liveLoaded:{},
-  collapsed:{"Indices":true,"ETFs":true,"Crypto":true,"Magnificent 7":true,"Semiconductors":true,"Health":true,"Finance":true,"Industrials":true},
+  activeGroup:"Indices",
   fgi:{},fgiLoading:false,intraday:{}
 };
+function findGroup(t){for(const[g,ts]of Object.entries(GROUPS)){if(ts.includes(t))return g;}if(S.custom.includes(t))return"My Tickers";return S.activeGroup;}
+function renderNav(){
+  const groups=Object.assign({},GROUPS);
+  if(S.custom.length)groups["My Tickers"]=S.custom;
+  document.getElementById("group-tabs").innerHTML=Object.keys(groups).map(g=>{
+    const on=S.activeGroup===g,has=groups[g].includes(S.active);
+    return`<button class="gtab${on?" on":""}" onclick="setGroup('${g}')">${g}${has?'<span class="dot"></span>':''}</button>`;
+  }).join("");
+  const tickers=groups[S.activeGroup]||[];
+  document.getElementById("ticker-chips").innerHTML=tickers.map(t=>{
+    const d=S.stocks[t],label=t.replace("^","").replace("-USD","");
+    const cc=d?(d.chg>=0?"#10b981":"#ef4444"):"#94a3b8";
+    const chg=d?`<span class="chg" style="color:${cc}">${d.chg>=0?"+":""}${d.chg.toFixed(1)}%</span>`:"";
+    return`<button class="tchip${S.active===t?" active":""}" onclick="doSelect('${t}')">${label}${chg}${S.custom.includes(t)?`<span onclick="event.stopPropagation();doRemove('${t}')" style="margin-left:4px;opacity:0.5;font-size:10px">×</span>`:""}</button>`;
+  }).join("");
+}
+window.setGroup=function(g){S.activeGroup=g;renderNav();};
 
 document.getElementById("dateLabel").textContent=new Date().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
 document.getElementById("overviewTime").textContent=new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"});
@@ -768,36 +731,6 @@ window.loadFGI=async function(){
 };
 
 // ── SIDEBAR ───────────────────────────────────────────────────
-function renderSidebar(){
-  const el=document.getElementById("sidebar");
-  const groups=Object.assign({},GROUPS);
-  if(S.custom.length)groups["My Tickers"]=S.custom;
-  el.innerHTML=Object.entries(groups).map(([grp,tickers])=>{
-    const col=S.collapsed[grp]===true,activeInGroup=tickers.includes(S.active);
-    return`<div>
-      <div data-grp="${grp}" onclick="doToggle(this.dataset.grp)" style="display:flex;justify-content:space-between;align-items:center;padding:8px 8px 6px;cursor:pointer;user-select:none;border-bottom:1.5px solid #e2e8f8;margin-bottom:4px">
-        <span style="font-size:10px;font-weight:700;color:${activeInGroup?"#6366f1":"#475569"};letter-spacing:0.06em">${grp.toUpperCase()}</span>
-        <div style="display:flex;align-items:center;gap:4px">
-          ${activeInGroup?'<div style="width:6px;height:6px;border-radius:50%;background:#6366f1"></div>':""}
-          <span style="font-size:14px;color:#94a3b8;font-weight:700">${col?"›":"‹"}</span>
-        </div>
-      </div>
-      ${!col?tickers.map(t=>{
-        const d=S.stocks[t],label=t.replace("^","").replace("-USD","");
-        return`<div class="ticker-item${S.active===t?" active":""}" onclick="doSelect('${t}')">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <span style="font-size:12px;font-weight:700;color:${S.active===t?"#6366f1":"#1e2a4a"}">${label}</span>
-            ${S.custom.includes(t)?`<span onclick="event.stopPropagation();doRemove('${t}')" style="font-size:9px;color:#cbd5e1;padding:0 2px">x</span>`:""}
-          </div>
-          ${d?`<div style="font-size:11px;font-weight:600;color:${d.chg>=0?"#10b981":"#ef4444"}">${d.chg>=0?"+":""}${d.chg.toFixed(2)}% <span style="font-size:8px;opacity:0.6">${S.liveLoaded[t]?"live":"demo"}</span></div>
-          <div style="font-size:9px;color:${d.sig.c}">${d.sig.i} ${d.sig.s}</div>`
-          :'<div style="font-size:9px;color:#94a3b8">loading...</div>'}
-        </div>`;
-      }).join(""):""}
-    </div>`;
-  }).join("")
-  ;
-}
 
 // ── MAIN PANEL ────────────────────────────────────────────────
 function renderLanding(){
@@ -938,16 +871,15 @@ function renderMain(){
 // ── ACTIONS ───────────────────────────────────────────────────
 window.doSelect=async function(t){
   S.active=t;S.aiText="";S.tab="price";S.range="3m";
-  closeMobileOverlay();
-  renderSidebar();renderMain();renderOverview();
+  S.activeGroup=findGroup(t);
+  renderNav();renderMain();renderOverview();
   if(!S.stocks[t]){
     const raw=await fetchStock(t);
     S.stocks[t]=processStock(raw||mock(t));
-    renderSidebar();renderMain();renderOverview();
+    renderNav();renderMain();renderOverview();
   }
 };
 window.doTab=function(t){S.tab=t;renderMain();};
-window.doToggle=function(grp){S.collapsed[grp]=!S.collapsed[grp];renderSidebar();};
 window.doFib=function(){S.showFib=!S.showFib;renderMain();};
 window.doRange=async function(r){
   S.range=r;renderMain();
@@ -959,7 +891,7 @@ window.doAdd=function(){
   if(!ALL.includes(v)&&!S.custom.includes(v))S.custom.push(v);
   doSelect(v);
 };
-window.doRemove=function(t){S.custom=S.custom.filter(x=>x!==t);if(S.active===t)doSelect(ALL[0]);else renderSidebar();};
+window.doRemove=function(t){S.custom=S.custom.filter(x=>x!==t);if(S.active===t)doSelect(ALL[0]);else renderNav();};
 window.doRefresh=async function(){
   const btn=document.getElementById("refreshBtn");
   if(btn)btn.style.animation="spin 0.6s linear";
@@ -967,17 +899,8 @@ window.doRefresh=async function(){
   renderMain();
   const raw=await fetchStock(S.active);
   if(raw){S.stocks[S.active]=processStock(raw);S.liveLoaded[S.active]=true;}
-  renderMain();renderSidebar();renderOverview();
+  renderMain();renderNav();renderOverview();
   if(btn){btn.style.animation="";setTimeout(()=>btn.style.animation="",700);}
-};
-window.openMobileOverlay=function(){
-  const el=document.getElementById("mobile-overlay");if(!el)return;
-  document.getElementById("mobile-sidebar-content").innerHTML=document.getElementById("sidebar").innerHTML;
-  el.style.display="block";document.body.style.overflow="hidden";
-};
-window.closeMobileOverlay=function(){
-  const el=document.getElementById("mobile-overlay");if(el)el.style.display="none";
-  document.body.style.overflow="";
 };
 window.doAI=function(){
   const d=S.stocks[S.active];if(!d)return;
@@ -1026,7 +949,7 @@ function updateLiveStatus(text,color,pulse){
 // ── INIT ──────────────────────────────────────────────────────
 (async function(){
   for(const t of ALL){S.stocks[t]=processStock(mock(t));}
-  renderSidebar();renderMain();renderOverview();renderMarketHours();
+  renderNav();renderMain();renderOverview();renderMarketHours();
   loadFGI();
   updateLiveStatus("Connecting...","#f59e0b",true);
 
@@ -1037,7 +960,7 @@ function updateLiveStatus(text,color,pulse){
       if(S.active===t)renderMain();
       else if(S.active===null)renderLanding();
       if(OVERVIEW_TICKERS.includes(t))renderOverview();
-      renderSidebar();return true;
+      renderNav();return true;
     }
     return false;
   }
@@ -1058,7 +981,7 @@ function updateLiveStatus(text,color,pulse){
     S.intraday={};
     if(S.active){
       const fresh=await fetchStock(S.active);
-      if(fresh){S.stocks[S.active]=processStock(fresh);S.liveLoaded[S.active]=true;renderMain();renderSidebar();}
+      if(fresh){S.stocks[S.active]=processStock(fresh);S.liveLoaded[S.active]=true;renderMain();renderNav();}
     }
     renderOverview();renderMarketHours();
     updateLiveStatus("Live — "+new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}),"#10b981",true);
