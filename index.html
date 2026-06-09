@@ -54,18 +54,19 @@ body{background:#f0f4ff;color:#1e2a4a;font-family:'Inter',sans-serif;min-height:
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#f0f4ff}::-webkit-scrollbar-thumb{background:#6366f1;border-radius:2px}
 button,input{font-family:'Inter',sans-serif}
 #ticker-nav{position:sticky;top:54px;z-index:15;background:#fff;border-bottom:1.5px solid #e2e8f8;box-shadow:0 2px 8px rgba(99,102,241,0.05)}
-#group-tabs{display:flex;overflow-x:auto;padding:0 16px;border-bottom:1px solid #f1f5f9;gap:2px}
+#group-tabs{display:flex;overflow-x:auto;padding:0 16px;gap:0}
 #group-tabs::-webkit-scrollbar{display:none}
-.gtab{padding:9px 13px;font-size:10px;font-weight:700;letter-spacing:0.05em;color:#94a3b8;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.15s;margin-bottom:-1px}
+.gtab{padding:11px 15px;font-size:11px;font-weight:600;color:#94a3b8;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.15s;margin-bottom:-1px}
 .gtab:hover{color:#475569}
-.gtab.on{color:#6366f1;border-bottom-color:#6366f1}
-.gtab .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#6366f1;margin-left:4px;vertical-align:middle;margin-top:-1px}
-#ticker-chips{display:flex;overflow-x:auto;padding:7px 16px;gap:6px;align-items:center}
-#ticker-chips::-webkit-scrollbar{display:none}
-.tchip{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid #e2e8f8;background:#f8f9ff;color:#475569;cursor:pointer;white-space:nowrap;transition:all 0.15s}
-.tchip:hover{border-color:#6366f1;color:#6366f1;background:#f0f1ff}
-.tchip.active{background:#6366f1;border-color:#6366f1;color:#fff}
-.tchip .chg{font-size:9px;font-weight:600;margin-left:4px;opacity:0.85}
+.gtab.on{color:#6366f1;border-bottom-color:#6366f1;font-weight:700}
+.asset-card{background:#fff;border:1.5px solid #e2e8f8;border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
+.asset-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6366f1,#8b5cf6);opacity:0;transition:opacity 0.15s}
+.asset-card:hover{border-color:#c7d2fe;box-shadow:0 4px 20px rgba(99,102,241,0.1);transform:translateY(-1px)}
+.asset-card:hover::before{opacity:1}
+.asset-sym{font-size:15px;font-weight:800;color:#1e2a4a;font-family:'Syne',sans-serif;letter-spacing:-0.01em}
+.asset-name{font-size:10px;color:#94a3b8;margin-top:2px;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.asset-price{font-size:16px;font-weight:800;color:#1e2a4a;font-family:'Syne',sans-serif}
+.asset-chg{font-size:11px;font-weight:600;margin-top:2px}
 .tab-btn{padding:5px 11px;border-radius:5px;font-size:10px;cursor:pointer;transition:all 0.15s}
 .tab-btn.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;box-shadow:0 2px 8px rgba(99,102,241,0.3)}
 .tab-btn:not(.active){background:#fff;color:#64748b;border:1.5px solid #e2e8f8}
@@ -110,7 +111,6 @@ canvas{display:block}
 <!-- TICKER NAV -->
 <div id="ticker-nav">
   <div id="group-tabs"></div>
-  <div id="ticker-chips"></div>
 </div>
 
 <!-- MARKET OVERVIEW -->
@@ -228,26 +228,18 @@ function toTVSym(s){return TV_SYM[s]||s;}
 const S={
   active:null,stocks:{},tab:"price",range:"3m",aiText:"",aiLoading:false,
   custom:[],liveLoaded:{},
-  activeGroup:"Indices",
+  activeGroup:null,
   fgi:{},fgiLoading:false,intraday:{}
 };
-function findGroup(t){for(const[g,ts]of Object.entries(GROUPS)){if(ts.includes(t))return g;}if(S.custom.includes(t))return"My Tickers";return S.activeGroup;}
+function findGroup(t){for(const[g,ts]of Object.entries(GROUPS)){if(ts.includes(t))return g;}if(S.custom.includes(t))return"My Tickers";return null;}
 function renderNav(){
   const groups=Object.assign({},GROUPS);
   if(S.custom.length)groups["My Tickers"]=S.custom;
-  document.getElementById("group-tabs").innerHTML=Object.keys(groups).map(g=>{
-    const on=S.activeGroup===g,has=groups[g].includes(S.active);
-    return`<button class="gtab${on?" on":""}" onclick="setGroup('${g}')">${g}${has?'<span class="dot"></span>':''}</button>`;
-  }).join("");
-  const tickers=groups[S.activeGroup]||[];
-  document.getElementById("ticker-chips").innerHTML=tickers.map(t=>{
-    const d=S.stocks[t],label=t.replace("^","").replace("-USD","");
-    const cc=d?(d.chg>=0?"#10b981":"#ef4444"):"#94a3b8";
-    const chg=d?`<span class="chg" style="color:${cc}">${d.chg>=0?"+":""}${d.chg.toFixed(1)}%</span>`:"";
-    return`<button class="tchip${S.active===t?" active":""}" onclick="doSelect('${t}')">${label}${chg}${S.custom.includes(t)?`<span onclick="event.stopPropagation();doRemove('${t}')" style="margin-left:4px;opacity:0.5;font-size:10px">×</span>`:""}</button>`;
-  }).join("");
+  document.getElementById("group-tabs").innerHTML=
+    `<button class="gtab${!S.activeGroup?" on":""}" onclick="setGroup(null)">All</button>`+
+    Object.keys(groups).map(g=>`<button class="gtab${S.activeGroup===g?" on":""}" onclick="setGroup('${g}')">${g}</button>`).join("");
 }
-window.setGroup=function(g){S.activeGroup=g;renderNav();};
+window.setGroup=function(g){S.activeGroup=g;S.active=null;renderNav();renderLanding();};
 
 document.getElementById("dateLabel").textContent=new Date().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
 document.getElementById("overviewTime").textContent=new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"});
@@ -735,31 +727,29 @@ window.loadFGI=async function(){
 // ── MAIN PANEL ────────────────────────────────────────────────
 function renderLanding(){
   const el=document.getElementById("main");
-  const GROUP_ICONS={"Indices":"⬡","ETFs":"◈","Crypto":"◆","Magnificent 7":"★","Semiconductors":"◈","Health":"◉","Finance":"◆","Industrials":"▲"};
-  el.innerHTML=`<div style="padding-bottom:24px">
-    <div style="font-size:20px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;margin-bottom:4px">My Watchlist</div>
-    <div style="font-size:11px;color:#94a3b8;margin-bottom:20px">Click any asset to open its full chart and analysis.</div>
-    ${Object.entries(GROUPS).map(([grp,tickers])=>`
-    <div style="margin-bottom:20px">
-      <div style="font-size:10px;font-weight:700;color:#6366f1;letter-spacing:0.1em;margin-bottom:8px">${GROUP_ICONS[grp]||"·"} ${grp.toUpperCase()}</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
-        ${tickers.map(t=>{
-          const d=S.stocks[t],label=t.replace("^","").replace("-USD","");
-          const name=NAMES[t]||label;
-          if(!d)return`<div onclick="doSelect('${t}')" style="background:#fff;border:1.5px solid #e2e8f8;border-radius:12px;padding:12px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 4px 16px rgba(99,102,241,0.12)'" onmouseout="this.style.boxShadow='none'"><div style="font-size:13px;font-weight:700;color:#1e2a4a">${label}</div><div style="font-size:10px;color:#94a3b8">${name}</div><div style="font-size:10px;color:#cbd5e1;margin-top:8px">Loading…</div></div>`;
-          const c=d.chg>=0?"#10b981":"#ef4444",sign=d.chg>=0?"▲":"▼";
-          return`<div onclick="doSelect('${t}')" style="background:#fff;border:1.5px solid #e2e8f8;border-radius:12px;padding:12px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 4px 16px rgba(99,102,241,0.12)'" onmouseout="this.style.boxShadow='none'">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
-              <div><div style="font-size:13px;font-weight:700;color:#1e2a4a">${label}</div><div style="font-size:9px;color:#94a3b8">${name}</div></div>
-              <div style="font-size:8px;padding:2px 5px;border-radius:4px;background:${d.sig.c}15;color:${d.sig.c};font-weight:700;border:1px solid ${d.sig.c}25">${d.sig.i}${d.sig.s.slice(0,4)}</div>
-            </div>
-            <div style="font-size:15px;font-weight:800;color:#1e2a4a">${fmtPrice(d.last)}</div>
-            <div style="font-size:11px;font-weight:600;color:${c}">${sign} ${Math.abs(d.chg).toFixed(2)}%</div>
-          </div>`;
-        }).join("")}
-      </div>
+  const allGroups=Object.assign({},GROUPS);
+  if(S.custom.length)allGroups["My Tickers"]=S.custom;
+  const toShow=S.activeGroup?{[S.activeGroup]:allGroups[S.activeGroup]}:allGroups;
+  const showHeader=!S.activeGroup;
+  el.innerHTML=`<div style="padding-bottom:32px">
+    ${Object.entries(toShow).map(([grp,tickers])=>`
+    ${showHeader?`<div style="font-size:11px;font-weight:700;color:#6366f1;letter-spacing:0.08em;text-transform:uppercase;margin:${grp===Object.keys(toShow)[0]?"0":"20px"} 0 10px">${grp}</div>`:"<div style='margin-top:4px'></div>"}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px">
+      ${tickers.map(t=>{
+        const d=S.stocks[t];
+        const label=t.replace("^","").replace("-USD","");
+        const name=NAMES[t]||label;
+        const c=d?(d.chg>=0?"#10b981":"#ef4444"):"#94a3b8";
+        const sign=d?(d.chg>=0?"+":""):"";
+        return`<div class="asset-card" onclick="doSelect('${t}')">
+          <div class="asset-sym">${label}</div>
+          <div class="asset-name">${name}</div>
+          <div class="asset-price">${d?fmtPrice(d.last):"—"}</div>
+          <div class="asset-chg" style="color:${c}">${d?sign+d.chg.toFixed(2)+"%":"loading…"}</div>
+        </div>`;
+      }).join("")}
     </div>`).join("")}
-    <div style="font-size:9px;color:#94a3b8;margin-top:8px;font-style:italic">For informational purposes only — not financial advice.</div>
+    <div style="font-size:9px;color:#cbd5e1;margin-top:20px;font-style:italic">For informational purposes only — not financial advice.</div>
   </div>`;
 }
 
@@ -770,7 +760,9 @@ function renderMain(){
   if(!d){el.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:300px;color:#94a3b8;font-size:13px">Loading ${S.active}…</div>`;return;}
   const sig=d.sig;
 
+  const grpLabel=findGroup(S.active);
   el.innerHTML=
+    `<button onclick="setGroup(${grpLabel?`'${grpLabel}'`:'null'})" style="display:inline-flex;align-items:center;gap:5px;background:none;border:1.5px solid #e2e8f8;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:#64748b;cursor:pointer;margin-bottom:14px;transition:all 0.15s;font-family:'Inter',sans-serif" onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'" onmouseout="this.style.borderColor='#e2e8f8';this.style.color='#64748b'">← ${grpLabel||"Watchlist"}</button>`+
     // ── Title row
     `<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px">
       <div>
@@ -871,7 +863,6 @@ function renderMain(){
 // ── ACTIONS ───────────────────────────────────────────────────
 window.doSelect=async function(t){
   S.active=t;S.aiText="";S.tab="price";S.range="3m";
-  S.activeGroup=findGroup(t);
   renderNav();renderMain();renderOverview();
   if(!S.stocks[t]){
     const raw=await fetchStock(t);
