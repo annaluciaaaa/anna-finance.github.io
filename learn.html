@@ -12,16 +12,16 @@
   --card: #131830;
   --border: #1e2545;
   --border2: #252d55;
-  --green: #34d399;
+  --green: #4ade80;
   --red: #f87171;
   --yellow: #fbbf24;
-  --blue: #60a5fa;
-  --purple: #c084fc;
-  --orange: #fb923c;
-  --cyan: #22d3ee;
+  --blue: #818cf8;
+  --purple: #818cf8;
+  --orange: #818cf8;
+  --cyan: #818cf8;
   --text: #e2e8f0;
   --muted: #94a3b8;
-  --dim: #4a5578;
+  --dim: #64748b;
   --accent: #818cf8;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -113,50 +113,40 @@ nav::-webkit-scrollbar { display: none; }
 @keyframes up { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
 h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.4rem; color: var(--text); }
-h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
-p, li { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--muted); line-height: 1.75; }
-p strong, li strong { color: var(--text); }
+h3 { font-family: 'Syne', sans-serif; font-size: 0.98rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+p, li { font-family: 'Inter', sans-serif; font-size: 0.82rem; color: var(--muted); line-height: 1.8; }
+p strong, li strong { color: var(--text); font-weight: 600; }
 ul { padding-left: 1.2rem; margin-bottom: 0.6rem; }
 li { margin-bottom: 0.3rem; }
 
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; margin-bottom: 1rem; }
-.card.g { border-left: 3px solid var(--green); }
-.card.r { border-left: 3px solid var(--red); }
-.card.y { border-left: 3px solid var(--yellow); }
-.card.b { border-left: 3px solid var(--blue); }
-.card.p { border-left: 3px solid var(--purple); }
-.card.o { border-left: 3px solid var(--orange); }
-.card.c { border-left: 3px solid var(--cyan); }
-.card.a { border-left: 3px solid var(--accent); }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; margin-bottom: 1rem; border-left: 3px solid var(--accent); }
+.card.g { border-left-color: var(--green); }
+.card.r { border-left-color: var(--red); }
+.card.y, .card.b, .card.p, .card.o, .card.c, .card.a { border-left-color: var(--accent); }
 
 .tag {
-  display: inline-block; padding: 0.18rem 0.65rem; border-radius: 4px;
-  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
-  font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.7rem;
+  display: inline-block; padding: 0.16rem 0.6rem; border-radius: 4px;
+  font-family: 'Inter', sans-serif; font-size: 0.62rem;
+  font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 0.7rem;
+  background: rgba(129,140,248,0.1); color: var(--accent);
 }
-.tag.g { background: rgba(57,255,143,0.1); color: var(--green); }
-.tag.r { background: rgba(255,64,96,0.1); color: var(--red); }
-.tag.y { background: rgba(255,204,0,0.1); color: var(--yellow); }
-.tag.b { background: rgba(68,136,255,0.1); color: var(--blue); }
-.tag.p { background: rgba(176,110,255,0.1); color: var(--purple); }
-.tag.o { background: rgba(255,140,66,0.1); color: var(--orange); }
-.tag.c { background: rgba(0,221,204,0.1); color: var(--cyan); }
-.tag.a { background: rgba(99,102,241,0.1); color: var(--accent); }
+.tag.g { background: rgba(74,222,128,0.1); color: var(--green); }
+.tag.r { background: rgba(248,113,113,0.1); color: var(--red); }
 
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 @media(max-width:600px) { .grid2 { grid-template-columns: 1fr; } }
 
 .svgbox {
-  background: #090d1e; border-radius: 8px; padding: 1rem; margin: 0.8rem 0;
+  background: #0d1226; border-radius: 8px; padding: 1rem; margin: 0.8rem 0;
   display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
 }
 .svgbox svg { max-width: 100%; }
 .svglabel { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--dim); text-align: center; }
 
 .candle-row {
-  display: flex; gap: 1.5rem; align-items: flex-end; justify-content: center;
-  flex-wrap: wrap; background: #090d1e; border-radius: 10px;
-  padding: 1.5rem; margin: 1rem 0;
+  display: flex; gap: 2rem; align-items: flex-end; justify-content: center;
+  flex-wrap: wrap; background: #0d1226; border-radius: 10px;
+  padding: 1.5rem 1rem; margin: 1rem 0;
 }
 .candle-item { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
 .candle-label { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; color: var(--dim); text-align: center; max-width: 76px; line-height: 1.4; }
@@ -175,7 +165,7 @@ li { margin-bottom: 0.3rem; }
 .ind-badge.r { background: rgba(255,64,96,0.1); color: var(--red); }
 
 .fib-table { display: flex; flex-direction: column; gap: 0.4rem; margin: 0.8rem 0; }
-.fib-row { display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem 0.8rem; background: #090d1e; border-radius: 6px; border: 1px solid var(--border); }
+.fib-row { display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem 0.8rem; background: #0d1226; border-radius: 6px; border: 1px solid var(--border); }
 .fib-pct { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 600; width: 52px; flex-shrink: 0; }
 .fib-bar { height: 4px; border-radius: 2px; flex: 1; }
 .fib-desc { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); width: 160px; text-align: right; flex-shrink: 0; }
@@ -186,19 +176,19 @@ li { margin-bottom: 0.3rem; }
 .ichi-name { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text); width: 130px; flex-shrink: 0; }
 .ichi-desc { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); }
 
-.vp-wrap { display: flex; gap: 0.8rem; background: #090d1e; border-radius: 8px; padding: 1rem; margin: 0.8rem 0; height: 200px; }
+.vp-wrap { display: flex; gap: 0.8rem; background: #0d1226; border-radius: 8px; padding: 1rem; margin: 0.8rem 0; height: 200px; }
 .vp-prices { display: flex; flex-direction: column; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.63rem; color: var(--dim); }
 .vp-bars { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 3px; }
 .vp-row { display: flex; align-items: center; gap: 5px; height: 18px; }
 .vp-bar { height: 100%; border-radius: 2px; }
 .vp-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; flex-shrink: 0; }
 
-.ms-row { display: flex; gap: 1rem; align-items: flex-start; padding: 0.8rem; background: #090d1e; border-radius: 8px; margin-bottom: 0.6rem; border: 1px solid var(--border); }
+.ms-row { display: flex; gap: 1rem; align-items: flex-start; padding: 0.8rem; background: #0d1226; border-radius: 8px; margin-bottom: 0.6rem; border: 1px solid var(--border); }
 .ms-icon { font-size: 1.3rem; flex-shrink: 0; width: 32px; text-align: center; }
 .ms-body h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.2rem; }
 .ms-body p { margin: 0; font-size: 0.75rem; }
 
-.step { display: flex; gap: 1rem; padding: 1rem; background: #090d1e; border-radius: 8px; margin-bottom: 0.7rem; border: 1px solid var(--border); }
+.step { display: flex; gap: 1rem; padding: 1rem; background: #0d1226; border-radius: 8px; margin-bottom: 0.7rem; border: 1px solid var(--border); }
 .step-n { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 600; color: var(--dim); width: 26px; flex-shrink: 0; }
 .step-body h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text); }
 .step-body p { margin: 0; font-size: 0.76rem; }
@@ -268,7 +258,7 @@ li { margin-bottom: 0.3rem; }
 }
 .modal-point {
   display: flex; gap: 0.75rem; align-items: flex-start;
-  background: #090d1e; border: 1px solid #1e2545;
+  background: #0d1226; border: 1px solid #1e2545;
   border-radius: 10px; padding: 0.85rem 1rem;
 }
 .modal-point-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
@@ -417,11 +407,11 @@ li { margin-bottom: 0.3rem; }
     <h3>Support & Resistance</h3>
     <div class="svgbox">
       <svg width="100%" height="120" viewBox="0 0 400 120" preserveAspectRatio="xMidYMid meet">
-        <line x1="0" y1="30" x2="400" y2="30" stroke="#ff4060" stroke-width="1" stroke-dasharray="5,4"/>
-        <text x="6" y="26" fill="#ff4060" font-size="9" font-family="JetBrains Mono">Resistance — sellers appear here</text>
-        <line x1="0" y1="90" x2="400" y2="90" stroke="#39ff8f" stroke-width="1" stroke-dasharray="5,4"/>
-        <text x="6" y="106" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">Support — buyers appear here</text>
-        <polyline points="10,90 36,70 62,50 80,30 96,46 120,62 144,46 168,30 188,46 210,62 234,46 258,30 278,50 298,70 318,90 338,70 358,55 380,35" fill="none" stroke="#dce3f5" stroke-width="2"/>
+        <line x1="0" y1="30" x2="400" y2="30" stroke="#f87171" stroke-width="1" stroke-dasharray="5,4"/>
+        <text x="6" y="26" fill="#f87171" font-size="9" font-family="Inter,sans-serif">Resistance — sellers appear here</text>
+        <line x1="0" y1="90" x2="400" y2="90" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,4"/>
+        <text x="6" y="106" fill="#4ade80" font-size="9" font-family="Inter,sans-serif">Support — buyers appear here</text>
+        <polyline points="10,90 36,70 62,50 80,30 96,46 120,62 144,46 168,30 188,46 210,62 234,46 258,30 278,50 298,70 318,90 338,70 358,55 380,35" fill="none" stroke="#c7d2fe" stroke-width="2"/>
       </svg>
     </div>
     <p><strong>Support</strong> is a price level where buying repeatedly emerges — the price tends to "bounce" from it. <strong>Resistance</strong> is where selling pressure consistently appears — the price struggles to break through. These levels form because many traders remember past highs and lows and act on them. <strong>When resistance breaks, it often becomes the new support</strong> — and vice versa.</p>
@@ -431,27 +421,27 @@ li { margin-bottom: 0.3rem; }
     <div class="tag c">Sentiment</div>
     <h3>Fear & Greed Index</h3>
     <div style="display:flex;gap:0.5rem;margin:0.8rem 0;flex-wrap:wrap">
-      <div style="flex:1;min-width:80px;padding:0.6rem;background:#090d1e;border-radius:8px;border:1px solid var(--border);text-align:center">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#ff4060">0–25</div>
+      <div style="flex:1;min-width:80px;padding:0.6rem;background:#0d1226;border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#f87171">0–25</div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:3px">Extreme Fear</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#39ff8f;margin-top:4px">→ potential buy</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#4ade80;margin-top:4px">→ potential buy</div>
       </div>
-      <div style="flex:1;min-width:80px;padding:0.6rem;background:#090d1e;border-radius:8px;border:1px solid var(--border);text-align:center">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#ff8c42">25–45</div>
+      <div style="flex:1;min-width:80px;padding:0.6rem;background:#0d1226;border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#fb923c">25–45</div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:3px">Fear</div>
       </div>
-      <div style="flex:1;min-width:80px;padding:0.6rem;background:#090d1e;border-radius:8px;border:1px solid var(--border);text-align:center">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#ffcc00">45–55</div>
+      <div style="flex:1;min-width:80px;padding:0.6rem;background:#0d1226;border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#fbbf24">45–55</div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:3px">Neutral</div>
       </div>
-      <div style="flex:1;min-width:80px;padding:0.6rem;background:#090d1e;border-radius:8px;border:1px solid var(--border);text-align:center">
+      <div style="flex:1;min-width:80px;padding:0.6rem;background:#0d1226;border-radius:8px;border:1px solid var(--border);text-align:center">
         <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#60a5fa">55–75</div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:3px">Greed</div>
       </div>
-      <div style="flex:1;min-width:80px;padding:0.6rem;background:#090d1e;border-radius:8px;border:1px solid var(--border);text-align:center">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#39ff8f">75–100</div>
+      <div style="flex:1;min-width:80px;padding:0.6rem;background:#0d1226;border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#4ade80">75–100</div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:3px">Extreme Greed</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#ff4060;margin-top:4px">→ caution</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#f87171;margin-top:4px">→ caution</div>
       </div>
     </div>
     <p>Measures overall market sentiment on a scale of 0–100 using inputs like volatility, momentum, safe-haven demand, and social media signals. <strong>Extreme Fear</strong> historically marks oversold conditions and buying opportunities. <strong>Extreme Greed</strong> signals euphoria — corrections tend to follow. Contrarian investors watch this closely: when everyone is greedy, it's time to be careful; when everyone is fearful, it may be time to buy.</p>
@@ -483,54 +473,94 @@ li { margin-bottom: 0.3rem; }
     <p>Every candle — regardless of time period (1 min, 1 day, 1 week) — encodes exactly four prices: <strong>Open, Close, High, Low</strong>. The body shows Open vs. Close. The wicks (or "shadows") extend to the High and Low. Color tells you the direction: green = Close above Open, red = Close below Open.</p>
   </div>
 
+  <!-- Anatomy diagram -->
+  <div style="background:#0d1226;border-radius:10px;padding:1.2rem 1rem 0.8rem;margin:1rem 0">
+    <svg width="100%" viewBox="0 0 520 170" preserveAspectRatio="xMidYMid meet">
+      <!-- subtle grid -->
+      <line x1="0" y1="40" x2="520" y2="40" stroke="#1e2545" stroke-width="0.5"/>
+      <line x1="0" y1="85" x2="520" y2="85" stroke="#1e2545" stroke-width="0.5"/>
+      <line x1="0" y1="130" x2="520" y2="130" stroke="#1e2545" stroke-width="0.5"/>
+
+      <!-- BULLISH CANDLE at x=110 -->
+      <line x1="110" y1="12" x2="110" y2="34" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
+      <rect x="88" y="34" width="44" height="76" fill="#4ade80" rx="2" opacity="0.85"/>
+      <line x1="110" y1="110" x2="110" y2="135" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
+      <!-- Bullish annotation lines -->
+      <line x1="60" y1="12" x2="88" y2="12" stroke="#64748b" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="56" y="16" fill="#64748b" font-size="9.5" font-family="Inter,sans-serif" text-anchor="end">High</text>
+      <line x1="60" y1="34" x2="88" y2="34" stroke="#4ade80" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="56" y="38" fill="#4ade80" font-size="9.5" font-family="Inter,sans-serif" text-anchor="end">Close</text>
+      <line x1="60" y1="110" x2="88" y2="110" stroke="#4ade80" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="56" y="114" fill="#4ade80" font-size="9.5" font-family="Inter,sans-serif" text-anchor="end">Open</text>
+      <line x1="60" y1="135" x2="88" y2="135" stroke="#64748b" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="56" y="139" fill="#64748b" font-size="9.5" font-family="Inter,sans-serif" text-anchor="end">Low</text>
+      <!-- Bullish label -->
+      <text x="110" y="155" fill="#4ade80" font-size="9.5" font-family="Inter,sans-serif" text-anchor="middle" font-weight="600">BULLISH</text>
+      <text x="110" y="167" fill="#64748b" font-size="8.5" font-family="Inter,sans-serif" text-anchor="middle">Close &gt; Open</text>
+
+      <!-- divider -->
+      <line x1="230" y1="10" x2="230" y2="145" stroke="#1e2545" stroke-width="1"/>
+
+      <!-- BEARISH CANDLE at x=310 -->
+      <line x1="310" y1="12" x2="310" y2="34" stroke="#f87171" stroke-width="2" stroke-linecap="round"/>
+      <rect x="288" y="34" width="44" height="76" fill="#f87171" rx="2" opacity="0.85"/>
+      <line x1="310" y1="110" x2="310" y2="135" stroke="#f87171" stroke-width="2" stroke-linecap="round"/>
+      <!-- Bearish annotation lines -->
+      <line x1="332" y1="34" x2="360" y2="34" stroke="#f87171" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="364" y="38" fill="#f87171" font-size="9.5" font-family="Inter,sans-serif">Open</text>
+      <line x1="332" y1="110" x2="360" y2="110" stroke="#f87171" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="364" y="114" fill="#f87171" font-size="9.5" font-family="Inter,sans-serif">Close</text>
+      <line x1="332" y1="12" x2="360" y2="12" stroke="#64748b" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="364" y="16" fill="#64748b" font-size="9.5" font-family="Inter,sans-serif">High</text>
+      <line x1="332" y1="135" x2="360" y2="135" stroke="#64748b" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="364" y="139" fill="#64748b" font-size="9.5" font-family="Inter,sans-serif">Low</text>
+      <!-- Bearish label -->
+      <text x="310" y="155" fill="#f87171" font-size="9.5" font-family="Inter,sans-serif" text-anchor="middle" font-weight="600">BEARISH</text>
+      <text x="310" y="167" fill="#64748b" font-size="8.5" font-family="Inter,sans-serif" text-anchor="middle">Close &lt; Open</text>
+    </svg>
+  </div>
+
+  <!-- Pattern candles -->
   <div class="candle-row">
     <div class="candle-item">
-      <svg width="60" height="160" viewBox="0 0 60 160">
-        <line x1="30" y1="10" x2="30" y2="40" stroke="#39ff8f" stroke-width="2"/>
-        <rect x="14" y="40" width="32" height="80" fill="#39ff8f" rx="2" opacity="0.85"/>
-        <line x1="30" y1="120" x2="30" y2="150" stroke="#39ff8f" stroke-width="2"/>
-        <text x="50" y="14" fill="#5a6480" font-size="8" font-family="JetBrains Mono">High</text>
-        <text x="50" y="44" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Close</text>
-        <text x="50" y="124" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Open</text>
-        <text x="50" y="154" fill="#5a6480" font-size="8" font-family="JetBrains Mono">Low</text>
+      <svg width="44" height="130" viewBox="0 0 44 130">
+        <line x1="22" y1="10" x2="22" y2="62" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+        <rect x="10" y="62" width="24" height="5" fill="#fbbf24" rx="1"/>
+        <line x1="22" y1="67" x2="22" y2="118" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <div class="candle-label" style="color:#39ff8f">BULLISH<br>Close &gt; Open<br>Buyers won</div>
+      <div class="candle-label" style="color:#fbbf24">DOJI<br>Open ≈ Close<br>Indecision</div>
     </div>
     <div class="candle-item">
-      <svg width="60" height="160" viewBox="0 0 60 160">
-        <line x1="30" y1="10" x2="30" y2="40" stroke="#ff4060" stroke-width="2"/>
-        <rect x="14" y="40" width="32" height="80" fill="#ff4060" rx="2" opacity="0.85"/>
-        <line x1="30" y1="120" x2="30" y2="150" stroke="#ff4060" stroke-width="2"/>
-        <text x="50" y="14" fill="#5a6480" font-size="8" font-family="JetBrains Mono">High</text>
-        <text x="50" y="44" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Open</text>
-        <text x="50" y="124" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Close</text>
-        <text x="50" y="154" fill="#5a6480" font-size="8" font-family="JetBrains Mono">Low</text>
+      <svg width="44" height="130" viewBox="0 0 44 130">
+        <line x1="22" y1="10" x2="22" y2="26" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
+        <rect x="10" y="26" width="24" height="24" fill="#4ade80" rx="2" opacity="0.85"/>
+        <line x1="22" y1="50" x2="22" y2="118" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <div class="candle-label" style="color:#ff4060">BEARISH<br>Close &lt; Open<br>Sellers won</div>
+      <div class="candle-label" style="color:#4ade80">HAMMER<br>Bullish reversal<br>after downtrend</div>
     </div>
     <div class="candle-item">
-      <svg width="60" height="160" viewBox="0 0 60 160">
-        <line x1="30" y1="18" x2="30" y2="77" stroke="#ffcc00" stroke-width="2"/>
-        <rect x="12" y="77" width="36" height="6" fill="#ffcc00" rx="1"/>
-        <line x1="30" y1="83" x2="30" y2="142" stroke="#ffcc00" stroke-width="2"/>
+      <svg width="44" height="130" viewBox="0 0 44 130">
+        <line x1="22" y1="10" x2="22" y2="80" stroke="#f87171" stroke-width="2" stroke-linecap="round"/>
+        <rect x="10" y="80" width="24" height="24" fill="#f87171" rx="2" opacity="0.85"/>
+        <line x1="22" y1="104" x2="22" y2="118" stroke="#f87171" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <div class="candle-label" style="color:#ffcc00">DOJI<br>Open ≈ Close<br>Indecision</div>
+      <div class="candle-label" style="color:#f87171">SHOOTING STAR<br>Bearish reversal<br>after uptrend</div>
     </div>
     <div class="candle-item">
-      <svg width="60" height="160" viewBox="0 0 60 160">
-        <line x1="30" y1="36" x2="30" y2="48" stroke="#39ff8f" stroke-width="2"/>
-        <rect x="14" y="48" width="32" height="30" fill="#39ff8f" rx="2" opacity="0.85"/>
-        <line x1="30" y1="78" x2="30" y2="150" stroke="#39ff8f" stroke-width="2"/>
+      <svg width="44" height="130" viewBox="0 0 44 130">
+        <line x1="22" y1="10" x2="22" y2="22" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
+        <rect x="10" y="22" width="24" height="60" fill="#4ade80" rx="2" opacity="0.85"/>
+        <line x1="22" y1="82" x2="22" y2="92" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <div class="candle-label" style="color:#39ff8f">HAMMER<br>Bullish signal<br>after downtrend</div>
+      <div class="candle-label" style="color:#4ade80">MARUBOZU<br>No wicks<br>Strong momentum</div>
     </div>
     <div class="candle-item">
-      <svg width="60" height="160" viewBox="0 0 60 160">
-        <line x1="30" y1="8" x2="30" y2="80" stroke="#ff4060" stroke-width="2"/>
-        <rect x="14" y="80" width="32" height="30" fill="#ff4060" rx="2" opacity="0.85"/>
-        <line x1="30" y1="110" x2="30" y2="120" stroke="#ff4060" stroke-width="2"/>
+      <svg width="44" height="130" viewBox="0 0 44 130">
+        <line x1="22" y1="10" x2="22" y2="44" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/>
+        <rect x="10" y="44" width="24" height="32" fill="#818cf8" rx="2" opacity="0.7"/>
+        <line x1="22" y1="76" x2="22" y2="118" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <div class="candle-label" style="color:#ff4060">SHOOTING<br>STAR<br>Bearish signal</div>
+      <div class="candle-label" style="color:#818cf8">SPINNING TOP<br>Long wicks both sides<br>Uncertainty</div>
     </div>
   </div>
 
@@ -600,13 +630,13 @@ li { margin-bottom: 0.3rem; }
       <div class="tag g">Bullish Reversal</div>
       <div class="svgbox">
         <svg width="200" height="88" viewBox="0 0 200 88">
-          <polyline points="5,15 25,30 45,52" fill="none" stroke="#ff4060" stroke-width="1.5"/>
-          <circle cx="45" cy="52" r="4" fill="#ffcc00"/>
-          <circle cx="72" cy="52" r="4" fill="#ffcc00"/>
-          <polyline points="45,52 60,38 72,52 90,36 110,18 130,8" fill="none" stroke="#39ff8f" stroke-width="2"/>
-          <line x1="0" y1="52" x2="140" y2="52" stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3"/>
-          <text x="3" y="68" fill="#ffcc00" font-size="8" font-family="JetBrains Mono">Support</text>
-          <text x="105" y="10" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Breakout</text>
+          <polyline points="5,15 25,30 45,52" fill="none" stroke="#f87171" stroke-width="1.5"/>
+          <circle cx="45" cy="52" r="4" fill="#fbbf24"/>
+          <circle cx="72" cy="52" r="4" fill="#fbbf24"/>
+          <polyline points="45,52 60,38 72,52 90,36 110,18 130,8" fill="none" stroke="#4ade80" stroke-width="2"/>
+          <line x1="0" y1="52" x2="140" y2="52" stroke="#fbbf24" stroke-width="0.8" stroke-dasharray="3,3"/>
+          <text x="3" y="68" fill="#fbbf24" font-size="8" font-family="Inter,sans-serif">Support</text>
+          <text x="105" y="10" fill="#4ade80" font-size="8" font-family="Inter,sans-serif">Breakout</text>
         </svg>
         <div class="svglabel">Double Bottom</div>
       </div>
@@ -617,12 +647,12 @@ li { margin-bottom: 0.3rem; }
       <div class="tag r">Bearish Reversal</div>
       <div class="svgbox">
         <svg width="200" height="88" viewBox="0 0 200 88">
-          <polyline points="5,75 25,55 45,30" fill="none" stroke="#39ff8f" stroke-width="1.5"/>
-          <circle cx="45" cy="30" r="4" fill="#ffcc00"/>
-          <circle cx="72" cy="30" r="4" fill="#ffcc00"/>
-          <polyline points="45,30 60,46 72,30 90,48 110,65 130,78" fill="none" stroke="#ff4060" stroke-width="2"/>
-          <line x1="0" y1="30" x2="140" y2="30" stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3"/>
-          <text x="3" y="26" fill="#ffcc00" font-size="8" font-family="JetBrains Mono">Resistance</text>
+          <polyline points="5,75 25,55 45,30" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+          <circle cx="45" cy="30" r="4" fill="#fbbf24"/>
+          <circle cx="72" cy="30" r="4" fill="#fbbf24"/>
+          <polyline points="45,30 60,46 72,30 90,48 110,65 130,78" fill="none" stroke="#f87171" stroke-width="2"/>
+          <line x1="0" y1="30" x2="140" y2="30" stroke="#fbbf24" stroke-width="0.8" stroke-dasharray="3,3"/>
+          <text x="3" y="26" fill="#fbbf24" font-size="8" font-family="Inter,sans-serif">Resistance</text>
         </svg>
         <div class="svglabel">Double Top</div>
       </div>
@@ -633,12 +663,12 @@ li { margin-bottom: 0.3rem; }
       <div class="tag r">Bearish Reversal</div>
       <div class="svgbox">
         <svg width="200" height="88" viewBox="0 0 200 88">
-          <polyline points="5,65 18,48 30,62 50,20 68,62 82,48 96,65" fill="none" stroke="#ff4060" stroke-width="1.8"/>
-          <line x1="0" y1="63" x2="170" y2="63" stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3"/>
-          <polyline points="96,65 116,78" fill="none" stroke="#ff4060" stroke-width="2.2"/>
-          <text x="2" y="59" fill="#ffcc00" font-size="7" font-family="JetBrains Mono">Neckline</text>
-          <text x="42" y="16" fill="#ff4060" font-size="7" font-family="JetBrains Mono">Head</text>
-          <text x="96" y="78" fill="#ff4060" font-size="7" font-family="JetBrains Mono">↓ Breakdown</text>
+          <polyline points="5,65 18,48 30,62 50,20 68,62 82,48 96,65" fill="none" stroke="#f87171" stroke-width="1.8"/>
+          <line x1="0" y1="63" x2="170" y2="63" stroke="#fbbf24" stroke-width="0.8" stroke-dasharray="3,3"/>
+          <polyline points="96,65 116,78" fill="none" stroke="#f87171" stroke-width="2.2"/>
+          <text x="2" y="59" fill="#fbbf24" font-size="7" font-family="Inter,sans-serif">Neckline</text>
+          <text x="42" y="16" fill="#f87171" font-size="7" font-family="Inter,sans-serif">Head</text>
+          <text x="96" y="78" fill="#f87171" font-size="7" font-family="Inter,sans-serif">↓ Breakdown</text>
         </svg>
         <div class="svglabel">Head & Shoulders</div>
       </div>
@@ -649,12 +679,12 @@ li { margin-bottom: 0.3rem; }
       <div class="tag g">Bullish Reversal</div>
       <div class="svgbox">
         <svg width="200" height="88" viewBox="0 0 200 88">
-          <polyline points="5,28 18,50 30,28 50,72 68,28 82,50 96,28" fill="none" stroke="#39ff8f" stroke-width="1.8"/>
-          <line x1="0" y1="28" x2="170" y2="28" stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3"/>
-          <polyline points="96,28 116,12 140,4" fill="none" stroke="#39ff8f" stroke-width="2.2"/>
-          <text x="2" y="24" fill="#ffcc00" font-size="7" font-family="JetBrains Mono">Neckline</text>
-          <text x="44" y="85" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">Head (low)</text>
-          <text x="118" y="10" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">↑ Breakout</text>
+          <polyline points="5,28 18,50 30,28 50,72 68,28 82,50 96,28" fill="none" stroke="#4ade80" stroke-width="1.8"/>
+          <line x1="0" y1="28" x2="170" y2="28" stroke="#fbbf24" stroke-width="0.8" stroke-dasharray="3,3"/>
+          <polyline points="96,28 116,12 140,4" fill="none" stroke="#4ade80" stroke-width="2.2"/>
+          <text x="2" y="24" fill="#fbbf24" font-size="7" font-family="Inter,sans-serif">Neckline</text>
+          <text x="44" y="85" fill="#4ade80" font-size="7" font-family="Inter,sans-serif">Head (low)</text>
+          <text x="118" y="10" fill="#4ade80" font-size="7" font-family="Inter,sans-serif">↑ Breakout</text>
         </svg>
         <div class="svglabel">Inverse Head & Shoulders</div>
       </div>
@@ -665,13 +695,13 @@ li { margin-bottom: 0.3rem; }
       <div class="tag g">Bullish Continuation</div>
       <div class="svgbox">
         <svg width="200" height="88" viewBox="0 0 200 88">
-          <path d="M10,78 Q55,88 100,20" fill="none" stroke="#39ff8f" stroke-width="2"/>
-          <path d="M100,20 Q112,30 125,24 Q136,18 146,22" fill="none" stroke="#39ff8f" stroke-width="2"/>
-          <polyline points="146,22 172,5" fill="none" stroke="#39ff8f" stroke-width="2.5"/>
-          <line x1="10" y1="20" x2="172" y2="20" stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3"/>
-          <text x="148" y="5" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">Breakout!</text>
-          <text x="30" y="85" fill="#5a6480" font-size="8" font-family="JetBrains Mono">Cup</text>
-          <text x="110" y="85" fill="#5a6480" font-size="8" font-family="JetBrains Mono">Handle</text>
+          <path d="M10,78 Q55,88 100,20" fill="none" stroke="#4ade80" stroke-width="2"/>
+          <path d="M100,20 Q112,30 125,24 Q136,18 146,22" fill="none" stroke="#4ade80" stroke-width="2"/>
+          <polyline points="146,22 172,5" fill="none" stroke="#4ade80" stroke-width="2.5"/>
+          <line x1="10" y1="20" x2="172" y2="20" stroke="#fbbf24" stroke-width="0.8" stroke-dasharray="3,3"/>
+          <text x="148" y="5" fill="#4ade80" font-size="7" font-family="Inter,sans-serif">Breakout!</text>
+          <text x="30" y="85" fill="#64748b" font-size="8" font-family="Inter,sans-serif">Cup</text>
+          <text x="110" y="85" fill="#64748b" font-size="8" font-family="Inter,sans-serif">Handle</text>
         </svg>
         <div class="svglabel">Cup & Handle</div>
       </div>
@@ -682,11 +712,11 @@ li { margin-bottom: 0.3rem; }
       <div class="tag r">Bearish Pattern</div>
       <div class="svgbox">
         <svg width="200" height="88" viewBox="0 0 200 88">
-          <line x1="10" y1="72" x2="135" y2="20" stroke="#ff4060" stroke-width="1" stroke-dasharray="3,3"/>
-          <line x1="10" y1="83" x2="135" y2="50" stroke="#ff4060" stroke-width="1" stroke-dasharray="3,3"/>
-          <polyline points="10,78 28,64 48,70 68,55 88,62 108,48 125,40" fill="none" stroke="#dce3f5" stroke-width="1.8"/>
-          <polyline points="125,40 152,70 168,78" fill="none" stroke="#ff4060" stroke-width="2.5"/>
-          <text x="148" y="66" fill="#ff4060" font-size="7" font-family="JetBrains Mono">Breakdown!</text>
+          <line x1="10" y1="72" x2="135" y2="20" stroke="#f87171" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="10" y1="83" x2="135" y2="50" stroke="#f87171" stroke-width="1" stroke-dasharray="3,3"/>
+          <polyline points="10,78 28,64 48,70 68,55 88,62 108,48 125,40" fill="none" stroke="#c7d2fe" stroke-width="1.8"/>
+          <polyline points="125,40 152,70 168,78" fill="none" stroke="#f87171" stroke-width="2.5"/>
+          <text x="148" y="66" fill="#f87171" font-size="7" font-family="Inter,sans-serif">Breakdown!</text>
         </svg>
         <div class="svglabel">Rising Wedge (Bearish)</div>
       </div>
@@ -697,13 +727,13 @@ li { margin-bottom: 0.3rem; }
       <div class="tag y">Neutral → Breakout</div>
       <div class="svgbox">
         <svg width="200" height="88" viewBox="0 0 200 88">
-          <line x1="10" y1="14" x2="115" y2="43" stroke="#5a6480" stroke-width="1" stroke-dasharray="3,3"/>
-          <line x1="10" y1="74" x2="115" y2="43" stroke="#5a6480" stroke-width="1" stroke-dasharray="3,3"/>
-          <polyline points="10,14 28,50 46,24 64,44 82,30 100,42" fill="none" stroke="#dce3f5" stroke-width="1.5"/>
-          <polyline points="115,43 142,18 158,8" fill="none" stroke="#39ff8f" stroke-width="2" stroke-dasharray="5,3"/>
-          <polyline points="115,43 142,64 158,74" fill="none" stroke="#ff4060" stroke-width="2" stroke-dasharray="5,3"/>
-          <text x="160" y="10" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Bull</text>
-          <text x="160" y="76" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Bear</text>
+          <line x1="10" y1="14" x2="115" y2="43" stroke="#64748b" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="10" y1="74" x2="115" y2="43" stroke="#64748b" stroke-width="1" stroke-dasharray="3,3"/>
+          <polyline points="10,14 28,50 46,24 64,44 82,30 100,42" fill="none" stroke="#c7d2fe" stroke-width="1.5"/>
+          <polyline points="115,43 142,18 158,8" fill="none" stroke="#4ade80" stroke-width="2" stroke-dasharray="5,3"/>
+          <polyline points="115,43 142,64 158,74" fill="none" stroke="#f87171" stroke-width="2" stroke-dasharray="5,3"/>
+          <text x="160" y="10" fill="#4ade80" font-size="8" font-family="Inter,sans-serif">Bull</text>
+          <text x="160" y="76" fill="#f87171" font-size="8" font-family="Inter,sans-serif">Bear</text>
         </svg>
         <div class="svglabel">Symmetrical Triangle</div>
       </div>
@@ -714,12 +744,12 @@ li { margin-bottom: 0.3rem; }
       <div class="tag a">Long-Term Signal</div>
       <div class="svgbox">
         <svg width="200" height="88" viewBox="0 0 200 88">
-          <polyline points="5,82 30,74 55,64 80,50 105,34 130,22 155,14 175,8" fill="none" stroke="#ff4060" stroke-width="1.5"/>
-          <polyline points="5,85 30,76 55,64 80,48 105,30 130,17 155,10 175,4" fill="none" stroke="#39ff8f" stroke-width="1.5"/>
-          <circle cx="80" cy="49" r="5" fill="#ffcc00"/>
-          <text x="82" y="44" fill="#ffcc00" font-size="7" font-family="JetBrains Mono">Golden Cross</text>
-          <text x="5" y="76" fill="#ff4060" font-size="7" font-family="JetBrains Mono">SMA 200</text>
-          <text x="5" y="68" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">SMA 50</text>
+          <polyline points="5,82 30,74 55,64 80,50 105,34 130,22 155,14 175,8" fill="none" stroke="#f87171" stroke-width="1.5"/>
+          <polyline points="5,85 30,76 55,64 80,48 105,30 130,17 155,10 175,4" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+          <circle cx="80" cy="49" r="5" fill="#fbbf24"/>
+          <text x="82" y="44" fill="#fbbf24" font-size="7" font-family="Inter,sans-serif">Golden Cross</text>
+          <text x="5" y="76" fill="#f87171" font-size="7" font-family="Inter,sans-serif">SMA 200</text>
+          <text x="5" y="68" fill="#4ade80" font-size="7" font-family="Inter,sans-serif">SMA 50</text>
         </svg>
         <div class="svglabel">Golden Cross / Death Cross</div>
       </div>
@@ -809,38 +839,38 @@ li { margin-bottom: 0.3rem; }
     <p>Select a significant move (e.g. BTC from $60k to $100k). The tool automatically plots where a correction is likely to pause, find support, or reverse:</p>
     <div class="fib-table">
       <div class="fib-row">
-        <div class="fib-pct" style="color:#39ff8f">0%</div>
-        <div class="fib-bar" style="background:#39ff8f;width:100%"></div>
+        <div class="fib-pct" style="color:#4ade80">0%</div>
+        <div class="fib-bar" style="background:#4ade80;width:100%"></div>
         <div class="fib-desc">High — starting point</div>
       </div>
       <div class="fib-row">
-        <div class="fib-pct" style="color:#7bffb5">23.6%</div>
-        <div class="fib-bar" style="background:#7bffb5;width:76%"></div>
+        <div class="fib-pct" style="color:#86efac">23.6%</div>
+        <div class="fib-bar" style="background:#86efac;width:76%"></div>
         <div class="fib-desc">Shallow pullback</div>
       </div>
       <div class="fib-row">
-        <div class="fib-pct" style="color:#ffcc00">38.2%</div>
-        <div class="fib-bar" style="background:#ffcc00;width:62%"></div>
+        <div class="fib-pct" style="color:#fbbf24">38.2%</div>
+        <div class="fib-bar" style="background:#fbbf24;width:62%"></div>
         <div class="fib-desc">⭐ First key zone</div>
       </div>
       <div class="fib-row">
-        <div class="fib-pct" style="color:#ffaa00">50%</div>
-        <div class="fib-bar" style="background:#ffaa00;width:50%"></div>
+        <div class="fib-pct" style="color:#fbbf24">50%</div>
+        <div class="fib-bar" style="background:#fbbf24;width:50%"></div>
         <div class="fib-desc">⭐⭐ Psychological midpoint</div>
       </div>
       <div class="fib-row">
-        <div class="fib-pct" style="color:#ff8c42">61.8%</div>
-        <div class="fib-bar" style="background:#ff8c42;width:38%"></div>
+        <div class="fib-pct" style="color:#fb923c">61.8%</div>
+        <div class="fib-bar" style="background:#fb923c;width:38%"></div>
         <div class="fib-desc">⭐⭐⭐ Golden Ratio</div>
       </div>
       <div class="fib-row">
-        <div class="fib-pct" style="color:#ff6060">78.6%</div>
-        <div class="fib-bar" style="background:#ff6060;width:21%"></div>
+        <div class="fib-pct" style="color:#f87171">78.6%</div>
+        <div class="fib-bar" style="background:#f87171;width:21%"></div>
         <div class="fib-desc">Deep pullback</div>
       </div>
       <div class="fib-row">
-        <div class="fib-pct" style="color:#ff4060">100%</div>
-        <div class="fib-bar" style="background:#ff4060;width:5%"></div>
+        <div class="fib-pct" style="color:#f87171">100%</div>
+        <div class="fib-bar" style="background:#f87171;width:5%"></div>
         <div class="fib-desc">Low — end point</div>
       </div>
     </div>
@@ -890,18 +920,18 @@ li { margin-bottom: 0.3rem; }
   <div class="svgbox" style="margin-bottom:1rem">
     <svg width="100%" height="170" viewBox="0 0 400 170" preserveAspectRatio="xMidYMid meet">
       <polygon points="50,122 150,78 250,66 350,56 350,86 250,96 150,106 50,136" fill="rgba(57,255,143,0.08)"/>
-      <polyline points="50,122 150,78 250,66 350,56" fill="none" stroke="#39ff8f" stroke-width="1.5"/>
-      <polyline points="50,136 150,106 250,96 350,86" fill="none" stroke="#ff4060" stroke-width="1.5"/>
-      <polyline points="28,150 60,136 90,126 120,106 150,90 180,70 210,50 240,40 270,30 300,25 330,20 360,15" fill="none" stroke="#dce3f5" stroke-width="2.2"/>
-      <polyline points="28,146 80,126 130,101 180,80 230,60 280,46 330,34" fill="none" stroke="#ff8c42" stroke-width="1.2" stroke-dasharray="4,2"/>
-      <polyline points="28,150 100,136 170,116 240,90 310,66 360,48" fill="none" stroke="#4488ff" stroke-width="1.2" stroke-dasharray="4,2"/>
-      <polyline points="130,150 180,136 230,116 280,90 330,68" fill="none" stroke="#b06eff" stroke-width="1" stroke-dasharray="3,3"/>
-      <text x="352" y="52" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Span A</text>
-      <text x="352" y="88" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Span B</text>
-      <text x="145" y="98" fill="rgba(57,255,143,0.5)" font-size="9" font-family="JetBrains Mono">CLOUD (bullish)</text>
-      <text x="328" y="28" fill="#ff8c42" font-size="8" font-family="JetBrains Mono">Tenkan</text>
-      <text x="352" y="44" fill="#4488ff" font-size="8" font-family="JetBrains Mono">Kijun</text>
-      <text x="280" y="84" fill="#b06eff" font-size="8" font-family="JetBrains Mono">Chikou</text>
+      <polyline points="50,122 150,78 250,66 350,56" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+      <polyline points="50,136 150,106 250,96 350,86" fill="none" stroke="#f87171" stroke-width="1.5"/>
+      <polyline points="28,150 60,136 90,126 120,106 150,90 180,70 210,50 240,40 270,30 300,25 330,20 360,15" fill="none" stroke="#c7d2fe" stroke-width="2.2"/>
+      <polyline points="28,146 80,126 130,101 180,80 230,60 280,46 330,34" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-dasharray="4,2"/>
+      <polyline points="28,150 100,136 170,116 240,90 310,66 360,48" fill="none" stroke="#818cf8" stroke-width="1.2" stroke-dasharray="4,2"/>
+      <polyline points="130,150 180,136 230,116 280,90 330,68" fill="none" stroke="#818cf8" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="352" y="52" fill="#4ade80" font-size="8" font-family="Inter,sans-serif">Span A</text>
+      <text x="352" y="88" fill="#f87171" font-size="8" font-family="Inter,sans-serif">Span B</text>
+      <text x="145" y="98" fill="rgba(57,255,143,0.5)" font-size="9" font-family="Inter,sans-serif">CLOUD (bullish)</text>
+      <text x="328" y="28" fill="#fb923c" font-size="8" font-family="Inter,sans-serif">Tenkan</text>
+      <text x="352" y="44" fill="#818cf8" font-size="8" font-family="Inter,sans-serif">Kijun</text>
+      <text x="280" y="84" fill="#818cf8" font-size="8" font-family="Inter,sans-serif">Chikou</text>
     </svg>
     <div class="svglabel">Price above a green cloud with Tenkan above Kijun = confirmed uptrend</div>
   </div>
@@ -909,27 +939,27 @@ li { margin-bottom: 0.3rem; }
   <div class="card p">
     <div class="tag p">The 5 Lines</div>
     <div class="ichi-row">
-      <div class="ichi-dot" style="background:#ff8c42"></div>
+      <div class="ichi-dot" style="background:#fb923c"></div>
       <div class="ichi-name">Tenkan-sen</div>
       <div class="ichi-desc">9-period midpoint. Fast line — short-term momentum. When above Kijun = bullish bias.</div>
     </div>
     <div class="ichi-row">
-      <div class="ichi-dot" style="background:#4488ff"></div>
+      <div class="ichi-dot" style="background:#818cf8"></div>
       <div class="ichi-name">Kijun-sen</div>
       <div class="ichi-desc">26-period midpoint. The baseline. Price below Kijun = bearish. Acts as dynamic support/resistance.</div>
     </div>
     <div class="ichi-row">
-      <div class="ichi-dot" style="background:#39ff8f"></div>
+      <div class="ichi-dot" style="background:#4ade80"></div>
       <div class="ichi-name">Senkou Span A</div>
       <div class="ichi-desc">Upper cloud boundary. Average of Tenkan + Kijun, plotted 26 periods into the future.</div>
     </div>
     <div class="ichi-row">
-      <div class="ichi-dot" style="background:#ff4060"></div>
+      <div class="ichi-dot" style="background:#f87171"></div>
       <div class="ichi-name">Senkou Span B</div>
       <div class="ichi-desc">Lower cloud boundary. 52-period midpoint, plotted 26 periods ahead.</div>
     </div>
     <div class="ichi-row">
-      <div class="ichi-dot" style="background:#b06eff"></div>
+      <div class="ichi-dot" style="background:#818cf8"></div>
       <div class="ichi-name">Chikou Span</div>
       <div class="ichi-desc">Today's close plotted 26 periods back. Confirms strength when above historical price.</div>
     </div>
@@ -982,13 +1012,13 @@ li { margin-bottom: 0.3rem; }
         <div class="vp-row"><div class="vp-bar" style="width:10%;background:rgba(68,136,255,0.35)"></div></div>
         <div class="vp-row"><div class="vp-bar" style="width:22%;background:rgba(68,136,255,0.4)"></div></div>
         <div class="vp-row"><div class="vp-bar" style="width:40%;background:rgba(68,136,255,0.48)"></div></div>
-        <div class="vp-row"><div class="vp-bar" style="width:84%;background:rgba(255,204,0,0.5);border:1px solid rgba(255,204,0,0.6)"></div><span class="vp-label" style="color:#ffcc00">POC</span></div>
+        <div class="vp-row"><div class="vp-bar" style="width:84%;background:rgba(255,204,0,0.5);border:1px solid rgba(255,204,0,0.6)"></div><span class="vp-label" style="color:#fbbf24">POC</span></div>
         <div class="vp-row"><div class="vp-bar" style="width:65%;background:rgba(68,136,255,0.52)"></div></div>
         <div class="vp-row"><div class="vp-bar" style="width:28%;background:rgba(68,136,255,0.38)"></div></div>
         <div class="vp-row"><div class="vp-bar" style="width:8%;background:rgba(68,136,255,0.28)"></div></div>
       </div>
     </div>
-    <p>The <strong style="color:#ffcc00">yellow bar = Point of Control (POC)</strong> — the most traded price. Acts like a magnet; price often gravitates back to it after a deviation.</p>
+    <p>The <strong style="color:#fbbf24">yellow bar = Point of Control (POC)</strong> — the most traded price. Acts like a magnet; price often gravitates back to it after a deviation.</p>
   </div>
 
   <div class="grid2">
@@ -1029,15 +1059,15 @@ li { margin-bottom: 0.3rem; }
     <h3>Why price always seems to hit your stop first</h3>
     <div class="svgbox">
       <svg width="340" height="130" viewBox="0 0 340 130">
-        <polyline points="10,65 38,62 66,72 94,65 122,68" fill="none" stroke="#dce3f5" stroke-width="1.8"/>
-        <line x1="10" y1="85" x2="200" y2="85" stroke="#ff4060" stroke-width="1" stroke-dasharray="3,3"/>
-        <text x="12" y="97" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Retail stop-losses here</text>
-        <polyline points="122,68 142,88 148,95 142,84 156,68" fill="none" stroke="#ff4060" stroke-width="2"/>
-        <text x="150" y="100" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Stop Hunt!</text>
-        <polyline points="156,68 174,56 196,42 222,28 258,16 300,6" fill="none" stroke="#39ff8f" stroke-width="2.2"/>
-        <text x="262" y="13" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Pump ↑</text>
+        <polyline points="10,65 38,62 66,72 94,65 122,68" fill="none" stroke="#c7d2fe" stroke-width="1.8"/>
+        <line x1="10" y1="85" x2="200" y2="85" stroke="#f87171" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="12" y="97" fill="#f87171" font-size="8" font-family="Inter,sans-serif">Retail stop-losses here</text>
+        <polyline points="122,68 142,88 148,95 142,84 156,68" fill="none" stroke="#f87171" stroke-width="2"/>
+        <text x="150" y="100" fill="#f87171" font-size="8" font-family="Inter,sans-serif">Stop Hunt!</text>
+        <polyline points="156,68 174,56 196,42 222,28 258,16 300,6" fill="none" stroke="#4ade80" stroke-width="2.2"/>
+        <text x="262" y="13" fill="#4ade80" font-size="8" font-family="Inter,sans-serif">Pump ↑</text>
         <rect x="139" y="80" width="22" height="18" fill="rgba(57,255,143,0.1)" rx="2"/>
-        <text x="164" y="90" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">← Institutional buy</text>
+        <text x="164" y="90" fill="#4ade80" font-size="7" font-family="Inter,sans-serif">← Institutional buy</text>
       </svg>
     </div>
     <p>Retail sets stops just below support. Institutions know this. They briefly push price through that level, triggering all the stop orders (= sell orders they can buy from), then immediately pump. This is a <strong>Liquidity Grab</strong> — they used your stop to fill their long position.</p>
@@ -1059,12 +1089,12 @@ li { margin-bottom: 0.3rem; }
     <h3>The origin of a strong impulsive move</h3>
     <div class="svgbox">
       <svg width="320" height="118" viewBox="0 0 320 118">
-        <rect x="28" y="58" width="38" height="26" fill="rgba(68,136,255,0.12)" stroke="#4488ff" stroke-width="1" rx="2"/>
-        <text x="30" y="55" fill="#4488ff" font-size="8" font-family="JetBrains Mono">Order Block</text>
-        <polyline points="8,88 28,82 48,70 68,54 90,38 118,24 148,14" fill="none" stroke="#39ff8f" stroke-width="2"/>
-        <polyline points="148,14 166,24 182,38 194,57 200,70" fill="none" stroke="#dce3f5" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <polyline points="200,70 214,53 238,34 268,17 298,6" fill="none" stroke="#39ff8f" stroke-width="2.2"/>
-        <text x="196" y="84" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Bounce ↑</text>
+        <rect x="28" y="58" width="38" height="26" fill="rgba(68,136,255,0.12)" stroke="#818cf8" stroke-width="1" rx="2"/>
+        <text x="30" y="55" fill="#818cf8" font-size="8" font-family="Inter,sans-serif">Order Block</text>
+        <polyline points="8,88 28,82 48,70 68,54 90,38 118,24 148,14" fill="none" stroke="#4ade80" stroke-width="2"/>
+        <polyline points="148,14 166,24 182,38 194,57 200,70" fill="none" stroke="#c7d2fe" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <polyline points="200,70 214,53 238,34 268,17 298,6" fill="none" stroke="#4ade80" stroke-width="2.2"/>
+        <text x="196" y="84" fill="#4ade80" font-size="8" font-family="Inter,sans-serif">Bounce ↑</text>
       </svg>
     </div>
     <p>An Order Block is the last candle (or cluster) before a strong impulsive move away. Institutions built their position there. When price returns to that zone, they often add to their position again → strong bounce. Most reliable when the Order Block coincides with a Fibonacci level.</p>
@@ -1082,19 +1112,19 @@ li { margin-bottom: 0.3rem; }
 
   <div class="svgbox">
     <svg width="100%" height="152" viewBox="0 0 400 152" preserveAspectRatio="xMidYMid meet">
-      <polyline points="20,136 60,96 80,111 120,66 140,81 180,36 200,54 240,14" fill="none" stroke="#39ff8f" stroke-width="2"/>
-      <text x="56" y="90" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HH</text>
-      <text x="76" y="124" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HL</text>
-      <text x="116" y="60" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HH</text>
-      <text x="136" y="94" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HL</text>
-      <text x="176" y="30" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HH</text>
-      <text x="196" y="66" fill="#39ff8f" font-size="9" font-family="JetBrains Mono">HL</text>
-      <polyline points="240,14 258,30 268,46 262,64 248,80 238,90 242,107" fill="none" stroke="#ff4060" stroke-width="2"/>
-      <text x="252" y="40" fill="#ff4060" font-size="9" font-family="JetBrains Mono">LH!</text>
-      <text x="238" y="100" fill="#ff4060" font-size="9" font-family="JetBrains Mono">LL!</text>
-      <line x1="240" y1="54" x2="330" y2="54" stroke="#ffcc00" stroke-width="1" stroke-dasharray="3,3"/>
-      <text x="248" y="50" fill="#ffcc00" font-size="8" font-family="JetBrains Mono">BOS — Structure Break</text>
-      <polyline points="242,107 260,91 270,108 290,81 305,101 330,66" fill="none" stroke="#ff4060" stroke-width="2"/>
+      <polyline points="20,136 60,96 80,111 120,66 140,81 180,36 200,54 240,14" fill="none" stroke="#4ade80" stroke-width="2"/>
+      <text x="56" y="90" fill="#4ade80" font-size="9" font-family="Inter,sans-serif">HH</text>
+      <text x="76" y="124" fill="#4ade80" font-size="9" font-family="Inter,sans-serif">HL</text>
+      <text x="116" y="60" fill="#4ade80" font-size="9" font-family="Inter,sans-serif">HH</text>
+      <text x="136" y="94" fill="#4ade80" font-size="9" font-family="Inter,sans-serif">HL</text>
+      <text x="176" y="30" fill="#4ade80" font-size="9" font-family="Inter,sans-serif">HH</text>
+      <text x="196" y="66" fill="#4ade80" font-size="9" font-family="Inter,sans-serif">HL</text>
+      <polyline points="240,14 258,30 268,46 262,64 248,80 238,90 242,107" fill="none" stroke="#f87171" stroke-width="2"/>
+      <text x="252" y="40" fill="#f87171" font-size="9" font-family="Inter,sans-serif">LH!</text>
+      <text x="238" y="100" fill="#f87171" font-size="9" font-family="Inter,sans-serif">LL!</text>
+      <line x1="240" y1="54" x2="330" y2="54" stroke="#fbbf24" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="248" y="50" fill="#fbbf24" font-size="8" font-family="Inter,sans-serif">BOS — Structure Break</text>
+      <polyline points="242,107 260,91 270,108 290,81 305,101 330,66" fill="none" stroke="#f87171" stroke-width="2"/>
     </svg>
     <div class="svglabel">Green = Uptrend (HH/HL) → Structure Break → Red = Downtrend (LH/LL)</div>
   </div>
@@ -1102,28 +1132,28 @@ li { margin-bottom: 0.3rem; }
   <div class="ms-row">
     <div class="ms-icon">📈</div>
     <div class="ms-body">
-      <h4 style="color:#39ff8f">Higher High (HH)</h4>
+      <h4 style="color:#4ade80">Higher High (HH)</h4>
       <p>New high above the previous high. Buyers remain in control, consistently pushing price further up.</p>
     </div>
   </div>
   <div class="ms-row">
     <div class="ms-icon">🔼</div>
     <div class="ms-body">
-      <h4 style="color:#39ff8f">Higher Low (HL)</h4>
+      <h4 style="color:#4ade80">Higher Low (HL)</h4>
       <p>Each pullback ends higher than the last. Buyers step in sooner every time — strong bullish structure.</p>
     </div>
   </div>
   <div class="ms-row">
     <div class="ms-icon">📉</div>
     <div class="ms-body">
-      <h4 style="color:#ff4060">Lower Low (LL)</h4>
+      <h4 style="color:#f87171">Lower Low (LL)</h4>
       <p>New low below the previous low. Sellers driving price progressively deeper.</p>
     </div>
   </div>
   <div class="ms-row">
     <div class="ms-icon">🔽</div>
     <div class="ms-body">
-      <h4 style="color:#ff4060">Lower High (LH)</h4>
+      <h4 style="color:#f87171">Lower High (LH)</h4>
       <p>Each recovery ends lower than the last. Nobody is buying at the old levels anymore — bearish.</p>
     </div>
   </div>
@@ -1150,17 +1180,17 @@ li { margin-bottom: 0.3rem; }
       <h3>Price: lower low · RSI: higher low</h3>
       <div class="svgbox">
         <svg width="200" height="118" viewBox="0 0 200 118">
-          <text x="5" y="10" fill="#dce3f5" font-size="8" font-family="JetBrains Mono">PRICE</text>
-          <polyline points="10,30 38,63 66,48 98,78 128,58" fill="none" stroke="#dce3f5" stroke-width="1.8"/>
-          <circle cx="38" cy="63" r="3" fill="#39ff8f"/>
-          <circle cx="98" cy="78" r="3" fill="#39ff8f"/>
-          <line x1="38" y1="63" x2="98" y2="78" stroke="#39ff8f" stroke-width="1" stroke-dasharray="3,2"/>
-          <text x="68" y="72" fill="#dce3f5" font-size="8" font-family="JetBrains Mono">RSI</text>
-          <polyline points="10,112 38,93 66,103 98,85 128,103" fill="none" stroke="#b06eff" stroke-width="1.8"/>
-          <circle cx="38" cy="93" r="3" fill="#39ff8f"/>
-          <circle cx="98" cy="85" r="3" fill="#39ff8f"/>
-          <line x1="38" y1="93" x2="98" y2="85" stroke="#39ff8f" stroke-width="1" stroke-dasharray="3,2"/>
-          <text x="100" y="83" fill="#39ff8f" font-size="7" font-family="JetBrains Mono">↑ higher!</text>
+          <text x="5" y="10" fill="#c7d2fe" font-size="8" font-family="Inter,sans-serif">PRICE</text>
+          <polyline points="10,30 38,63 66,48 98,78 128,58" fill="none" stroke="#c7d2fe" stroke-width="1.8"/>
+          <circle cx="38" cy="63" r="3" fill="#4ade80"/>
+          <circle cx="98" cy="78" r="3" fill="#4ade80"/>
+          <line x1="38" y1="63" x2="98" y2="78" stroke="#4ade80" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="68" y="72" fill="#c7d2fe" font-size="8" font-family="Inter,sans-serif">RSI</text>
+          <polyline points="10,112 38,93 66,103 98,85 128,103" fill="none" stroke="#818cf8" stroke-width="1.8"/>
+          <circle cx="38" cy="93" r="3" fill="#4ade80"/>
+          <circle cx="98" cy="85" r="3" fill="#4ade80"/>
+          <line x1="38" y1="93" x2="98" y2="85" stroke="#4ade80" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="100" y="83" fill="#4ade80" font-size="7" font-family="Inter,sans-serif">↑ higher!</text>
         </svg>
       </div>
       <p>Price makes lower low, RSI makes higher low. <strong>Buying momentum is secretly building.</strong> Strongest when RSI is below 30. One of the most reliable reversal signals in technical analysis.</p>
@@ -1170,17 +1200,17 @@ li { margin-bottom: 0.3rem; }
       <h3>Price: higher high · RSI: lower high</h3>
       <div class="svgbox">
         <svg width="200" height="118" viewBox="0 0 200 118">
-          <text x="5" y="10" fill="#dce3f5" font-size="8" font-family="JetBrains Mono">PRICE</text>
-          <polyline points="10,58 38,33 66,48 98,16 128,38" fill="none" stroke="#dce3f5" stroke-width="1.8"/>
-          <circle cx="38" cy="33" r="3" fill="#ff4060"/>
-          <circle cx="98" cy="16" r="3" fill="#ff4060"/>
-          <line x1="38" y1="33" x2="98" y2="16" stroke="#ff4060" stroke-width="1" stroke-dasharray="3,2"/>
-          <text x="68" y="70" fill="#dce3f5" font-size="8" font-family="JetBrains Mono">RSI</text>
-          <polyline points="10,96 38,78 66,91 98,86 128,94" fill="none" stroke="#b06eff" stroke-width="1.8"/>
-          <circle cx="38" cy="78" r="3" fill="#ff4060"/>
-          <circle cx="98" cy="86" r="3" fill="#ff4060"/>
-          <line x1="38" y1="78" x2="98" y2="86" stroke="#ff4060" stroke-width="1" stroke-dasharray="3,2"/>
-          <text x="100" y="84" fill="#ff4060" font-size="7" font-family="JetBrains Mono">↓ lower!</text>
+          <text x="5" y="10" fill="#c7d2fe" font-size="8" font-family="Inter,sans-serif">PRICE</text>
+          <polyline points="10,58 38,33 66,48 98,16 128,38" fill="none" stroke="#c7d2fe" stroke-width="1.8"/>
+          <circle cx="38" cy="33" r="3" fill="#f87171"/>
+          <circle cx="98" cy="16" r="3" fill="#f87171"/>
+          <line x1="38" y1="33" x2="98" y2="16" stroke="#f87171" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="68" y="70" fill="#c7d2fe" font-size="8" font-family="Inter,sans-serif">RSI</text>
+          <polyline points="10,96 38,78 66,91 98,86 128,94" fill="none" stroke="#818cf8" stroke-width="1.8"/>
+          <circle cx="38" cy="78" r="3" fill="#f87171"/>
+          <circle cx="98" cy="86" r="3" fill="#f87171"/>
+          <line x1="38" y1="78" x2="98" y2="86" stroke="#f87171" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="100" y="84" fill="#f87171" font-size="7" font-family="Inter,sans-serif">↓ lower!</text>
         </svg>
       </div>
       <p>Price makes higher high, RSI makes lower high. <strong>Momentum is secretly fading</strong> while price still looks strong. Warning to reduce long exposure. Strongest when RSI is above 70.</p>
@@ -1254,8 +1284,8 @@ li { margin-bottom: 0.3rem; }
     <h3>R:R 1:3 — the goal</h3>
     <p>At R:R 1:3, you can lose 3 out of every 4 trades and still break even. At a 50% win rate, you grow your account meaningfully without needing to be "right" most of the time.</p>
     <div class="rrr">
-      <div class="rrr-l" style="width:25%;background:rgba(255,64,96,0.2);color:#ff4060;border-right:2px solid #ff4060">RISK −1R</div>
-      <div class="rrr-l" style="width:75%;background:rgba(57,255,143,0.1);color:#39ff8f">REWARD +3R ✓</div>
+      <div class="rrr-l" style="width:25%;background:rgba(255,64,96,0.2);color:#f87171;border-right:2px solid #f87171">RISK −1R</div>
+      <div class="rrr-l" style="width:75%;background:rgba(57,255,143,0.1);color:#4ade80">REWARD +3R ✓</div>
     </div>
     <p><strong>Example:</strong> Entry $100 · SL $97 (−$3) · TP $109 (+$9) → R:R = 1:3 ✓</p>
   </div>
@@ -1321,21 +1351,21 @@ li { margin-bottom: 0.3rem; }
     <h3>Where is the crowd right now? Do the opposite.</h3>
     <div class="svgbox">
       <svg width="100%" height="165" viewBox="0 0 400 165" preserveAspectRatio="xMidYMid meet">
-        <path d="M 20,145 Q 58,26 98,20 Q 138,16 158,56 Q 178,96 198,135 Q 218,156 238,150 Q 278,140 318,76 Q 348,26 378,17" fill="none" stroke="#4488ff" stroke-width="2"/>
-        <circle cx="98" cy="20" r="5" fill="#39ff8f"/>
-        <text x="80" y="14" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Euphoria</text>
-        <text x="68" y="26" fill="#5a6480" font-size="7" font-family="JetBrains Mono">← Consider selling</text>
-        <circle cx="158" cy="56" r="4" fill="#ffcc00"/>
-        <text x="160" y="53" fill="#ffcc00" font-size="8" font-family="JetBrains Mono">Anxiety</text>
-        <circle cx="198" cy="135" r="5" fill="#ff4060"/>
-        <text x="166" y="152" fill="#ff4060" font-size="8" font-family="JetBrains Mono">Capitulation</text>
-        <text x="166" y="162" fill="#ff4060" font-size="7" font-family="JetBrains Mono">← Consider buying</text>
-        <circle cx="238" cy="150" r="4" fill="#ffcc00"/>
-        <text x="240" y="147" fill="#ffcc00" font-size="8" font-family="JetBrains Mono">Hope</text>
-        <circle cx="318" cy="76" r="4" fill="#b06eff"/>
-        <text x="320" y="73" fill="#b06eff" font-size="8" font-family="JetBrains Mono">Optimism</text>
-        <circle cx="378" cy="17" r="5" fill="#39ff8f"/>
-        <text x="354" y="12" fill="#39ff8f" font-size="8" font-family="JetBrains Mono">Euphoria</text>
+        <path d="M 20,145 Q 58,26 98,20 Q 138,16 158,56 Q 178,96 198,135 Q 218,156 238,150 Q 278,140 318,76 Q 348,26 378,17" fill="none" stroke="#818cf8" stroke-width="2"/>
+        <circle cx="98" cy="20" r="5" fill="#4ade80"/>
+        <text x="80" y="14" fill="#4ade80" font-size="8" font-family="Inter,sans-serif">Euphoria</text>
+        <text x="68" y="26" fill="#64748b" font-size="7" font-family="Inter,sans-serif">← Consider selling</text>
+        <circle cx="158" cy="56" r="4" fill="#fbbf24"/>
+        <text x="160" y="53" fill="#fbbf24" font-size="8" font-family="Inter,sans-serif">Anxiety</text>
+        <circle cx="198" cy="135" r="5" fill="#f87171"/>
+        <text x="166" y="152" fill="#f87171" font-size="8" font-family="Inter,sans-serif">Capitulation</text>
+        <text x="166" y="162" fill="#f87171" font-size="7" font-family="Inter,sans-serif">← Consider buying</text>
+        <circle cx="238" cy="150" r="4" fill="#fbbf24"/>
+        <text x="240" y="147" fill="#fbbf24" font-size="8" font-family="Inter,sans-serif">Hope</text>
+        <circle cx="318" cy="76" r="4" fill="#818cf8"/>
+        <text x="320" y="73" fill="#818cf8" font-size="8" font-family="Inter,sans-serif">Optimism</text>
+        <circle cx="378" cy="17" r="5" fill="#4ade80"/>
+        <text x="354" y="12" fill="#4ade80" font-size="8" font-family="Inter,sans-serif">Euphoria</text>
       </svg>
     </div>
     <p>The contrarian approach: when <strong>everyone is euphoric</strong> — reduce positions. When <strong>everyone is capitulating</strong> and nobody wants to buy — start looking for entries. Warren Buffett: <em style="color:var(--text)">"Be fearful when others are greedy, and greedy when others are fearful."</em> The Fear & Greed Index on the dashboard reflects exactly this sentiment cycle.</p>
