@@ -64,10 +64,11 @@ button,input{font-family:'Inter',sans-serif}
 .asset-row:last-child{border-bottom:none}
 .asset-row:hover{background:#f8f9ff}
 .asset-bar{width:3px;height:34px;border-radius:2px;flex-shrink:0}
-.asset-sym{font-size:14px;font-weight:800;color:#1e2a4a;font-family:'Syne',sans-serif;width:64px;flex-shrink:0}
-.asset-name{font-size:11px;color:#94a3b8;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.asset-main-name{font-size:14px;font-weight:700;color:#1e2a4a;font-family:'Syne',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.asset-ticker-badge{font-size:9px;font-weight:700;color:#6366f1;background:#eef0ff;border:1px solid #c7d2fe;border-radius:4px;padding:1px 5px;flex-shrink:0;font-family:monospace}
+.asset-desc{font-size:10px;color:#94a3b8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .asset-price{font-size:14px;font-weight:700;color:#1e2a4a;text-align:right;flex-shrink:0;min-width:72px}
-.asset-chg{font-size:12px;font-weight:700;text-align:right;flex-shrink:0;min-width:62px}
+.asset-chg{font-size:12px;font-weight:700;text-align:right;flex-shrink:0;min-width:54px}
 .tab-btn{padding:5px 11px;border-radius:5px;font-size:10px;cursor:pointer;transition:all 0.15s}
 .tab-btn.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;box-shadow:0 2px 8px rgba(99,102,241,0.3)}
 .tab-btn:not(.active){background:#fff;color:#64748b;border:1.5px solid #e2e8f8}
@@ -649,14 +650,28 @@ function renderLanding(){
         const d=S.stocks[t];
         const label=t.replace("^","").replace("-USD","");
         const name=NAMES[t]||label;
+        const desc=DESC[t]||"";
         const up=d?d.chg>=0:null;
         const c=up===null?"#cbd5e1":up?"#10b981":"#ef4444";
+        const perf1w=d?.perf1w;
+        const w=perf1w?(perf1w.pct>=0?"+":"")+perf1w.pct.toFixed(1)+"%":null;
+        const wc=perf1w?(perf1w.pct>=0?"#10b981":"#ef4444"):"#94a3b8";
         return`<div class="asset-row" onclick="doSelect('${t}')">
           <div class="asset-bar" style="background:${c}"></div>
-          <div class="asset-sym">${label}</div>
-          <div class="asset-name">${name}</div>
-          <div class="asset-price">${d?fmtPrice(d.last):"—"}</div>
-          <div class="asset-chg" style="color:${c}">${d?(up?"+":"")+d.chg.toFixed(2)+"%":"…"}</div>
+          <div style="flex:1;min-width:0;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap">
+              <span class="asset-main-name">${name}</span>
+              <span class="asset-ticker-badge">${label}</span>
+            </div>
+            ${desc?`<div class="asset-desc">${desc}</div>`:""}
+          </div>
+          <div style="text-align:right;flex-shrink:0;margin-left:10px">
+            <div class="asset-price">${d?fmtPrice(d.last):"—"}</div>
+            <div style="display:flex;gap:5px;justify-content:flex-end;margin-top:2px">
+              <span class="asset-chg" style="color:${c}">${d?(up?"+":"")+d.chg.toFixed(2)+"%":"…"}</span>
+              ${w?`<span style="font-size:10px;color:${wc};font-weight:600">1W ${w}</span>`:""}
+            </div>
+          </div>
         </div>`;
       }).join("")}
     </div>
@@ -678,21 +693,49 @@ function renderMain(){
     </div>`+
     // ── Title row
     `<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px">
-      <div>
-        <div style="font-size:24px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;letter-spacing:-0.02em">${S.active}</div>
-        ${NAMES[S.active]?`<div style="font-size:12px;color:#94a3b8;margin-top:1px">${NAMES[S.active]}</div>`:""}
-        ${DESC[S.active]?`<div style="font-size:11px;color:#64748b;margin-top:4px;max-width:560px;line-height:1.4">${DESC[S.active]}</div>`:""}
-        <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px">
+          <div style="font-size:22px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;letter-spacing:-0.02em;line-height:1.1">${NAMES[S.active]||S.active}</div>
+          <span style="font-size:11px;font-weight:700;color:#6366f1;background:#eef0ff;border:1.5px solid #c7d2fe;border-radius:5px;padding:2px 7px;font-family:monospace;flex-shrink:0">${S.active.replace("^","").replace("-USD","")}</span>
+        </div>
+        ${DESC[S.active]?`<div style="font-size:11px;color:#64748b;margin-top:3px;max-width:560px;line-height:1.5">${DESC[S.active]}</div>`:""}
+        <div style="display:flex;align-items:baseline;gap:10px;margin-top:8px">
           <span style="font-size:22px;font-weight:800;color:#1e2a4a;font-family:'Syne',sans-serif">${fmtPrice(d.last)}</span>
           <span style="font-size:14px;font-weight:600;color:${d.chg>=0?"#10b981":"#ef4444"}">${d.chg>=0?"▲":"▼"} ${d.chg>=0?"+":""}${d.chg.toFixed(2)}%</span>
           <span style="font-size:9px;padding:2px 7px;border-radius:4px;background:${S.liveLoaded[S.active]?"#10b98115":"#f59e0b15"};color:${S.liveLoaded[S.active]?"#10b981":"#f59e0b"}">${S.liveLoaded[S.active]?"● live":"○ demo"}</span>
         </div>
       </div>
-      <div style="background:${sig.c}15;border:1.5px solid ${sig.c}40;border-radius:12px;padding:10px 18px;text-align:center">
+      <div style="background:${sig.c}15;border:1.5px solid ${sig.c}40;border-radius:12px;padding:10px 18px;text-align:center;flex-shrink:0">
         <div style="font-size:18px;color:${sig.c};font-weight:800;font-family:'Syne',sans-serif">${sig.i} ${sig.s}</div>
         <div style="font-size:10px;color:#64748b;margin-top:3px;font-weight:600">SCORE ${sig.sc>0?"+":""}${sig.sc}</div>
       </div>
     </div>`
+    // ── Quick performance strip
+    +(()=>{
+      const perfs=[["1D",d.perf1d],["1W",d.perf1w],["1M",d.perf1m],["3M",d.perf3m],["6M",d.perf6m],["1Y",d.perf1y]];
+      const items=perfs.filter(([,p])=>p).map(([l,p])=>{
+        const c=p.pct>=0?"#10b981":"#ef4444";
+        return`<div style="text-align:center;flex:1">
+          <div style="font-size:8px;color:#94a3b8;font-weight:700;margin-bottom:3px">${l}</div>
+          <div style="font-size:12px;font-weight:700;color:${c}">${p.pct>=0?"+":""}${p.pct.toFixed(1)}%</div>
+        </div>`;
+      });
+      if(!items.length)return"";
+      return`<div style="display:flex;gap:4px;background:#f8faff;border:1.5px solid #e2e8f8;border-radius:10px;padding:8px 10px;margin-bottom:12px">${items.join('<div style="width:1px;background:#e2e8f8;margin:2px 0"></div>')}</div>`;
+    })()
+    // ── 52W range bar
+    +(d.fib?`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:10px;padding:10px 14px;margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+        <div><div style="font-size:8px;color:#94a3b8;font-weight:700;margin-bottom:2px">52W LOW</div><div style="font-size:12px;font-weight:700;color:#1e2a4a">${fmtPrice(d.fib.lo)}</div></div>
+        <div style="text-align:center"><div style="font-size:8px;color:#6366f1;font-weight:700;margin-bottom:2px">52W RANGE</div><div style="font-size:12px;font-weight:700;color:#6366f1">${(((d.last-d.fib.lo)/(d.fib.hi-d.fib.lo))*100).toFixed(0)}% from low</div></div>
+        <div style="text-align:right"><div style="font-size:8px;color:#94a3b8;font-weight:700;margin-bottom:2px">52W HIGH</div><div style="font-size:12px;font-weight:700;color:#1e2a4a">${fmtPrice(d.fib.hi)}</div></div>
+      </div>
+      <div style="height:6px;background:#f1f5f9;border-radius:3px;position:relative;overflow:visible">
+        <div style="height:100%;border-radius:3px;background:linear-gradient(90deg,#6366f1,#8b5cf6);width:${Math.min(100,Math.max(2,(d.last-d.fib.lo)/(d.fib.hi-d.fib.lo)*100)).toFixed(1)}%"></div>
+        <div style="position:absolute;top:-3px;width:12px;height:12px;background:#6366f1;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(99,102,241,0.4);left:calc(${Math.min(98,Math.max(1,(d.last-d.fib.lo)/(d.fib.hi-d.fib.lo)*100)).toFixed(1)}% - 6px)"></div>
+      </div>
+    </div>`:"")
+
     // ── Signal tags
     +`<div style="margin-bottom:12px">${sig.rs.map(r=>`<span class="signal-tag">${r}</span>`).join("")}</div>`
     // ── SMA row
