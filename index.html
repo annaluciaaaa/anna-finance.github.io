@@ -80,6 +80,8 @@ canvas{display:block}
 .index-card.is-active{border-color:#6366f1;box-shadow:0 4px 16px rgba(99,102,241,0.2)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 @keyframes spin{to{transform:rotate(360deg)}}
+.wrap{max-width:960px;margin:0 auto;width:100%}
+#main{max-width:960px;margin:0 auto;box-sizing:border-box}
 @media(max-width:680px){
   #overview-grid{grid-template-columns:repeat(3,1fr)!important}
   #main{padding:10px!important}
@@ -92,45 +94,53 @@ canvas{display:block}
 <body>
 
 <!-- HEADER -->
-<div style="background:linear-gradient(135deg,#1e1b4b,#312e81,#4c1d95);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;box-shadow:0 4px 20px rgba(17,24,39,0.4);height:54px">
-  <div>
-    <div style="font-size:18px;font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-0.02em;color:#fff"><span style="color:#818cf8">Signal</span>Radar <span style="font-size:10px;color:rgba(255,255,255,0.35);font-weight:400">PRO</span></div>
-    <div style="font-size:8px;color:rgba(255,255,255,0.45);letter-spacing:0.14em;margin-top:1px">RSI · MACD · BOLLINGER · FIBONACCI · AI</div>
-  </div>
-  <div style="display:flex;align-items:center;gap:8px">
-    <button onclick="doRefresh()" title="Refresh" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:4px 10px;font-size:15px;color:#fff;cursor:pointer;line-height:1" id="refreshBtn">↻</button>
-    <div id="liveStatus" style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:9px;font-weight:700;background:rgba(245,158,11,0.15);color:#f59e0b">
-      <div style="width:6px;height:6px;border-radius:50%;background:#f59e0b;animation:pulse 2s infinite"></div>
-      <span>Connecting...</span>
+<div style="background:linear-gradient(135deg,#1e1b4b,#312e81,#4c1d95);padding:10px 20px;position:sticky;top:0;z-index:20;box-shadow:0 4px 20px rgba(17,24,39,0.4);height:54px">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;height:100%">
+    <div>
+      <div style="font-size:18px;font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-0.02em;color:#fff"><span style="color:#818cf8">Signal</span>Radar <span style="font-size:10px;color:rgba(255,255,255,0.35);font-weight:400">PRO</span></div>
+      <div style="font-size:8px;color:rgba(255,255,255,0.45);letter-spacing:0.14em;margin-top:1px">RSI · MACD · BOLLINGER · FIBONACCI · AI</div>
     </div>
-    <div style="font-size:9px;color:rgba(255,255,255,0.35)" id="dateLabel"></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button onclick="doRefresh()" title="Refresh" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:4px 10px;font-size:15px;color:#fff;cursor:pointer;line-height:1" id="refreshBtn">↻</button>
+      <div id="liveStatus" style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:9px;font-weight:700;background:rgba(245,158,11,0.15);color:#f59e0b">
+        <div style="width:6px;height:6px;border-radius:50%;background:#f59e0b;animation:pulse 2s infinite"></div>
+        <span>Connecting...</span>
+      </div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.35)" id="dateLabel"></div>
+    </div>
   </div>
 </div>
 
 <!-- INTRO SECTION -->
 <div id="intro-section" style="background:#fff;border-bottom:1.5px solid #e2e8f8;padding:14px 20px">
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-    <div style="flex:1;min-width:240px">
-      <div style="font-size:16px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;letter-spacing:-0.01em;margin-bottom:4px">My Finance Dashboard</div>
-      <p style="font-size:11.5px;color:#475569;line-height:1.7;margin:0">Finance doesn't have to be complicated. Knowing where markets are heading and how to read a few key signals can make a real difference in how you manage your money. This dashboard shows my personal watchlist — the indices, ETFs, stocks, and crypto I actively follow and hold.</p>
+  <div class="wrap">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px">
+        <div style="font-size:16px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;letter-spacing:-0.01em;margin-bottom:4px">My Finance Dashboard</div>
+        <p style="font-size:11.5px;color:#475569;line-height:1.7;margin:0">Finance doesn't have to be complicated. Knowing where markets are heading and how to read a few key signals can make a real difference in how you manage your money. This dashboard shows my personal watchlist — the indices, ETFs, stocks, and crypto I actively follow and hold.</p>
+      </div>
+      <a href="learn.html" style="white-space:nowrap;padding:8px 16px;border-radius:8px;border:1.5px solid #6366f1;background:linear-gradient(135deg,#6366f115,#8b5cf615);color:#6366f1;font-size:10px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;flex-shrink:0">📖 Learning Guide →</a>
     </div>
-    <a href="learn.html" style="white-space:nowrap;padding:8px 16px;border-radius:8px;border:1.5px solid #6366f1;background:linear-gradient(135deg,#6366f115,#8b5cf615);color:#6366f1;font-size:10px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;flex-shrink:0">📖 Learning Guide →</a>
   </div>
 </div>
 
 <!-- MARKET OVERVIEW -->
-<div id="market-overview-section" style="background:linear-gradient(180deg,#f8f9ff,#f0f4ff);border-bottom:1.5px solid #e2e8f8;padding:12px 16px">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-    <div style="font-size:10px;color:#6366f1;font-weight:700;letter-spacing:0.1em">⬡ MARKET OVERVIEW</div>
-    <div id="overviewTime" style="font-size:9px;color:#94a3b8"></div>
+<div id="market-overview-section" style="background:linear-gradient(180deg,#f8f9ff,#f0f4ff);border-bottom:1.5px solid #e2e8f8;padding:12px 20px">
+  <div class="wrap">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-size:10px;color:#6366f1;font-weight:700;letter-spacing:0.1em">⬡ MARKET OVERVIEW</div>
+      <div id="overviewTime" style="font-size:9px;color:#94a3b8"></div>
+    </div>
+    <div id="overview-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:8px;margin-bottom:10px"></div>
+    <div id="market-hours"></div>
   </div>
-  <div id="overview-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:8px;margin-bottom:10px"></div>
-  <div id="market-hours"></div>
 </div>
 
 <!-- TICKER NAV -->
 <div id="ticker-nav">
-  <div id="group-tabs"></div>
+  <div class="wrap">
+    <div id="group-tabs"></div>
+  </div>
 </div>
 
 <!-- MAIN APP -->
@@ -633,7 +643,7 @@ function renderLanding(){
   const allGroups=Object.assign({},GROUPS);
   if(S.custom.length)allGroups["My Tickers"]=S.custom;
   const tickers=(allGroups[S.activeGroup]||allGroups[Object.keys(allGroups)[0]]);
-  el.innerHTML=`<div style="max-width:640px;padding-bottom:32px">
+  el.innerHTML=`<div style="padding-bottom:32px">
     <div class="asset-list">
       ${tickers.map(t=>{
         const d=S.stocks[t];
@@ -671,7 +681,7 @@ function renderMain(){
       <div>
         <div style="font-size:24px;font-weight:800;font-family:'Syne',sans-serif;color:#1e2a4a;letter-spacing:-0.02em">${S.active}</div>
         ${NAMES[S.active]?`<div style="font-size:12px;color:#94a3b8;margin-top:1px">${NAMES[S.active]}</div>`:""}
-        ${DESC[S.active]?`<div style="font-size:11px;color:#64748b;margin-top:4px;max-width:400px;line-height:1.4">${DESC[S.active]}</div>`:""}
+        ${DESC[S.active]?`<div style="font-size:11px;color:#64748b;margin-top:4px;max-width:560px;line-height:1.4">${DESC[S.active]}</div>`:""}
         <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px">
           <span style="font-size:22px;font-weight:800;color:#1e2a4a;font-family:'Syne',sans-serif">${fmtPrice(d.last)}</span>
           <span style="font-size:14px;font-weight:600;color:${d.chg>=0?"#10b981":"#ef4444"}">${d.chg>=0?"▲":"▼"} ${d.chg>=0?"+":""}${d.chg.toFixed(2)}%</span>
