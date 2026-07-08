@@ -227,7 +227,8 @@ const S={
   active:null,stocks:{},tab:"price",range:"3m",aiText:"",aiLoading:false,
   custom:[],liveLoaded:{},
   activeGroup:"Indices",
-  intraday:{}
+  intraday:{},
+  studies:{BB:true,RSI:true,MACD:true}
 };
 function findGroup(t){for(const[g,ts]of Object.entries(GROUPS)){if(ts.includes(t))return g;}if(S.custom.includes(t))return"My Tickers";return null;}
 function showDashboard(){
@@ -432,11 +433,13 @@ function drawCurrent(){
   const d=S.stocks[S.active];if(!d)return;
   if(S.tab==="price"){initTVWidget(S.active,"3");}
   else if(S.tab==="candles"){initTVWidget(S.active,"1");}
+  else if(S.tab==="heikin"){initTVWidget(S.active,"8");}
 }
 
 // ── COMPARE CHART ─────────────────────────────────────────────
 // ── TRADINGVIEW WIDGET ────────────────────────────────────────
-const TV_STUDIES=["BB@tv-basicstudies","RSI@tv-basicstudies","MACD@tv-basicstudies"];
+const TV_STUDY_IDS={BB:"BB@tv-basicstudies",RSI:"RSI@tv-basicstudies",MACD:"MACD@tv-basicstudies"};
+function activeStudies(){return Object.entries(S.studies).filter(([,v])=>v).map(([k])=>TV_STUDY_IDS[k]);}
 function initTVWidget(symbol,style){
   const container=document.getElementById("tv_widget");if(!container)return;
   const sym=toTVSym(symbol);
@@ -461,7 +464,7 @@ function initTVWidget(symbol,style){
       hide_legend:false,
       save_image:false,
       allow_symbol_change:true,
-      studies:TV_STUDIES,
+      studies:activeStudies(),
     });
   }
   if(window.TradingView){create();}
@@ -714,10 +717,10 @@ function renderMain(){
         }).join("")}
       </div>
     </div>`:"")
-    // ── Tabs
-    +`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">
-      ${["price","candles"].map(t=>{
-        const l={"price":"Line","candles":"Candles"}[t];
+    // ── Tabs + range
+    +`<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:8px">
+      ${["price","candles","heikin"].map(t=>{
+        const l={"price":"Area","candles":"Candles","heikin":"Heikin Ashi"}[t];
         return`<button class="tab-btn${S.tab===t?" active":""}" onclick="doTab('${t}')">${l}</button>`;
       }).join("")}
     </div>
@@ -726,6 +729,15 @@ function renderMain(){
         const lbl={"1d":"1D","1w":"1W","1m":"1M","3m":"3M","6m":"6M","1y":"1Y","all":"Max"}[r];
         return`<button onclick="doRange('${r}')" style="padding:4px 10px;border-radius:8px;font-size:9px;cursor:pointer;font-family:monospace;border:1.5px solid ${S.range===r?"#6366f1":"#e2e8f8"};background:${S.range===r?"linear-gradient(135deg,#6366f1,#8b5cf6)":"#f8faff"};color:${S.range===r?"#fff":"#475569"};font-weight:600">${lbl}</button>`;
       }).join("")}
+    </div>`
+    // ── Indicator toggles
+    +`<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 12px;background:#f8faff;border:1.5px solid #e2e8f8;border-radius:10px;margin-bottom:10px">
+      <span style="font-size:8px;color:#94a3b8;font-weight:700;letter-spacing:0.1em">INDICATORS:</span>
+      ${[["BB","#6366f1","Bollinger Bands"],["RSI","#f59e0b","RSI (14)"],["MACD","#10b981","MACD"]].map(([k,col,tip])=>{
+        const on=S.studies[k];
+        return`<button onclick="toggleStudy('${k}')" title="${tip}" style="padding:3px 11px;border-radius:6px;font-size:9px;font-weight:700;font-family:monospace;cursor:pointer;transition:all 0.15s;border:1.5px solid ${on?col+"80":"#e2e8f8"};background:${on?col+"18":"transparent"};color:${on?col:"#94a3b8"}">${on?"✓ ":""}${k}</button>`;
+      }).join("")}
+      <a href="learn.html" style="margin-left:auto;font-size:9px;color:#6366f1;text-decoration:none;font-weight:600;white-space:nowrap">📖 What do these mean? →</a>
     </div>`
     // ── Performance banner
     +(()=>{
@@ -745,7 +757,54 @@ function renderMain(){
       <span style="font-size:10px;color:#92400e;line-height:1.5"><b>For informational purposes only — not financial advice.</b> Please do your own research before making any investment decisions.</span>
     </div>`
     // ── Chart area
-    +`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><div id="tv_widget" style="height:420px"></div></div>`
+    +`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><div id="tv_widget" style="height:420px"></div></div>`
+    // ── Live indicator readings strip
+    +(()=>{
+      const rsiVal=d.rv.filter(Boolean).at(-1);
+      const rsiC=!rsiVal?"#94a3b8":rsiVal<30?"#10b981":rsiVal>70?"#ef4444":rsiVal<45?"#3b82f6":rsiVal>55?"#f97316":"#94a3b8";
+      const rsiLbl=!rsiVal?"—":rsiVal<30?"Oversold":rsiVal>70?"Overbought":rsiVal<45?"Weak":rsiVal>55?"Strong":"Neutral";
+      const macdHist=d.mv.hist.filter(v=>v!=null).at(-1);
+      const prevHist=d.mv.hist.filter(v=>v!=null).at(-2);
+      const macdBull=macdHist!=null&&macdHist>0;
+      const macdCross=macdHist!=null&&prevHist!=null&&((prevHist<0&&macdHist>0)||(prevHist>0&&macdHist<0));
+      const macdC=macdHist==null?"#94a3b8":macdBull?"#10b981":"#ef4444";
+      const macdLbl=macdHist==null?"—":macdCross?(macdBull?"Crossover ↑":"Crossover ↓"):(macdBull?"Bullish":"Bearish");
+      const bvLast=d.bv.filter(b=>b&&b.u!=null).at(-1);
+      const bbAbove=bvLast&&d.last>bvLast.u,bbBelow=bvLast&&d.last<bvLast.l;
+      const bbC=!bvLast?"#94a3b8":bbAbove?"#ef4444":bbBelow?"#10b981":"#6366f1";
+      const bbLbl=!bvLast?"—":bbAbove?"Above band":bbBelow?"Below band":"Inside band";
+      const bbSub=!bvLast?"":bbAbove?"Overbought zone":bbBelow?"Oversold zone":"Normal range";
+      const s200=d.s200.filter(Boolean).at(-1);
+      const tUp=s200&&d.last>s200;
+      const tC=!s200?"#94a3b8":tUp?"#10b981":"#ef4444";
+      const tLbl=!s200?"—":tUp?"Above SMA 200":"Below SMA 200";
+      const tSub=!s200?"":tUp?"Long-term uptrend":"Long-term downtrend";
+      return`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px">
+        <div style="background:#f8faff;border:1.5px solid ${rsiC}30;border-radius:10px;padding:8px 6px;text-align:center">
+          <div style="font-size:7px;color:#94a3b8;font-weight:700;letter-spacing:0.1em;margin-bottom:3px">RSI (14)</div>
+          <div style="font-size:20px;font-weight:800;color:${rsiC};font-family:'Syne',sans-serif;line-height:1">${rsiVal?rsiVal.toFixed(0):"—"}</div>
+          <div style="font-size:8px;color:${rsiC};font-weight:700;margin-top:3px">${rsiLbl}</div>
+          <div style="font-size:7px;color:#94a3b8;margin-top:2px">${rsiVal&&rsiVal<30?"Buy zone":rsiVal&&rsiVal>70?"Sell zone":"Watch"}</div>
+        </div>
+        <div style="background:#f8faff;border:1.5px solid ${macdC}30;border-radius:10px;padding:8px 6px;text-align:center">
+          <div style="font-size:7px;color:#94a3b8;font-weight:700;letter-spacing:0.1em;margin-bottom:3px">MACD</div>
+          <div style="font-size:20px;font-weight:800;color:${macdC};font-family:'Syne',sans-serif;line-height:1">${macdHist==null?"—":(macdBull?"↑":"↓")}</div>
+          <div style="font-size:8px;color:${macdC};font-weight:700;margin-top:3px">${macdLbl}</div>
+          <div style="font-size:7px;color:#94a3b8;margin-top:2px">${macdCross?"Signal crossover":"Momentum"}</div>
+        </div>
+        <div style="background:#f8faff;border:1.5px solid ${bbC}30;border-radius:10px;padding:8px 6px;text-align:center">
+          <div style="font-size:7px;color:#94a3b8;font-weight:700;letter-spacing:0.1em;margin-bottom:3px">BOLLINGER</div>
+          <div style="font-size:10px;font-weight:800;color:${bbC};font-family:'Syne',sans-serif;line-height:1.2;margin-top:4px">${bbLbl}</div>
+          <div style="font-size:7px;color:${bbC};font-weight:700;margin-top:5px">${bbSub}</div>
+        </div>
+        <div style="background:#f8faff;border:1.5px solid ${tC}30;border-radius:10px;padding:8px 6px;text-align:center">
+          <div style="font-size:7px;color:#94a3b8;font-weight:700;letter-spacing:0.1em;margin-bottom:3px">TREND</div>
+          <div style="font-size:20px;font-weight:800;color:${tC};font-family:'Syne',sans-serif;line-height:1">${!s200?"—":(tUp?"↑":"↓")}</div>
+          <div style="font-size:8px;color:${tC};font-weight:700;margin-top:3px">${tLbl}</div>
+          <div style="font-size:7px;color:#94a3b8;margin-top:2px">${tSub}</div>
+        </div>
+      </div>`;
+    })()
     // ── Technical Summary
     +`<div class="stat-card" style="margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
@@ -771,6 +830,7 @@ window.doSelect=async function(t){
   }
 };
 window.doTab=function(t){S.tab=t;renderMain();};
+window.toggleStudy=function(k){S.studies[k]=!S.studies[k];renderMain();};
 window.doFib=function(){S.showFib=!S.showFib;renderMain();};
 window.doRange=async function(r){
   S.range=r;renderMain();
