@@ -307,27 +307,46 @@ function mock(t){
   return data;
 }
 
-// ── API ───────────────────────────────────────────────────────
-const API="https://fulfilling-expression-production-3d1c.up.railway.app";
-const YF_FETCH={"HYPE-USD":"HYPE32196-USD"};
+// ── API — Stooq (free, no backend needed) ────────────────────
+const STOOQ_MAP={
+  "^GSPC":"^spx","^IXIC":"^ixic","^DJI":"^dji",
+  "^GDAXI":"^dax","^FTSE":"^ukx","^N225":"^n225",
+  "^HSI":"^hsi","^FCHI":"^cac","^NSEI":"^nsei",
+  "BTC-USD":"btc.v","ETH-USD":"eth.v","SOL-USD":"sol.v",
+  "XRP-USD":"xrp.v","BNB-USD":"bnb.v","LTC-USD":"ltc.v",
+  "HYPE-USD":null,
+};
+function toStooq(t){
+  if(t in STOOQ_MAP)return STOOQ_MAP[t];
+  if(t.endsWith("-USD"))return t.replace("-USD","").toLowerCase()+".v";
+  return t.toLowerCase()+".us";
+}
 
 async function fetchStock(t){
-  const sym=YF_FETCH[t]||t;
+  const sym=toStooq(t);
+  if(!sym)return null;
+  const d1=new Date();d1.setFullYear(d1.getFullYear()-5);
+  const d1s=d1.toISOString().slice(0,10).replace(/-/g,"");
   try{
-    const r=await fetch(API+"/stock/"+encodeURIComponent(sym)+"?range=5y",{signal:AbortSignal.timeout(10000)});
-    if(r.ok){const j=await r.json();if(j.data&&j.data.length>=10){console.log("Railway OK:",t);return j.data;}}
-  }catch(e){console.log("Railway failed:",t,e.message);}
-  return null;
+    const r=await fetch(`https://stooq.com/q/d/l/?s=${encodeURIComponent(sym)}&i=d&d1=${d1s}`,{signal:AbortSignal.timeout(14000)});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const csv=await r.text();
+    const lines=csv.trim().split("\n");
+    if(lines.length<3||!lines[0].toLowerCase().includes("date"))return null;
+    const data=lines.slice(1)
+      .map(l=>{const[date,o,h,lv,c,v]=l.split(",");return{date,o:+o,h:+h,l:+lv,c:+c,v:+(v||0)};})
+      .filter(d=>d.c&&!isNaN(d.c)&&d.c>0)
+      .sort((a,b)=>a.date.localeCompare(b.date));
+    if(data.length<10)return null;
+    console.log("Stooq OK:",t,"→",sym,"rows:",data.length);
+    return data;
+  }catch(e){
+    console.log("Stooq failed:",t,sym,e.message);
+    return null;
+  }
 }
 
-async function fetchIntraday(t,range){
-  const sym=YF_FETCH[t]||t;
-  try{
-    const r=await fetch(API+"/stock/"+encodeURIComponent(sym)+"?range="+range,{signal:AbortSignal.timeout(8000)});
-    if(r.ok){const j=await r.json();if(j.data&&j.data.length>=2)return j.data;}
-  }catch(e){}
-  return null;
-}
+async function fetchIntraday(t,range){return null;}
 
 // ── PROCESS ───────────────────────────────────────────────────
 function processStock(raw){
