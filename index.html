@@ -464,34 +464,22 @@ function initTVWidget(symbol,style){
   style=style||"1";
   const interval={"1d":"5","1w":"60","1m":"D","3m":"D","6m":"D","1y":"W","all":"W"}[S.range]||"D";
   const range={"1d":"1D","1w":"5D","1m":"1M","3m":"3M","6m":"6M","1y":"12M","all":"ALL"}[S.range]||"3M";
-  function create(){
-    container.innerHTML="";
-    new window.TradingView.widget({
-      container_id:"tv_widget",
-      autosize:true,
-      symbol:sym,
-      interval,
-      range,
-      timezone:"Etc/UTC",
-      theme:"light",
-      style,
-      locale:"en",
-      toolbar_bg:"#f8fafc",
-      enable_publishing:false,
-      hide_top_toolbar:false,
-      hide_legend:false,
-      save_image:false,
-      allow_symbol_change:true,
-      studies:activeStudies(),
-    });
-  }
-  if(window.TradingView){create();}
-  else{
-    if(document.getElementById("tv-script"))return;
-    const s=document.createElement("script");
-    s.id="tv-script";s.src="https://s3.tradingview.com/tv.js";
-    s.onload=create;document.head.appendChild(s);
-  }
+  const config={
+    autosize:true,symbol:sym,interval,range,
+    timezone:"Etc/UTC",theme:"light",style,locale:"en",
+    toolbar_bg:"#f8fafc",enable_publishing:false,
+    hide_top_toolbar:false,hide_legend:false,
+    save_image:false,allow_symbol_change:true,
+    studies:activeStudies(),
+  };
+  container.innerHTML=`<div class="tradingview-widget-container" style="height:100%;width:100%"><div class="tradingview-widget-container__widget" style="height:420px;width:100%"></div></div>`;
+  const wc=container.querySelector(".tradingview-widget-container");
+  const cfg=document.createElement("script");
+  cfg.type="application/json";cfg.textContent=JSON.stringify(config);
+  wc.appendChild(cfg);
+  const s=document.createElement("script");
+  s.src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+  s.async=true;wc.appendChild(s);
 }
 
 // ── CANDLESTICK CHART (legacy, unused) ───────────────────────
@@ -817,7 +805,7 @@ function renderMain(){
       <span style="font-size:10px;color:#92400e;line-height:1.5"><b>For informational purposes only — not financial advice.</b> Please do your own research before making any investment decisions.</span>
     </div>`
     // ── Chart area
-    +`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><div id="tv_widget" style="height:420px"></div></div>`
+    +`<div style="background:#fff;border:1.5px solid #e2e8f8;border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 8px rgba(99,102,241,0.06)"><div id="tv_widget"></div></div>`
     // ── Live indicator readings strip
     +(()=>{
       const rsiVal=d.rv.filter(Boolean).at(-1);
