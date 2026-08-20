@@ -465,34 +465,29 @@ function initTVWidget(symbol,style){
   style=style||"1";
   const interval={"1d":"5","1w":"60","1m":"D","3m":"D","6m":"D","1y":"W","all":"W"}[S.range]||"D";
   const range={"1d":"1D","1w":"5D","1m":"1M","3m":"3M","6m":"6M","1y":"12M","all":"ALL"}[S.range]||"3M";
-  const studies=activeStudies();
   const uid="tv_"+(++_tvCounter);
-  // Build the widget as an iframe-like self-contained HTML blob
-  const cfg=JSON.stringify({
+  const cfg={
     autosize:true,symbol:sym,interval,range,
     timezone:"Etc/UTC",theme:"light",style,locale:"en",
     toolbar_bg:"#f8fafc",enable_publishing:false,
     hide_top_toolbar:false,hide_legend:false,
     save_image:false,allow_symbol_change:true,
-    studies,
+    studies:activeStudies(),
     container_id:uid,
-  });
-  container.innerHTML=`
-    <div id="${uid}" style="height:460px;width:100%"></div>
-    <script>
-    (function(){
-      function init(){
-        new TradingView.widget(${cfg});
-      }
-      if(window.TradingView&&TradingView.widget){init();}
-      else{
-        var s=document.createElement('script');
-        s.src='https://s3.tradingview.com/tv.js';
-        s.onload=init;
-        document.head.appendChild(s);
-      }
-    })();
-    <\/script>`;
+  };
+  // innerHTML doesn't execute scripts — use DOM methods instead
+  container.innerHTML=`<div id="${uid}" style="height:460px;width:100%"></div>`;
+  function createWidget(){
+    new window.TradingView.widget(cfg);
+  }
+  if(window.TradingView&&window.TradingView.widget){
+    createWidget();
+  } else {
+    const s=document.createElement("script");
+    s.src="https://s3.tradingview.com/tv.js";
+    s.onload=createWidget;
+    document.head.appendChild(s);
+  }
 }
 
 // ── CANDLESTICK CHART (legacy, unused) ───────────────────────
