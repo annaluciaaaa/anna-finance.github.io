@@ -98,7 +98,7 @@ canvas{display:block}
 <div style="background:linear-gradient(135deg,#1e1b4b,#312e81,#4c1d95);padding:10px 20px;position:sticky;top:0;z-index:20;box-shadow:0 4px 20px rgba(17,24,39,0.4);height:54px">
   <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;height:100%">
     <div>
-      <div style="font-size:18px;font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-0.02em;color:#fff"><span style="color:#818cf8">Signal</span>Radar <span style="font-size:10px;color:rgba(255,255,255,0.35);font-weight:400">PRO</span></div>
+      <a href="index.html" style="text-decoration:none"><div style="font-size:18px;font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-0.02em;color:#fff"><span style="color:#818cf8">Signal</span>Radar <span style="font-size:10px;color:rgba(255,255,255,0.35);font-weight:400">PRO</span></div></a>
       <div style="font-size:8px;color:rgba(255,255,255,0.45);letter-spacing:0.14em;margin-top:1px">RSI · MACD · BOLLINGER · FIBONACCI · AI</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
@@ -909,22 +909,42 @@ window.doRefresh=async function(){
 window.doAI=function(){
   const d=S.stocks[S.active];if(!d)return;
   const sig=d.sig,lines=[];
+  // RSI
+  const rsi=d.rv.filter(Boolean).at(-1);
+  if(rsi!=null){
+    const rsiLbl=rsi<30?"oversold — potential reversal zone":rsi<45?"in weak territory":rsi>70?"overbought — elevated risk of pullback":rsi>55?"showing strength":"neutral";
+    lines.push(`RSI is at ${rsi.toFixed(0)}, ${rsiLbl}.`);
+  }
+  // MACD
+  const macdH=d.mv.hist.filter(v=>v!=null).at(-1),macdHP=d.mv.hist.filter(v=>v!=null).at(-2);
+  if(macdH!=null){
+    const cross=macdHP!=null&&((macdHP<0&&macdH>0)||(macdHP>0&&macdH<0));
+    const dir=macdH>0?"positive (bullish momentum)":"negative (bearish momentum)";
+    lines.push(`MACD histogram is ${dir}${cross?" with a fresh crossover — a potential trend change signal":""}.`);
+  }
+  // Bollinger Bands
+  const bb=d.bv.filter(b=>b&&b.u!=null).at(-1);
+  if(bb){
+    if(d.last>=bb.u)lines.push(`Price is at the upper Bollinger Band — extended, watch for a pullback.`);
+    else if(d.last<=bb.l)lines.push(`Price is at the lower Bollinger Band — oversold zone, watch for a bounce.`);
+    else lines.push(`Price is inside the Bollinger Bands — no extreme reading.`);
+  }
   // SMA trend
   const s20=d.s20.filter(Boolean).at(-1),s50=d.s50.filter(Boolean).at(-1),s200=d.s200.filter(Boolean).at(-1);
   const above20=s20&&d.last>s20,above50=s50&&d.last>s50,above200=s200&&d.last>s200;
-  if(above20&&above50&&above200)lines.push("Price is trading above all three moving averages (SMA 20, 50, 200) — a strong uptrend structure.");
-  else if(!above20&&!above50&&!above200)lines.push("Price is below all three moving averages — the trend is clearly bearish.");
-  else if(above50&&above200)lines.push("Price is above SMA 50 and 200 but below SMA 20 — medium and long-term trend intact, short-term pullback.");
+  if(above20&&above50&&above200)lines.push("Price is above all three moving averages (SMA 20, 50, 200) — a strong uptrend structure.");
+  else if(!above20&&!above50&&!above200)lines.push("Price is below all three moving averages — clearly bearish trend.");
+  else if(above50&&above200)lines.push("Price is above SMA 50 and 200 but below SMA 20 — medium-term trend intact, short-term pullback.");
   else if(!above200)lines.push("Price is below the 200-day moving average — long-term trend is bearish.");
   // Golden/death cross
   if(s50&&s200){
-    if(s50>s200)lines.push("SMA 50 is above SMA 200 — golden cross in place, a long-term bullish signal.");
-    else lines.push("SMA 50 is below SMA 200 — death cross in place, a long-term bearish signal.");
+    if(s50>s200)lines.push("SMA 50 is above SMA 200 — golden cross, a long-term bullish signal.");
+    else lines.push("SMA 50 is below SMA 200 — death cross, a long-term bearish signal.");
   }
-  // Performance context
+  // Performance
   if(d.perf1m){
     if(d.perf1m.pct>10)lines.push(`Up ${d.perf1m.pct.toFixed(1)}% over the past month — strong recent momentum.`);
-    else if(d.perf1m.pct<-10)lines.push(`Down ${Math.abs(d.perf1m.pct).toFixed(1)}% over the past month — notable weakness recently.`);
+    else if(d.perf1m.pct<-10)lines.push(`Down ${Math.abs(d.perf1m.pct).toFixed(1)}% over the past month — notable recent weakness.`);
   }
   if(d.perf1y){
     if(d.perf1y.pct>30)lines.push(`Up ${d.perf1y.pct.toFixed(1)}% over the past year — strong long-term performance.`);
@@ -933,12 +953,12 @@ window.doAI=function(){
   // Volume
   if(d.vols&&d.vols.at(-1)>0){
     const avg=d.vols.slice(-20).reduce((a,b)=>a+b,0)/20;
-    if(avg>0){const ratio=d.vols.at(-1)/avg;if(ratio>1.5)lines.push(`Volume ${(ratio).toFixed(1)}x above the 20-day average — high conviction in the latest move.`);else if(ratio<0.5)lines.push("Volume well below average — low conviction, treat the move with caution.");}
+    if(avg>0){const ratio=d.vols.at(-1)/avg;if(ratio>1.5)lines.push(`Volume is ${ratio.toFixed(1)}x the 20-day average — high conviction behind the latest move.`);else if(ratio<0.5)lines.push("Volume is well below average — low conviction, treat the move with caution.");}
   }
-  // Overall signal
-  if(sig.s==="BULLISH")lines.push(`Overall signal: Bullish. Multiple positive factors align — but always do your own research before acting.`);
-  else if(sig.s==="BEARISH")lines.push(`Overall signal: Bearish. Multiple negative factors align — caution advised.`);
-  else lines.push(`Overall signal: Neutral. No strong directional edge — wait for clearer confirmation.`);
+  // Overall verdict
+  if(sig.s==="BULLISH")lines.push(`Overall signal: Bullish (score ${sig.sc>0?"+":""}${sig.sc}). Multiple positive factors align — always do your own research before acting.`);
+  else if(sig.s==="BEARISH")lines.push(`Overall signal: Bearish (score ${sig.sc}). Multiple negative factors align — caution advised.`);
+  else lines.push(`Overall signal: Neutral (score ${sig.sc>0?"+":""}${sig.sc}). No strong directional edge — wait for clearer confirmation.`);
   S.aiText=lines.join(" ");renderMain();
 };
 window.addEventListener("resize",drawCurrent);
