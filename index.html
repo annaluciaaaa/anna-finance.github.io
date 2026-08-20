@@ -458,14 +458,12 @@ function drawCurrent(){
 // ── TRADINGVIEW WIDGET ────────────────────────────────────────
 const TV_STUDY_IDS={BB:"BB@tv-basicstudies",RSI:"RSI@tv-basicstudies",MACD:"MACD@tv-basicstudies"};
 function activeStudies(){return Object.entries(S.studies).filter(([,v])=>v).map(([k])=>TV_STUDY_IDS[k]);}
-let _tvCounter=0;
 function initTVWidget(symbol,style){
   const container=document.getElementById("tv_widget");if(!container)return;
   const sym=toTVSym(symbol);
   style=style||"1";
   const interval={"1d":"5","1w":"60","1m":"D","3m":"D","6m":"D","1y":"W","all":"W"}[S.range]||"D";
   const range={"1d":"1D","1w":"5D","1m":"1M","3m":"3M","6m":"6M","1y":"12M","all":"ALL"}[S.range]||"3M";
-  const uid="tv_"+(++_tvCounter);
   const cfg={
     autosize:true,symbol:sym,interval,range,
     timezone:"Etc/UTC",theme:"light",style,locale:"en",
@@ -473,20 +471,19 @@ function initTVWidget(symbol,style){
     hide_top_toolbar:false,hide_legend:false,
     save_image:false,allow_symbol_change:true,
     studies:activeStudies(),
-    container_id:uid,
+    container_id:"tv_inner",
   };
-  // innerHTML doesn't execute scripts — use DOM methods instead
-  container.innerHTML=`<div id="${uid}" style="height:460px;width:100%"></div>`;
-  function createWidget(){
-    new window.TradingView.widget(cfg);
-  }
+  container.innerHTML=`<div id="tv_inner" style="height:500px;width:100%"></div>`;
+  function build(){new window.TradingView.widget(cfg);}
   if(window.TradingView&&window.TradingView.widget){
-    createWidget();
+    build();
+  } else if(document.getElementById("tv-script")){
+    // already loading — wait for it
+    document.getElementById("tv-script").addEventListener("load",build,{once:true});
   } else {
     const s=document.createElement("script");
-    s.src="https://s3.tradingview.com/tv.js";
-    s.onload=createWidget;
-    document.head.appendChild(s);
+    s.id="tv-script";s.src="https://s3.tradingview.com/tv.js";
+    s.onload=build;document.head.appendChild(s);
   }
 }
 
